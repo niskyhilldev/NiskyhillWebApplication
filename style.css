@@ -155,3 +155,12 @@ body {
     display: grid; /* This is building a 2d grid for us*/
     grid-template-columns: repeat(2, 1fr); /* This is stating I want 2 columns, equally spaced*/
 }
+
+.niskyTourVideo {
+    display: block;
+    margin: 0 auto;
+    background-color: #00267A;
+    border-color: #00267A;
+    border-style: solid;
+    border-width: 5px;
+}
