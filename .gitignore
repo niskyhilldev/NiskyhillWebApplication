@@ -1,7 +1,17 @@
-# These are some examples of commonly ignored file patterns.
-# You should customize this list as applicable to your project.
-# Learn more about .gitignore:
-#     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+#FILES SPECIFIC TO THIS PROJECT
+
+# Maven Folders (Exicutiables)
+target/
+dist/
+
+
+# Front End Files
+resources/
+
+
+
+
+#GENERIC FILE TYPES THAT SHOULD BE IGNORED (~~WARNING~~)
 
 # Node artifact files
 node_modules/
@@ -19,9 +29,6 @@ dist/
 # Package files
 *.jar
 
-# Maven
-target/
-dist/
 
 # JetBrains IDE
 .idea/
