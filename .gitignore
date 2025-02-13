@@ -6,7 +6,7 @@ dist/
 
 
 # Front End Files
-resources/
+/public
 
 
 
