@@ -6,7 +6,7 @@ dist/
 
 
 # Front End Files
-src/main/resources/public/
+Server/server.java/src/main/resources/public/
 
 
 
