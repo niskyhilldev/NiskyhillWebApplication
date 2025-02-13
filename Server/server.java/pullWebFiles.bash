@@ -3,6 +3,7 @@
 
 # This Bash Script pulls all files from the Web Branch of the BAM repo so the server can add them in the route
 # It's purpose is get the latest version of the Front End "Files" into the folder defined in SERVER.JAVA
+# NOTE: FRONT END FILES ARE NOT STORED ON THE SERVER BRANCH, clone and run this script to get them
 
 
 
