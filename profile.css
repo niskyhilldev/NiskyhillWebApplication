@@ -164,6 +164,7 @@ body {
 #bio {
     max-width: 800px;
     width:75%;
+    padding: 5px;
 }
 .mother {
     position:relative;
