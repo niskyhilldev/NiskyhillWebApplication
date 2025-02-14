@@ -57,7 +57,6 @@ body {
     width: 85%; 
     margin: 0 auto;
     padding: 2em; 
-    box-shadow: 0px 5px 25px 0px rgba(0,0,0,.9);
     flex-direction: row;
     justify-content: space-around; 
     
@@ -129,6 +128,25 @@ body {
 
   .containerGrid {
     display: grid; /* This is building a 2d grid for us*/
-    grid-template-columns: repeat(6, 1fr); /* This is stating I want 5 columns, equally spaced*/
+    grid-template-columns: repeat(6, 1fr); /* This is stating I want 6 columns, equally spaced*/
     grid-gap: 10px; /* This adds some space between the items */
+}
+
+.containerGridPortraits{
+    display: grid; /* This is building a 2d grid for us*/
+    grid-template-columns: repeat(2, 1fr); /* This is stating I want 2 columns, equally spaced*/
+    grid-gap: 25px; /* This adds some space between the items */
+}
+
+
+.famousResidentsText{
+    padding-left: 10px;
+    font-size: 20px;
+}
+
+.portraitPhotos {
+        width: 550px;
+        height: 360px;  
+        border-width: 2px; 
+        border-style: solid; 
 }
