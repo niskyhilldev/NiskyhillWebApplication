@@ -150,3 +150,10 @@ body {
         border-width: 2px; 
         border-style: solid; 
 }
+
+html, body {
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensures body does not exceed viewport */
+}

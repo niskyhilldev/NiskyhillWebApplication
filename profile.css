@@ -191,3 +191,10 @@ body {
     opacity: 1;
     visibility: visible;
 }
+
+html, body {
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensures body does not exceed viewport */
+}
