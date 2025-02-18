@@ -210,7 +210,7 @@ body {
 
 .open-popup {
     visibility: visible;
-    top: 100%;
+    top: 70%;
     transform: translate(-50%, -50%) scale(1);
 }
 
