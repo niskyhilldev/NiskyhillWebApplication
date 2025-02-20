@@ -197,4 +197,31 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%; /* Ensures body does not exceed viewport */
+    font-family: 'Roboto';
+}
+
+.son {
+    position:relative;
+}
+
+.son::after {
+    content: "Son";
+    position: absolute;
+    left: 50%;
+    bottom: 120%; 
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.son:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
