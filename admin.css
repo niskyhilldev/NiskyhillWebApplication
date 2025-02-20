@@ -178,7 +178,7 @@ body {
     border-style: solid;
     padding: 20px;
     text-align: center;
-    margin-left: 20%;
+    margin: 0 auto;
 }
 
 .btn{
