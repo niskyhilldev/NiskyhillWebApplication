@@ -6,6 +6,8 @@
 
 # Git Repo Information below (Stored in plain text?)
 # WARNING: You will need to accept permission to allow your IDE to access git through HTTP Pull requests
+
+
 REPO_URL=${1:-"https://github.com/tjs226/BAM_Niskey_Hill.git"}
 BRANCH_NAME=${2:-"Web"}
 TARGET_DIR="$(pwd)/src/main/resources/public"
@@ -22,6 +24,9 @@ rm -rf "$TARGET_DIR"/*
 
 mkdir -p "$TARGET_DIR"
 cp -r "$TMP_DIR"/* "$TARGET_DIR"/
+
+find "$TARGET_DIR" -type f -name "*.md" -delete # Remove all .md files from the target directory
+
 rm -rf "$TMP_DIR"
 
 echo "Files from branch '$BRANCH_NAME' of repository '$REPO_URL' have been copied to '$TARGET_DIR'."

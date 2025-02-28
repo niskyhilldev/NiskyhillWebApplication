@@ -23,12 +23,16 @@ public class Server {
         * Create the Instance of the Javelin Server
         */
             Javalin app = Javalin.create(config -> {
+
+                /* Terminal Logger to manage requests */
                 config.requestLogger.http((ctx, ms) -> {
                     System.out.printf("%s\t%s\t%s\n", ctx.method(), ctx.path(), ctx.status());
                 });
+
+                /* Place to hold the Static HTML and CSS Files */
                 config.staticFiles.add(staticFiles -> {
                     staticFiles.hostedPath = "/";
-                    staticFiles.directory = "/public"; // Place to hold HTML files for website
+                    staticFiles.directory = "/public"; 
                     staticFiles.location = Location.CLASSPATH;
                 });
             });
