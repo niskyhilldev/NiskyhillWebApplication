@@ -1,60 +1,146 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Nisky Hill Demo</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
-    </head>
-
-    <body>
-        <nav>
-            <ul class="navBar">
-                <li class="navOption"><a href = "index.html">Home</a></li>
-                <div class = "dropdown">
-                <li class="navOption dropdown">History
-                    <ul class="dropdown-content">
-                        <li><a href="history/niskyHistory.html">Nisky Hill History</a></li>
-                        <li><a href="history/moraviansHistory.html">Moravian History</a></li>
-                        <li><a href="history/famousResidents.html">Famous Residents</a></li>
-                        <li><a href="history/legendsLore.html">Legends and Lore</a></li>
-                    </ul>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
+    <title>Nisky Hill Cemetery</title>
+  </head>
+  <body>
+    <nav class='navBar'>
+        <div class="navLogo">
+            <span class="topText">Nisky Hill</span>
+            <span class="bottomText">Cemetery</span>
+        </div>
+        <ul class="navItems">
+            <li class="navOption"> <a href="index.html" target = "_blank">HOME</a></li>
+            <li class="navOption"> <a href="" target = "_blank">HISTORY</a></li>
+            <li class="navOption"> <a href="" target = "_blank">NOTABLE RESIDENTS</a></li>
+            <li class="navOption"> <a href="" target = "_blank">CONTACT</a></li>
+            <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
+            <li><button class="findAGraveButton">FIND A GRAVE</button></li>
+        </ul>
+    </nav>
+    <h1 class="headerTitle" alt="Image of Nisky Hill" title="Image of Nisky Hill">
+        <span class="headerSmallText">Welcome to</span>
+        <span class="headerLargeText">Nisky Hill Cemetery</span>
+        <span><button class="learnMoreButton">LEARN MORE</button></span>
+    </h1>
+    <nav class="featuresBar">
+        <!-- below is the picture for 'Interactive Map' -->
+        <div class="featureContainer">
+            <div class="imageWrapper">
+              <svg width="113" height="91" viewBox="0 0 113 91" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M38.9293 71.8183L2 88.6632V19.9877L38.9293 2.49487M38.9293 71.8183L74.5628 88.6632M38.9293 71.8183V2.49487M74.5628 88.6632L111.492 73.7619V2.49487L74.5628 19.9877M74.5628 88.6632V19.9877M74.5628 19.9877L38.9293 2.49487" stroke="white" stroke-width="3"/>
+              </svg>
+            </div>
+            <div class="featureText">Interactive Map</div>
+        </div>
+        <!-- Below is the picture for 'find a loved one' -->
+        <div class = 'featureContainer'>
+            <div class="imageWrapper">
+                <div style="width: 76.09px; height: 86.82px; position: relative">
+                    <div style="width: 46px; height: 46px; left: 13.52px; top: 0px; position: absolute; border-radius: 9999px; border: 3px white solid">
+                    </div>
+                        <div data-svg-wrapper style="left: 0px; top: 46.57px; position: absolute">
+                        <svg width="80" height="44" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M77.6128 42.3111H2.29545C-0.00431967 18.3935 11.6862 5.51483 17.8189 2.06519C24.7182 7.23966 32.8823 10.1144 40.2416 10.1144C47.6008 10.1144 56.7232 4.74825 60.3645 2.06519C77.8427 9.42444 79.1459 31.9621 77.6128 42.3111Z" stroke="white" stroke-width="3"/>
+                        </svg>
+                        </div>
+                    </div>
                 </div>
-                <li class="navOption"> <a href = "contact.html">Contact</a></li>
-                <li class="navOption"> <a href = "profile.html">Search</a></li>
-                <li class="navOption"> <a href = "map.html"> Map </a> </li>
-                <li class="navOption"> <a href = "admin.html">Admin</a></li>
+                    <figcaption class="featureText">Find a Loved One or Notable Resident</figcaption>
+        </div>
+            <!-- Below is the picture for historical records -->
+            <div class = 'featureContainer'>
+                <div class="imageWrapper">
+                    <div style="width: 90.27px; height: 91px; position: relative">
+                        <div style="width: 57.13px; height: 57.13px; left: 33.14px; top: 0px; position: absolute; border-radius: 9999px; border: 3px white solid"></div>
+                            <div data-svg-wrapper style="left: 34.82px; top: 48.73px; position: absolute">
+                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.10032 1.73254L1.81842 9.01444" stroke="white" stroke-width="3"/>
+                            </svg>
+                            </div>
+                            <div data-svg-wrapper style="left: 61.71px; top: 29.13px; position: absolute">
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.705383 21.2929C4.06626 20.7328 9.66772 20.7328 14.709 15.6915C19.7503 10.6502 20.1238 4.67528 20.8706 1.12769" stroke="white" stroke-width="3"/>
+                            </svg>
+                            </div>
+                        <div style="width: 42.57px; height: 15.71px; left: 0px; top: 79.91px; position: absolute; transform: rotate(-45deg); transform-origin: top left; border-radius: 10px; border: 3px white solid"></div>
+                    </div>
+            </div>
+                <figcaption class="featureText">Historical Records</figcaption>
+            </div>
+            <!-- below is the picture for tours -->
+            <div class = 'featureContainer'>
+                <div class="imageWrapper">
+                    <div style="width: 64.01px; height: 85.67px; position: relative">
+                        <div style="width: 43.08px; height: 43.15px; left: 10.77px; top: 10.79px; position: absolute; border-radius: 9999px; border: 3px white solid"></div>
+                        <div data-svg-wrapper style="left: 0px; top: 0px; position: absolute">
+                            <svg width="68" height="90" viewBox="0 0 68 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M65.1855 24.2479C70.8883 47.0927 45.4395 75.7823 34.669 87.1681C23.8984 76.3816 -1.28757 50.1268 2.3574 29.64C9.31402 -9.46019 58.0052 -4.51537 65.1855 24.2479Z" stroke="white" stroke-width="3"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <figcaption class="featureText">Tour of the Site</figcaption>
+            </div>
+    </nav>
+
+    <div class="aboutSectionSpacing">
+        <div class = "aboutSection">
+            <h1 class="aboutHeader">About Nisky Hill Cemetery</h1>
+            <p class="aboutInfo">Nestled in the heart of Bethlehem, PA, Nisky Hill Cemetery stands as a testament to the rich history and enduring legacies of those who have shaped our community. With its peaceful landscape and centuries-old headstones, the cemetery is more than a final resting place—it is a space for remembrance, reflection, and historical discovery.</p>
+            <button class="learnMoreButton">LEARN MORE</button>
+        </div>
+        <div class="worldHeritageImage">
+            <img style="width: 220.02px; height: 223.57px" src="img/unescoLogo.png" />
+        </div>
+    </div>
+    <div class="aboutSectionSpacing">
+        <div class="flowersImage">
+            <img style="width: 460px; height: 323px"  src="img/pinkFlowers.jpeg" />
+        </div>
+        <div class = "aboutSection">
+            <h1 class="aboutHeader">Locate a Loved One or Notable Resident</h1>
+            <p class="aboutInfo">Nisky Hill Cemetery and Bethlehem Area Historical records are accessible online via our interactive map.</p>
+            <ul class="aboutList">Click the link below to:
+                <li>Locate a Loved One</li>
+                <li>Find Historical Records</li>
+                <li>Explore our Notable Residents</li>
+                <li>Identify Vacant Plots</li>
             </ul>
-        </nav>
-
-        <h1 class = "headerTitle" alt="Image of Nisky Hill" title="Image of Nisky Hill">Nisky Hill Cemetery</h1>
-
-        <h2 style="text-align: center;">Welcome to the official Nisky Hill Website! Watch this short video to learn more about the site.</h2>
-
-        <iframe class="niskyTourVideo" width="800" height="500" src="https://www.youtube.com/embed/oQXF02kgYI4?si=O9yuxJMAKqmM8wNC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-        <h2 style="text-align: center;">Click on the box below based on what you're visiting the site for.</h2>
-
-        <section class="containerGridForIndex">
-            <div class="colOnPageForIndex">
-                <h2 style="text-align: center; font-size: 35px;">Family</h2>
-                <p style="font-size: 30px; text-align: center;"> <a href="profile.html" target="_blank">Are you a family member looking to find information about your genealogy or passed loved ones? Click on this to be taken to our search feature to search for specific individuals or plots within Nisky Hill. </a></p>
-            </div>
-            <div class="colOnPageForIndex">
-                <h2 style="text-align: center; font-size: 35px;">Historians</h2>
-                <p style="font-size: 30px; text-align: center;"> <a href="historyhub.html" target="_blank">Are you a historian looking to learn more about the history of Nisky Hill? Click on this to be taken to our history page hub to learn more about the history of Nisky Hill and those who helped build that history. </a></p>
-            </div>
-            <div class="colOnPageForIndex">
-                <h2 style="text-align: center; font-size: 35px;">Tourists</h2>
-                <p style="font-size: 30px; text-align: center;"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">Are you looking for information about how Nisky Hill ties into the local World Heritage Site? Click on this to be taken to various touring services. </a></p>
-            </div>
-            <div class="colOnPageForIndex">
-                <h2 style="text-align: center; font-size: 35px;">Map</h2>
-                <p style="font-size: 30px; text-align: center;"> <a href="map.html" target="_blank">Click on this to be taken to our map and directions to the site.</a></p>
-            </div>
-        </section>
-    </br>
-    </br>
-    </body>
+            <button class="learnMoreButtonForMap">GO TO INTERACTIVE MAP</button>
+        </div>
+    </div>
+    <div class="aboutSectionSpacing">
+        <div class = "aboutSection">
+            <h1 class="aboutHeader">Plan A Visit</h1>
+            <p class="aboutInfo">Located at the corner of Church and Market Streets, Nisky Hill Cemetery was founded in 1849. Owned by the Bethlehem Area Moravians, Nisky Hill is the final home for thousands of Bethlehemites of various faiths and origins. </p>
+            <p class="aboutInfo">In this tour, you will explore the burials and histories of dozens of war heroes, artists, and businessmen, and visit a few of the more unusual monuments found within the cemetery grounds. </p>
+            <button class="learnMoreButton">MORE INFO</button>
+        </div>
+        <div class="worldHeritageImage">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6057.120787380136!2d-75.37230672436543!3d40.61752184339477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c43e4f31980ec3%3A0xba14c89a2e3fb5f8!2sNisky%20Hill%20Cemetery!5e0!3m2!1sen!2sus!4v1740793017164!5m2!1sen!2sus" width="420px" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+    <footer class='footer'>
+        <div class="navLogo">
+            <span class="topText">Nisky Hill</span>
+            <span class="bottomText">Cemetery</span>
+        </div>
+        <div class="footerColumns">
+            <p class = "footerTopTitle">Open Daily 24 Hours</p>
+            <span class="footerTop">254 E Church St,</span>
+            <span class="footerBottom">Bethlehem, PA 18018</span>
+        </div>
+        <div class="footerColumns">
+            <p class = "footerTopTitle">Questions?</p>
+            <span class="footerTop">(610) 866-5742</span>
+            <span class="footerBottom">niskyhillteam@gmail.com</span>
+        </div>
+    </footer>
+  </body>
 </html>
