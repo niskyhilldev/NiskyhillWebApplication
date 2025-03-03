@@ -197,20 +197,13 @@ a {
 
 
 .aboutHeader {
-  color: black;
-  font-size: 32px;
-  font-family: Instrument Sans;
-  font-weight: 600;
-}
-
-.aboutInfo {
-  color: black;
-  font-size: 16px;
-  font-family: Instrument Sans;
-  font-weight: 400;
-  word-wrap: break-word;
-  margin-bottom: 10px;
-}
+    color: black;
+    font-size: 32px;
+    font-family: Instrument Sans;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeIn 2s forwards; /* forwards (animation-fill-mode) retains the style from the last keyframe when the animation ends */
+  }
 
 .aboutList {
   color: black;
@@ -235,7 +228,6 @@ a {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin-bottom: 80px;
 }
 
 
@@ -290,3 +282,50 @@ a {
   text-align: center;
 }
 
+.historyHeader {
+    margin-top: 25px;
+    color: black;
+    font-size: 50px;
+    font-family:  Instrument Sans;
+    font-weight: 600;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+
+  .historyInfo {
+    color: black;
+    font-size: 30px;
+    font-family: Inria Serif;
+    font-weight: 400;
+    word-wrap: break-word;
+    margin-bottom: 20px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+  
+
+  .aboutInfo {
+    color: black;
+    font-size: 16px;
+    font-family: Instrument Sans;
+    font-weight: 400;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeIn 2s forwards; /* forwards (animation-fill-mode) retains the style from the last keyframe when the animation ends */
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0}
+    to {opacity: 1}
+  }
+  
+  
+  #fade-in-text {
+    animation-delay: 0.40s;
+  }
+  
+  
+  
