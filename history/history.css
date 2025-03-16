@@ -31,6 +31,16 @@
   margin-left: 40px;
 }
 
+.topText a {
+  color: white;
+  text-decoration: none;
+}
+
+.bottomText a {
+  color: white;
+  text-decoration: none;
+}
+
 .navBar li {
   list-style: none;
 }
