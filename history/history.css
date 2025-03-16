@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    background-color: #00267A;
+    background-color: #0d2543;
     width: 100%;
     margin: 0;  
     padding: 20px; 
@@ -90,7 +90,7 @@ a {
 .findAGraveButton {
   width: 154px; 
   height: 40px; 
-  background: #A5A5AA; 
+  background: #af8c30; 
   border-radius: 19px;
   border-color: white;
   border-style: solid;
@@ -101,7 +101,7 @@ a {
 .learnMoreButton {
     width: 154px; 
     height: 40px; 
-    background: #00267A; 
+    background: #0d2543; 
     border-radius: 19px;
     border-color: white;
     border-style: solid;
@@ -110,17 +110,6 @@ a {
     font-family: Instrument Sans;
 }
 
-.learnMoreButtonForMap {
-  width: 170px; 
-  height: 40px; 
-  background: #00267A; 
-  border-radius: 19px;
-  border-color: white;
-  border-style: solid;
-  color: white;
-  font-weight: 700; 
-  font-family: Instrument Sans;
-}
 
 
 * {
@@ -235,7 +224,7 @@ a {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  background-color: #A5A5AA;
+  background-color: #af8c30;
   width: 100%;
   margin: 0;  
   padding: 20px; 
