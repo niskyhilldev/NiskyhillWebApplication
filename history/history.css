@@ -202,6 +202,7 @@ a {
     font-weight: 600;
     opacity: 0;
     animation: fadeIn 2s forwards; /* forwards (animation-fill-mode) retains the style from the last keyframe when the animation ends */
+    margin-bottom: 5px;
   }
 
 .aboutList {
@@ -325,6 +326,4 @@ a {
   #fade-in-text {
     animation-delay: 0.40s;
   }
-  
-  
   
