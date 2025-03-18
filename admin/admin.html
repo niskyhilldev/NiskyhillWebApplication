@@ -16,6 +16,7 @@
         <label for="searchLast">Last Name:</label>
         <input type="text" id="searchLast" placeholder="Search last name">
     </div>
+    
     <table>
         <thead>
             <tr>
@@ -40,15 +41,64 @@
             </tr>
         </tbody>
     </table>
+    
+    <!-- Plus Button -->
+    <button id="addEntryBtn" onclick="toggleForm()">+</button>
+    
+    <!-- Add Entry Form -->
+    <div id="addEntryForm" style="display:none;">
+        <h3>Add New Entry</h3>
+        <form id="newEntryForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName">
+            
+            <label for="middleName">Middle Name:</label>
+            <input type="text" id="middleName">
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName">
+            
+            <label for="lotNumber">Lot Number:</label>
+            <input type="text" id="lotNumber">
+            
+            <label for="lotPortion">Lot Portion:</label>
+            <input type="text" id="lotPortion">
+            
+            <label for="section">Section:</label>
+            <input type="text" id="section">
+            
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob">
+            
+            <label for="dod">Date of Death:</label>
+            <input type="date" id="dod">
+            
+            <label for="vessel">Vessel:</label>
+            <select id="vessel">
+                <option value="urn">Urn</option>
+                <option value="casket">Casket</option>
+            </select>
+            
+            <label for="notes">Notes:</label>
+            <input type="file" id="notes" onchange="handleFileUpload(event)">
+            
+            <label for="owns">Owns:</label>
+            <input type="checkbox" id="owns">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+    
     <div class="overlay" id="overlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
         <h3>Details</h3>
         <label>Lot Number: <input type="text" id="lotNumber" disabled></label>
         <label>Lot Portion: <input type="text" id="lotPortion" disabled></label>
         <label>Section: <input type="text" id="section" disabled></label>
-        <label>Buried First Name: <input type="text" id="buriedFirst" disabled></label>
-        <label>Buried Middle Name: <input type="text" id="buriedMiddle" disabled></label>
-        <label>Buried Last Name: <input type="text" id="buriedLast" disabled></label>
+        <label>First Name: <input type="text" id="buriedFirst" disabled></label>
+        <label>Middle Name: <input type="text" id="buriedMiddle" disabled></label>
+        <label>Last Name: <input type="text" id="buriedLast" disabled></label>
         <label>Date of Birth: <input type="date" id="dob" disabled></label>
         <label>Date of Death: <input type="date" id="dod" disabled></label>
         <label>Vessel: 

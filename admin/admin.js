@@ -7,7 +7,6 @@ let currentRow;
 function viewMore(firstname, middleName, lastName, row) {
     const details = data[row];
     currentRow = document.getElementById(row);
-    console.log(currentRow);
     if (details) {
         document.getElementById("lotNumber").value = details.lotNumber;
         document.getElementById("lotPortion").value = details.lotPortion;
@@ -62,3 +61,51 @@ function handleFileUpload(event) {
 document.getElementById("searchFirst").addEventListener("input", filterTable);
 document.getElementById("searchMiddle").addEventListener("input", filterTable);
 document.getElementById("searchLast").addEventListener("input", filterTable);
+
+function toggleForm() {
+    const form = document.getElementById('addEntryForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+document.getElementById('newEntryForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Get all the values from the form
+    const firstName = document.getElementById('firstName').value;
+    const middleName = document.getElementById('middleName').value;
+    const lastName = document.getElementById('lastName').value;
+    const lotNumber = document.getElementById('lotNumber').value;
+    const lotPortion = document.getElementById('lotPortion').value;
+    const section = document.getElementById('section').value;
+    const dob = document.getElementById('dob').value;
+    const dod = document.getElementById('dod').value;
+    const vessel = document.getElementById('vessel').value;
+    const owns = document.getElementById('owns').checked;
+    const notes = document.getElementById('notes').files[0] ? document.getElementById('notes').files[0].name : '';
+    
+    // Create the new row with all the details
+    const tableBody = document.getElementById('tableBody');
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td class="first-name">${firstName}</td>
+        <td class="middle-name">${middleName}</td>
+        <td class="last-name">${lastName}</td>
+        <td><button onclick="viewMore('${firstName}', '${middleName}', '${lastName}', '${tableBody.rows.length}')">View More</button></td>
+    `;
+    tableBody.appendChild(newRow);
+    
+    // Clear the form fields
+    document.getElementById('firstName').value = '';
+    document.getElementById('middleName').value = '';
+    document.getElementById('lastName').value = '';
+    document.getElementById('lotNumber').value = '';
+    document.getElementById('lotPortion').value = '';
+    document.getElementById('section').value = '';
+    document.getElementById('dob').value = '';
+    document.getElementById('dod').value = '';
+    document.getElementById('vessel').value = 'urn';
+    document.getElementById('owns').checked = false;
+    document.getElementById('notes').value = '';
+    
+    toggleForm(); // Hide the form after submission
+});
