@@ -4,61 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table with Popup</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #0d2543; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #003a7f; color: white; }
-        th, td { border: 1px solid #af8c30; padding: 8px; text-align: left; }
-        th { background-color: #af8c30; color: black; }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background: #fef5bc;
-            border: 2px solid #af8c30;
-            box-shadow: 0px 0px 10px gray;
-            z-index: 1000;
-            color: black;
-        }
-        .popup label { display: block; margin-top: 10px; }
-        .popup input, .popup select { width: 100%; padding: 5px; margin-top: 5px; }
-        .popup input[disabled] {
-            background-color: lightgray;
-            border: 1px solid gray;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-        .search-container {
-            margin-bottom: 10px;
-        }
-        .search-container input {
-            padding: 5px;
-            margin-right: 10px;
-            border: 1px solid #af8c30;
-            background: #fef5bc;
-            color: black;
-        }
-        button {
-            background-color: #af8c30;
-            color: black;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #fef5bc;
-        }
-    </style>
+    <link rel="stylesheet" href="admin.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
 </head>
 <body>
     <div class="search-container">
@@ -79,17 +26,17 @@
             </tr>
         </thead>
         <tbody id="tableBody">
-            <tr>
-                <td>John</td>
-                <td>Michael</td>
-                <td>Doe</td>
-                <td><button onclick="viewMore('John', 'Michael', 'Doe')">View More</button></td>
+            <tr id="0">
+                <td class="first-name">John</td>
+                <td class="middle-name">Michael</td>
+                <td class="last-name">Doe</td>
+                <td><button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button></td>
             </tr>
-            <tr>
-                <td>Jane</td>
-                <td>Elizabeth</td>
-                <td>Smith</td>
-                <td><button onclick="viewMore('Jane', 'Elizabeth', 'Smith')">View More</button></td>
+            <tr id="1">
+                <td class="first-name">Jane</td>
+                <td class="middle-name">Elizabeth</td>
+                <td class="last-name">Smith</td>
+                <td><button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button></td>
             </tr>
         </tbody>
     </table>
@@ -119,64 +66,5 @@
         <button onclick="saveChanges()">Save</button>
         <button onclick="closePopup()">Close</button>
     </div>
-    <script>
-        const data = {
-            "John": { lotNumber: "123", lotPortion: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
-            "Jane": { lotNumber: "456", lotPortion: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false }
-        };
-        
-        function viewMore(name) {
-            const details = data[name];
-            if (details) {
-                document.getElementById("lotNumber").value = details.lotNumber;
-                document.getElementById("lotPortion").value = details.lotPortion;
-                document.getElementById("section").value = details.section;
-                document.getElementById("buriedFirst").value = details.buriedFirst;
-                document.getElementById("buriedMiddle").value = details.buriedMiddle;
-                document.getElementById("buriedLast").value = details.buriedLast;
-                document.getElementById("dob").value = details.dob;
-                document.getElementById("dod").value = details.dod;
-                document.getElementById("vessel").value = details.vessel;
-                document.getElementById("owns").checked = details.owns;
-            }
-            document.getElementById("popup").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
-        }
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
-        }
-        function enableEditing() {
-            document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
-        }
-        function saveChanges() {
-            document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-            alert("Changes saved!");
-        }
-        function filterTable() {
-            let searchFirst = document.getElementById("searchFirst").value.toLowerCase();
-            let searchMiddle = document.getElementById("searchMiddle").value.toLowerCase();
-            let searchLast = document.getElementById("searchLast").value.toLowerCase();
-            let rows = document.querySelectorAll("#tableBody tr");
-            rows.forEach(row => {
-                let first = row.cells[0].innerText.toLowerCase();
-                let middle = row.cells[1].innerText.toLowerCase();
-                let last = row.cells[2].innerText.toLowerCase();
-                row.style.display = (first.includes(searchFirst) && middle.includes(searchMiddle) && last.includes(searchLast)) ? "" : "none";
-            });
-        }
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const downloadLink = document.getElementById("downloadLink");
-                downloadLink.href = URL.createObjectURL(file);
-                downloadLink.textContent = file.name;
-                downloadLink.style.display = "block";
-            }
-        }
-        document.getElementById("searchFirst").addEventListener("input", filterTable);
-        document.getElementById("searchMiddle").addEventListener("input", filterTable);
-        document.getElementById("searchLast").addEventListener("input", filterTable);
-    </script>
 </body>
 </html>
