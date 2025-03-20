@@ -6,6 +6,7 @@ let currentRow;
 
 function viewMore(firstname, middleName, lastName, row) {
     const details = data[row];
+    console.log(details);
     currentRow = document.getElementById(row);
     if (details) {
         document.getElementById("lotNumber").value = details.lotNumber;
@@ -74,14 +75,17 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     const firstName = document.getElementById('firstName').value;
     const middleName = document.getElementById('middleName').value;
     const lastName = document.getElementById('lastName').value;
-    const lotNumber = document.getElementById('lotNumber').value;
-    const lotPortion = document.getElementById('lotPortion').value;
-    const section = document.getElementById('section').value;
-    const dob = document.getElementById('dob').value;
-    const dod = document.getElementById('dod').value;
-    const vessel = document.getElementById('vessel').value;
-    const owns = document.getElementById('owns').checked;
-    const notes = document.getElementById('notes').files[0] ? document.getElementById('notes').files[0].name : '';
+    const lotNumber = document.getElementById('lotNum').value;
+    const lotPortion = document.getElementById('portion').value;
+    const section = document.getElementById('cemSection').value;
+    const buriedFirst = document.getElementById('buriedFirst').value;
+    const buriedMiddle = document.getElementById('buriedMiddle').value;
+    const buriedLast = document.getElementById('buriedLast').value;
+    const dob = document.getElementById('dofb').value;
+    const dod = document.getElementById('dofd').value;
+    const vessel = document.getElementById('vesselType').value;
+    const owns = document.getElementById('owner').checked;
+    const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
     
     // Create the new row with all the details
     const tableBody = document.getElementById('tableBody');
@@ -93,19 +97,34 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
         <td><button onclick="viewMore('${firstName}', '${middleName}', '${lastName}', '${tableBody.rows.length}')">View More</button></td>
     `;
     tableBody.appendChild(newRow);
+    data[tableBody.rows.length-1] = {
+        lotNumber: document.getElementById('lotNumber').value,
+        lotPortion: document.getElementById('lotPortion').value,
+        section: document.getElementById('section').value,
+        buriedFirst: document.getElementById('buriedFirst').value,
+        buriedMiddle: document.getElementById('buriedMiddle').value,
+        buriedLast: document.getElementById('buriedLast').value,
+        dob: document.getElementById('dob').value,
+        dod: document.getElementById('dod').value,
+        vessel: document.getElementById('vessel').value,
+        owns: document.getElementById('owns').checked
+    };
     
     // Clear the form fields
     document.getElementById('firstName').value = '';
     document.getElementById('middleName').value = '';
     document.getElementById('lastName').value = '';
-    document.getElementById('lotNumber').value = '';
-    document.getElementById('lotPortion').value = '';
-    document.getElementById('section').value = '';
-    document.getElementById('dob').value = '';
-    document.getElementById('dod').value = '';
-    document.getElementById('vessel').value = 'urn';
-    document.getElementById('owns').checked = false;
-    document.getElementById('notes').value = '';
+    document.getElementById('lotNum').value = '';
+    document.getElementById('portion').value = '';
+    document.getElementById('cemSection').value = '';
+    document.getElementById('buriedFirst').value = '';
+    document.getElementById('buriedMiddle').value = '';
+    document.getElementById('buriedLast').value = '';
+    document.getElementById('dofb').value = '';
+    document.getElementById('dofd').value = '';
+    document.getElementById('vesselType').value = 'urn';
+    document.getElementById('owner').checked = false;
+    document.getElementById('note').value = '';
     
     toggleForm(); // Hide the form after submission
 });
