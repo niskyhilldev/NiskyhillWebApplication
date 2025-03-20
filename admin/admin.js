@@ -7,7 +7,6 @@ let currentRow;
 function viewMore(firstname, middleName, lastName, row) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     const details = data[rowId];
-    console.log(details);
     currentRow = document.getElementById(rowId);
     if (details) {
         document.getElementById("lotNumber").value = details.lotNumber;
@@ -22,6 +21,7 @@ function viewMore(firstname, middleName, lastName, row) {
         document.getElementById("owns").checked = details.owns;
     }
     document.getElementById("popup").style.display = "block";
+    document.getElementById("popup").setAttribute("data-row", rowId);
     document.getElementById("overlay").style.display = "block";
 }
 
@@ -35,10 +35,23 @@ function enableEditing() {
 function saveChanges() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
     if (currentRow) {
+        const rowId = parseInt(document.getElementById("popup").getAttribute("data-row"), 10);
+        if (data[rowId]){
+            data[rowId].lotNumber = document.getElementById("lotNumber").value;
+            data[rowId].lotPortion = document.getElementById("lotPortion").value;
+            data[rowId].section = document.getElementById("section").value;
+            data[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+            data[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+            data[rowId].buriedLast = document.getElementById("buriedLast").value;
+            data[rowId].dob = document.getElementById("dob").value;
+            data[rowId].dod = document.getElementById("dod").value;
+            data[rowId].vessel = document.getElementById("vessel").value;
+            data[rowId].owns = document.getElementById("owns").checked;
+        }
         currentRow.querySelector(".first-name").textContent = document.getElementById("buriedFirst").value;
         currentRow.querySelector(".middle-name").textContent = document.getElementById("buriedMiddle").value;
         currentRow.querySelector(".last-name").textContent = document.getElementById("buriedLast").value;
-    }
+    } 
 }
 function filterTable() {
     let searchFirst = document.getElementById("searchFirst").value.toLowerCase();
