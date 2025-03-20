@@ -31,15 +31,22 @@
                 <td class="first-name">John</td>
                 <td class="middle-name">Michael</td>
                 <td class="last-name">Doe</td>
-                <td><button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button></td>
+                <td>
+                    <button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button>
+                    <button onclick="deleteEntry('0')">Delete</button>
+                </td>
             </tr>
             <tr id="1">
                 <td class="first-name">Jane</td>
                 <td class="middle-name">Elizabeth</td>
                 <td class="last-name">Smith</td>
-                <td><button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button></td>
+                <td>
+                    <button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button>
+                    <button onclick="deleteEntry('1')">Delete</button>
+                </td>
             </tr>
         </tbody>
+        
     </table>
     
     <!-- Plus Button -->

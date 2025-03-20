@@ -5,9 +5,10 @@ const data = {
 let currentRow;
 
 function viewMore(firstname, middleName, lastName, row) {
-    const details = data[row];
+    const rowId = parseInt(row, 10); // Ensure row is treated as a number
+    const details = data[rowId];
     console.log(details);
-    currentRow = document.getElementById(row);
+    currentRow = document.getElementById(rowId);
     if (details) {
         document.getElementById("lotNumber").value = details.lotNumber;
         document.getElementById("lotPortion").value = details.lotPortion;
@@ -23,6 +24,7 @@ function viewMore(firstname, middleName, lastName, row) {
     document.getElementById("popup").style.display = "block";
     document.getElementById("overlay").style.display = "block";
 }
+
 function closePopup() {
     document.getElementById("popup").style.display = "none";
     document.getElementById("overlay").style.display = "none";
@@ -90,25 +92,32 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     // Create the new row with all the details
     const tableBody = document.getElementById('tableBody');
     const newRow = document.createElement('tr');
+    const rowId = tableBody.rows.length; // Unique ID based on row count
+    newRow.id = rowId; // Assign an ID to the row
     newRow.innerHTML = `
         <td class="first-name">${firstName}</td>
         <td class="middle-name">${middleName}</td>
         <td class="last-name">${lastName}</td>
-        <td><button onclick="viewMore('${firstName}', '${middleName}', '${lastName}', '${tableBody.rows.length}')">View More</button></td>
+        <td>
+            <button onclick="viewMore('${firstName}', '${middleName}', '${lastName}', '${rowId}')">View More</button>
+            <button onclick="deleteEntry('${rowId}')">Delete</button>
+        </td>
     `;
+
     tableBody.appendChild(newRow);
-    data[tableBody.rows.length-1] = {
-        lotNumber: document.getElementById('lotNumber').value,
-        lotPortion: document.getElementById('lotPortion').value,
-        section: document.getElementById('section').value,
-        buriedFirst: document.getElementById('buriedFirst').value,
-        buriedMiddle: document.getElementById('buriedMiddle').value,
-        buriedLast: document.getElementById('buriedLast').value,
-        dob: document.getElementById('dob').value,
-        dod: document.getElementById('dod').value,
-        vessel: document.getElementById('vessel').value,
-        owns: document.getElementById('owns').checked
+    data[rowId] = {
+        lotNumber: lotNumber,
+        lotPortion: lotPortion,
+        section: section,
+        buriedFirst: firstName,
+        buriedMiddle: middleName,
+        buriedLast: lastName,
+        dob: dob,
+        dod: dod,
+        vessel: vessel,
+        owns: owns
     };
+    
     
     // Clear the form fields
     document.getElementById('firstName').value = '';
@@ -128,3 +137,9 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     
     toggleForm(); // Hide the form after submission
 });
+function deleteEntry(id) {
+    const row = document.getElementById(id);
+    if (row) {
+        row.remove();
+    }
+}
