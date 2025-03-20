@@ -4,9 +4,11 @@ CREATE TABLE burried_at(
   birth_date DATE,
   death_date DATE,
   capsule VARCHAR(16) NOT NULL,
+  plot INT NOT NULL,
 
   CHECK (LOWER(TRIM(capsule)) IN ('urn', 'casket')),  -- sets domain for capsule and makes sure we do not store whitespace or any upercase characters
   FOREIGN KEY(person) REFERENCES person(person_id) ON DELETE CASCADE,
+  FOREIGN KEY(plot) REFERENCES plot(plot_id) ON DELETE CASCADE,
   PRIMARY KEY(person)
 );
 
