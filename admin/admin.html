@@ -16,6 +16,7 @@
         <label for="searchLast">Last Name:</label>
         <input type="text" id="searchLast" placeholder="Search last name">
     </div>
+    
     <table>
         <thead>
             <tr>
@@ -30,25 +31,81 @@
                 <td class="first-name">John</td>
                 <td class="middle-name">Michael</td>
                 <td class="last-name">Doe</td>
-                <td><button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button></td>
+                <td>
+                    <button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button>
+                    <button onclick="deleteEntry('0')">Delete</button>
+                </td>
             </tr>
             <tr id="1">
                 <td class="first-name">Jane</td>
                 <td class="middle-name">Elizabeth</td>
                 <td class="last-name">Smith</td>
-                <td><button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button></td>
+                <td>
+                    <button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button>
+                    <button onclick="deleteEntry('1')">Delete</button>
+                </td>
             </tr>
         </tbody>
+        
     </table>
+    
+    <!-- Plus Button -->
+    <button id="addEntryBtn" onclick="toggleForm()">+</button>
+    
+    <!-- Add Entry Form -->
+    <div id="addEntryForm" style="display:none;">
+        <h3>Add New Entry</h3>
+        <form id="newEntryForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName">
+            
+            <label for="middleName">Middle Name:</label>
+            <input type="text" id="middleName">
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName">
+            
+            <label for="lotNum">Lot Number:</label>
+            <input type="text" id="lotNum">
+            
+            <label for="portion">Lot Portion:</label>
+            <input type="text" id="portion">
+            
+            <label for="cemSection">Section:</label>
+            <input type="text" id="cemSection">
+            
+            <label for="dofb">Date of Birth:</label>
+            <input type="date" id="dofb">
+            
+            <label for="dofd">Date of Death:</label>
+            <input type="date" id="dofd">
+            
+            <label for="vesselType">Vessel:</label>
+            <select id="vesselType">
+                <option value="urn">Urn</option>
+                <option value="casket">Casket</option>
+            </select>
+            
+            <label for="note">Notes:</label>
+            <input type="file" id="note" onchange="handleFileUpload(event)">
+            
+            <label for="owner">Owns:</label>
+            <input type="checkbox" id="owner">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+    
     <div class="overlay" id="overlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
         <h3>Details</h3>
         <label>Lot Number: <input type="text" id="lotNumber" disabled></label>
         <label>Lot Portion: <input type="text" id="lotPortion" disabled></label>
         <label>Section: <input type="text" id="section" disabled></label>
-        <label>Buried First Name: <input type="text" id="buriedFirst" disabled></label>
-        <label>Buried Middle Name: <input type="text" id="buriedMiddle" disabled></label>
-        <label>Buried Last Name: <input type="text" id="buriedLast" disabled></label>
+        <label>First Name: <input type="text" id="buriedFirst" disabled></label>
+        <label>Middle Name: <input type="text" id="buriedMiddle" disabled></label>
+        <label>Last Name: <input type="text" id="buriedLast" disabled></label>
         <label>Date of Birth: <input type="date" id="dob" disabled></label>
         <label>Date of Death: <input type="date" id="dod" disabled></label>
         <label>Vessel: 
