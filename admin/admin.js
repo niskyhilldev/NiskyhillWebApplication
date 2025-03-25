@@ -11,10 +11,10 @@ function performOwnerSearch() {
     let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName) {
+        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
             return true;
         }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
             return true;
         }
         return false;
@@ -26,10 +26,10 @@ function performOwnerSearch() {
         console.log("No matching results found.");
     }
     ownerResults = results;
-    populateTable(results);
+    populateOwnersTable(results);
 }
-function populateTable(filteredData) {
-    const tableBody = document.getElementById("tableBody");
+function populateOwnersTable(filteredData) {
+    const tableBody = document.getElementById("ownerTableBody");
     tableBody.innerHTML = ""; // Clear previous content
 
     if (filteredData.length === 0) {
@@ -127,7 +127,7 @@ function saveChanges() {
         ownerResults[rowId].vessel = document.getElementById("vessel").value;
         ownerResults[rowId].owns = document.getElementById("owns").checked;
     }
-    populateTable(ownerResults);    
+    populateOwnersTable(ownerResults);    
 }
 function filterTable() {
     let searchFirst = document.getElementById("searchFirst").value.toLowerCase();
@@ -205,5 +205,5 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
 
 function deleteEntry(id) {
     ownerResults[id] = null;
-    populateTable(ownerResults);
+    populateOwnersTable(ownerResults);
 }
