@@ -47,6 +47,9 @@
             
             <label for="lastName">Last Name:</label>
             <input type="text" id="lastName">
+
+            <label for="organization">Organization:</label>
+            <input type="text" id="organization">
             
             <label for="lotNum">Lot Number:</label>
             <input type="text" id="lotNum">
@@ -78,33 +81,6 @@
             <button type="submit">Add Entry</button>
         </form>
         
-    </div>
-    
-    <div class="overlay" id="overlay" onclick="closePopup()"></div>
-    <div class="popup" id="popup">
-        <h3>Details</h3>
-        <label>Lot Number: <input type="text" id="lotNumber" disabled></label>
-        <label>Lot Portion: <input type="text" id="lotPortion" disabled></label>
-        <label>Section: <input type="text" id="section" disabled></label>
-        <label>First Name: <input type="text" id="buriedFirst" disabled></label>
-        <label>Middle Name: <input type="text" id="buriedMiddle" disabled></label>
-        <label>Last Name: <input type="text" id="buriedLast" disabled></label>
-        <label>Date of Birth: <input type="date" id="dob" disabled></label>
-        <label>Date of Death: <input type="date" id="dod" disabled></label>
-        <label>Vessel: 
-            <select id="vessel" disabled>
-                <option value="urn">Urn</option>
-                <option value="casket">Casket</option>
-            </select>
-        </label>
-        <label>
-            Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-            <a id="downloadLink" style="display:none;" download>Download File</a>
-        </label>
-        <label>Owns: <input type="checkbox" id="owns" disabled></label>
-        <button onclick="enableEditing()">Edit</button>
-        <button onclick="saveChanges()">Save</button>
-        <button onclick="closePopup()">Close</button>
     </div>
 </body>
 </html>
