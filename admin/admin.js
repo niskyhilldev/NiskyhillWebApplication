@@ -33,10 +33,10 @@ function performResidentSearch() {
     let organization = document.getElementById("searchResidentOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName) {
+        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
             return true;
         }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.dod) {
             return true;
         }
         return false;
