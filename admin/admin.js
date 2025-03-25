@@ -58,7 +58,7 @@ function viewMore(firstname, middleName, lastName, row) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     const details = ownerResults[rowId];
     currentRow = document.getElementById(rowId);
-    createPopup(details);
+    createPopup(details, rowId);
 }
 
 function closePopup() {
@@ -67,14 +67,14 @@ function closePopup() {
         popupContainer.remove();
     }
 }
-function createPopup(details) {
+function createPopup(details, rowId) {
     // Remove existing popup if it exists
     closePopup();
 
     // Generate the popup HTML dynamically
     const popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup">
+        <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
             <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotPortion || ''}"></label>
@@ -114,25 +114,20 @@ function enableEditing() {
 }
 function saveChanges() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-    if (currentRow) {
-        const rowId = parseInt(document.getElementById("popup").getAttribute("data-row"), 10);
-        if (ownerResults[rowId]){
-            ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            ownerResults[rowId].lotPortion = document.getElementById("lotPortion").value;
-            ownerResults[rowId].section = document.getElementById("section").value;
-            ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            ownerResults[rowId].dob = document.getElementById("dob").value;
-            ownerResults[rowId].dod = document.getElementById("dod").value;
-            ownerResults[rowId].vessel = document.getElementById("vessel").value;
-            ownerResults[rowId].owns = document.getElementById("owns").checked;
-        }
-        console.log(ownerResults);
-        currentRow.querySelector(".first-name").textContent = document.getElementById("buriedFirst").value;
-        currentRow.querySelector(".middle-name").textContent = document.getElementById("buriedMiddle").value;
-        currentRow.querySelector(".last-name").textContent = document.getElementById("buriedLast").value;
-    } 
+    const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+    if (ownerResults[rowId]){
+        ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+        ownerResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+        ownerResults[rowId].section = document.getElementById("section").value;
+        ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+        ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+        ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+        ownerResults[rowId].dob = document.getElementById("dob").value;
+        ownerResults[rowId].dod = document.getElementById("dod").value;
+        ownerResults[rowId].vessel = document.getElementById("vessel").value;
+        ownerResults[rowId].owns = document.getElementById("owns").checked;
+    }
+    populateTable(ownerResults);    
 }
 function filterTable() {
     let searchFirst = document.getElementById("searchFirst").value.toLowerCase();
