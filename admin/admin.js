@@ -1,10 +1,10 @@
 const data = {
-    "0": { lotNumber: "123", lotPortion: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
-    "1": { lotNumber: "456", lotPortion: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
+    "0": { lotNumber: "123", lotId: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
+    "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
     "2": { organization: "Heritage Trust", owns: true }
 };
 let currentRow;
-let ownerResults, residentResults;
+let ownerResults, residentResults, lotResults;
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
@@ -49,6 +49,25 @@ function performResidentSearch() {
     }
     residentResults = results;
     populateTable(results, 'residents');
+}
+function performLotSearch() {
+    let section = document.getElementById("searchSection").value.trim().toLowerCase();
+    let lot = document.getElementById("searchLot").value.trim().toLowerCase();
+
+    let results = Object.values(data).filter(entry => {
+        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotId && entry.lotId.toLowerCase() === lot) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    lotResults = results;
+    populateTable(results, 'lots');
 }
 function populateTable(filteredData, type) {
     if(type === 'owners'){
@@ -101,6 +120,31 @@ function populateTable(filteredData, type) {
             tableBody.appendChild(row);
         });
     }
+    else if(type === 'lots'){
+        const tableBody = document.getElementById("lotTableBody");
+        tableBody.innerHTML = ""; // Clear previous content
+
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            return;
+        }
+
+        filteredData.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${entry.buriedFirst || ""}</td>
+                <td>${entry.buriedMiddle || ""}</td>
+                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.organization || ""}</td>
+                <td>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 }
 
 function viewMore(firstname, middleName, lastName, row, type) {
@@ -109,8 +153,11 @@ function viewMore(firstname, middleName, lastName, row, type) {
     if(type === 'resident'){
         details = residentResults[rowId];
     }
-    else {
+    else if(type == 'owners') {
         details = ownerResults[rowId];
+    }
+    else if (type == 'lots'){
+        details = lotResults[rowId];
     }
     currentRow = document.getElementById(rowId);
     createPopup(details, rowId, type);
@@ -132,7 +179,7 @@ function createPopup(details, rowId, type) {
         <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotPortion || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
             <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
@@ -157,13 +204,13 @@ function createPopup(details, rowId, type) {
         </div>
     `;
     }
-    else{
+    else if (type === 'owners'){
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotPortion || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
             <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
@@ -188,6 +235,37 @@ function createPopup(details, rowId, type) {
         </div>
         `;
     }
+    else if (type === 'lots'){
+        popupHTML = `
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup" data-row-id="${rowId}">
+            <h3>Details</h3>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
+            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>Organization: <input type="text" id="organization" disabled value="${details.organization || ''}"></label>
+            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+            <label>Vessel: 
+                <select id="vessel" disabled>
+                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
+                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                </select>
+            </label>
+            <label>
+                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
+                <a id="downloadLink" style="display:none;" download>Download File</a>
+            </label>
+            <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
+            <button onclick="enableEditing()">Edit</button>
+            <button onclick="saveChanges('lots')">Save</button>
+            <button onclick="closePopup()">Close</button>
+        </div>
+        `;
+    }
     
 
     // Create a container div and insert the popup HTML
@@ -206,7 +284,7 @@ function saveChanges(type) {
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         if (ownerResults[rowId]){
             ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            ownerResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+            ownerResults[rowId].lotId = document.getElementById("lotPortion").value;
             ownerResults[rowId].section = document.getElementById("section").value;
             ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
@@ -223,7 +301,7 @@ function saveChanges(type) {
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         if (residentResults[rowId]){
             residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            residentResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+            residentResults[rowId].lotId = document.getElementById("lotPortion").value;
             residentResults[rowId].section = document.getElementById("section").value;
             residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
@@ -234,6 +312,23 @@ function saveChanges(type) {
             residentResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(residentResults, 'residents'); 
+    }
+    else if (type === 'lots'){
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+        if (lotResults[rowId]){
+            lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+            lotResults[rowId].lotId = document.getElementById("lotPortion").value;
+            lotResults[rowId].section = document.getElementById("section").value;
+            lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+            lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+            lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+            lotResults[rowId].dob = document.getElementById("dob").value;
+            lotResults[rowId].dod = document.getElementById("dod").value;
+            lotResults[rowId].vessel = document.getElementById("vessel").value;
+            lotResults[rowId].owns = document.getElementById("owns").checked;
+        }
+        populateTable(lotResults, 'lots'); 
     }
         
 }
@@ -279,7 +374,7 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     // Add new entry to the data object
     data[newId] = {
         lotNumber: lotNumber,
-        lotPortion: lotPortion,
+        lotId: lotPortion,
         section: section,
         buriedFirst: firstName,
         buriedMiddle: middleName,
