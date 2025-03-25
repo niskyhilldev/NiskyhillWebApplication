@@ -4,7 +4,7 @@ const data = {
     "2": { organization: "Heritage Trust", owns: true }
 };
 let currentRow;
-let ownerResults;
+let ownerResults, residentResults;
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
@@ -27,6 +27,28 @@ function performOwnerSearch() {
     }
     ownerResults = results;
     populateOwnersTable(results);
+}
+function performResidentSearch() {
+    let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
+    let organization = document.getElementById("searchResidentOrg").value.trim().toLowerCase();
+
+    let results = Object.values(data).filter(entry => {
+        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName) {
+            return true;
+        }
+        if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    residentResults = results;
+    populateResidentTable(results);
 }
 function populateOwnersTable(filteredData) {
     const tableBody = document.getElementById("ownerTableBody");
@@ -53,12 +75,43 @@ function populateOwnersTable(filteredData) {
         tableBody.appendChild(row);
     });
 }
+function populateResidentTable(filteredData) {
+    const tableBody = document.getElementById("residentTableBody");
+    tableBody.innerHTML = ""; // Clear previous content
 
-function viewMore(firstname, middleName, lastName, row) {
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+        return;
+    }
+
+    filteredData.forEach((entry, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${entry.buriedFirst || ""}</td>
+            <td>${entry.buriedMiddle || ""}</td>
+            <td>${entry.buriedLast || ""}</td>
+            <td>${entry.organization || ""}</td>
+            <td>
+                <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
+                <button onclick="deleteEntry('${index}')">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function viewMore(firstname, middleName, lastName, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
-    const details = ownerResults[rowId];
+    let details; 
+    if(type === 'resident'){
+        details = residentResults[rowId];
+    }
+    else {
+        details = ownerResults[rowId];
+    }
     currentRow = document.getElementById(rowId);
-    createPopup(details, rowId);
+    createPopup(details, rowId, type);
 }
 
 function closePopup() {
@@ -67,12 +120,12 @@ function closePopup() {
         popupContainer.remove();
     }
 }
-function createPopup(details, rowId) {
+function createPopup(details, rowId, type) {
     // Remove existing popup if it exists
     closePopup();
-
-    // Generate the popup HTML dynamically
-    const popupHTML = `
+    let popupHTML;
+    if(type === 'resident'){
+        popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
@@ -97,10 +150,43 @@ function createPopup(details, rowId) {
             </label>
             <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges()">Save</button>
+            <button onclick="saveResidentChanges()">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
     `;
+    }
+    else{
+        popupHTML = `
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup" data-row-id="${rowId}">
+            <h3>Details</h3>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotPortion || ''}"></label>
+            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>Organization: <input type="text" id="organization" disabled value="${details.organization || ''}"></label>
+            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+            <label>Vessel: 
+                <select id="vessel" disabled>
+                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
+                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                </select>
+            </label>
+            <label>
+                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
+                <a id="downloadLink" style="display:none;" download>Download File</a>
+            </label>
+            <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
+            <button onclick="enableEditing()">Edit</button>
+            <button onclick="saveOwnerChanges()">Save</button>
+            <button onclick="closePopup()">Close</button>
+        </div>
+        `;
+    }
+    
 
     // Create a container div and insert the popup HTML
     const popupContainer = document.createElement("div");
@@ -112,7 +198,7 @@ function createPopup(details, rowId) {
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
-function saveChanges() {
+function saveOwnerChanges() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
     const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
     if (ownerResults[rowId]){
@@ -129,17 +215,22 @@ function saveChanges() {
     }
     populateOwnersTable(ownerResults);    
 }
-function filterTable() {
-    let searchFirst = document.getElementById("searchFirst").value.toLowerCase();
-    let searchMiddle = document.getElementById("searchMiddle").value.toLowerCase();
-    let searchLast = document.getElementById("searchLast").value.toLowerCase();
-    let rows = document.querySelectorAll("#tableBody tr");
-    rows.forEach(row => {
-        let first = row.cells[0].innerText.toLowerCase();
-        let middle = row.cells[1].innerText.toLowerCase();
-        let last = row.cells[2].innerText.toLowerCase();
-        row.style.display = (first.includes(searchFirst) && middle.includes(searchMiddle) && last.includes(searchLast)) ? "" : "none";
-    });
+function saveResidentChanges() {
+    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+    const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+    if (residentResults[rowId]){
+        residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+        residentResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+        residentResults[rowId].section = document.getElementById("section").value;
+        residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+        residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+        residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+        residentResults[rowId].dob = document.getElementById("dob").value;
+        residentResults[rowId].dod = document.getElementById("dod").value;
+        residentResults[rowId].vessel = document.getElementById("vessel").value;
+        residentResults[rowId].owns = document.getElementById("owns").checked;
+    }
+    populateResidentTable(residentResults);    
 }
 function handleFileUpload(event) {
     const file = event.target.files[0];
