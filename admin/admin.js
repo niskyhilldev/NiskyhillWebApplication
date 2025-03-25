@@ -11,6 +11,12 @@ function performOwnerSearch() {
     let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
+        if(lastName && organization){
+            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
+                return true;
+            }
+            return false;
+        }
         if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
             return true;
         }
@@ -33,6 +39,12 @@ function performResidentSearch() {
     let organization = document.getElementById("searchResidentOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
+        if(lastName && organization){
+            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
+                return true;
+            }
+            return false;
+        }
         if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
             return true;
         }
