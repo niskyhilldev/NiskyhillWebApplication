@@ -152,7 +152,7 @@ function createPopup(details, rowId, type) {
             </label>
             <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveResidentChanges()">Save</button>
+            <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
     `;
@@ -183,7 +183,7 @@ function createPopup(details, rowId, type) {
             </label>
             <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveOwnerChanges()">Save</button>
+            <button onclick="saveChanges('owners')">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
         `;
@@ -200,40 +200,44 @@ function createPopup(details, rowId, type) {
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
-function saveOwnerChanges() {
-    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-    const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-    if (ownerResults[rowId]){
-        ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-        ownerResults[rowId].lotPortion = document.getElementById("lotPortion").value;
-        ownerResults[rowId].section = document.getElementById("section").value;
-        ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-        ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-        ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-        ownerResults[rowId].dob = document.getElementById("dob").value;
-        ownerResults[rowId].dod = document.getElementById("dod").value;
-        ownerResults[rowId].vessel = document.getElementById("vessel").value;
-        ownerResults[rowId].owns = document.getElementById("owns").checked;
+function saveChanges(type) {
+    if(type === 'owners'){
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+        if (ownerResults[rowId]){
+            ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+            ownerResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+            ownerResults[rowId].section = document.getElementById("section").value;
+            ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+            ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+            ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+            ownerResults[rowId].dob = document.getElementById("dob").value;
+            ownerResults[rowId].dod = document.getElementById("dod").value;
+            ownerResults[rowId].vessel = document.getElementById("vessel").value;
+            ownerResults[rowId].owns = document.getElementById("owns").checked;
+        }
+        populateTable(ownerResults, 'owners');
     }
-    populateTable(ownerResults, 'owners');    
-}
-function saveResidentChanges() {
-    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-    const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-    if (residentResults[rowId]){
-        residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-        residentResults[rowId].lotPortion = document.getElementById("lotPortion").value;
-        residentResults[rowId].section = document.getElementById("section").value;
-        residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-        residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-        residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-        residentResults[rowId].dob = document.getElementById("dob").value;
-        residentResults[rowId].dod = document.getElementById("dod").value;
-        residentResults[rowId].vessel = document.getElementById("vessel").value;
-        residentResults[rowId].owns = document.getElementById("owns").checked;
+    else if (type === 'residents'){
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+        if (residentResults[rowId]){
+            residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+            residentResults[rowId].lotPortion = document.getElementById("lotPortion").value;
+            residentResults[rowId].section = document.getElementById("section").value;
+            residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+            residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+            residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+            residentResults[rowId].dob = document.getElementById("dob").value;
+            residentResults[rowId].dod = document.getElementById("dod").value;
+            residentResults[rowId].vessel = document.getElementById("vessel").value;
+            residentResults[rowId].owns = document.getElementById("owns").checked;
+        }
+        populateTable(residentResults, 'residents'); 
     }
-    populateTable(residentResults, 'residents');    
+        
 }
+
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (file) {
