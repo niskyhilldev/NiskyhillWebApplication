@@ -69,7 +69,7 @@ function populateOwnersTable(filteredData) {
             <td>${entry.organization || ""}</td>
             <td>
                 <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}')">View More</button>
-                <button onclick="deleteEntry('${index}')">Delete</button>
+                <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
             </td>
         `;
         tableBody.appendChild(row);
@@ -94,7 +94,7 @@ function populateResidentTable(filteredData) {
             <td>${entry.organization || ""}</td>
             <td>
                 <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
-                <button onclick="deleteEntry('${index}')">Delete</button>
+                <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
             </td>
         `;
         tableBody.appendChild(row);
@@ -294,7 +294,14 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     toggleForm(); // Hide the form after submission
 });
 
-function deleteEntry(id) {
-    ownerResults[id] = null;
-    populateOwnersTable(ownerResults);
+function deleteEntry(id, type) {
+    if(type === 'residents'){
+        residentResults[id] = null;
+        populateResidentTable(residentResults);
+    }
+    else{
+        ownerResults[id] = null;
+        populateOwnersTable(ownerResults);
+    }
+    
 }
