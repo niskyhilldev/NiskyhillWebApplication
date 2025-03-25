@@ -404,4 +404,8 @@ function deleteEntry(id, type) {
         ownerResults[id] = null;
         populateTable(ownerResults, 'owners');
     }
+    else if(type === 'lots'){
+        lotResults[id] = null;
+        populateTable(lotResults, 'lots');
+    }
 }
