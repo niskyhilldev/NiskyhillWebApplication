@@ -26,7 +26,7 @@ function performOwnerSearch() {
         console.log("No matching results found.");
     }
     ownerResults = results;
-    populateOwnersTable(results);
+    populateTable(results, 'owners');
 }
 function performResidentSearch() {
     let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
@@ -48,57 +48,59 @@ function performResidentSearch() {
         console.log("No matching results found.");
     }
     residentResults = results;
-    populateResidentTable(results);
+    populateTable(results, 'residents');
 }
-function populateOwnersTable(filteredData) {
-    const tableBody = document.getElementById("ownerTableBody");
-    tableBody.innerHTML = ""; // Clear previous content
+function populateTable(filteredData, type) {
+    if(type === 'owners'){
+        const tableBody = document.getElementById("ownerTableBody");
+        tableBody.innerHTML = ""; // Clear previous content
 
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
-        return;
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            return;
+        }
+
+        filteredData.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${entry.buriedFirst || ""}</td>
+                <td>${entry.buriedMiddle || ""}</td>
+                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.organization || ""}</td>
+                <td>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
     }
+    else if(type === 'residents'){
+        const tableBody = document.getElementById("residentTableBody");
+        tableBody.innerHTML = ""; // Clear previous content
 
-    filteredData.forEach((entry, index) => {
-        const row = document.createElement("tr");
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            return;
+        }
 
-        row.innerHTML = `
-            <td>${entry.buriedFirst || ""}</td>
-            <td>${entry.buriedMiddle || ""}</td>
-            <td>${entry.buriedLast || ""}</td>
-            <td>${entry.organization || ""}</td>
-            <td>
-                <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}')">View More</button>
-                <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
-function populateResidentTable(filteredData) {
-    const tableBody = document.getElementById("residentTableBody");
-    tableBody.innerHTML = ""; // Clear previous content
+        filteredData.forEach((entry, index) => {
+            const row = document.createElement("tr");
 
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
-        return;
+            row.innerHTML = `
+                <td>${entry.buriedFirst || ""}</td>
+                <td>${entry.buriedMiddle || ""}</td>
+                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.organization || ""}</td>
+                <td>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
     }
-
-    filteredData.forEach((entry, index) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${entry.buriedFirst || ""}</td>
-            <td>${entry.buriedMiddle || ""}</td>
-            <td>${entry.buriedLast || ""}</td>
-            <td>${entry.organization || ""}</td>
-            <td>
-                <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
-                <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
 }
 
 function viewMore(firstname, middleName, lastName, row, type) {
@@ -213,7 +215,7 @@ function saveOwnerChanges() {
         ownerResults[rowId].vessel = document.getElementById("vessel").value;
         ownerResults[rowId].owns = document.getElementById("owns").checked;
     }
-    populateOwnersTable(ownerResults);    
+    populateTable(ownerResults, 'owners');    
 }
 function saveResidentChanges() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
@@ -230,7 +232,7 @@ function saveResidentChanges() {
         residentResults[rowId].vessel = document.getElementById("vessel").value;
         residentResults[rowId].owns = document.getElementById("owns").checked;
     }
-    populateResidentTable(residentResults);    
+    populateTable(residentResults, 'residents');    
 }
 function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -297,11 +299,10 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
 function deleteEntry(id, type) {
     if(type === 'residents'){
         residentResults[id] = null;
-        populateResidentTable(residentResults);
+        populateTable(residentResults, 'residents');
     }
-    else{
+    else if(type === 'owners'){
         ownerResults[id] = null;
-        populateOwnersTable(ownerResults);
+        populateTable(ownerResults, 'owners');
     }
-    
 }
