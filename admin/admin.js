@@ -150,9 +150,7 @@ function handleFileUpload(event) {
         downloadLink.style.display = "block";
     }
 }
-document.getElementById("searchFirst").addEventListener("input", filterTable);
-document.getElementById("searchMiddle").addEventListener("input", filterTable);
-document.getElementById("searchLast").addEventListener("input", filterTable);
+
 
 function toggleForm() {
     const form = document.getElementById('addEntryForm');
@@ -162,6 +160,11 @@ function toggleForm() {
 document.getElementById('newEntryForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
+    // Generate a new unique ID based on the highest existing key in data
+    const newId = Object.keys(data).length > 0 
+        ? Math.max(...Object.keys(data).map(Number)) + 1 
+        : 0;
+
     // Get all the values from the form
     const firstName = document.getElementById('firstName').value;
     const middleName = document.getElementById('middleName').value;
@@ -169,32 +172,14 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     const lotNumber = document.getElementById('lotNum').value;
     const lotPortion = document.getElementById('portion').value;
     const section = document.getElementById('cemSection').value;
-    const buriedFirst = document.getElementById('buriedFirst').value;
-    const buriedMiddle = document.getElementById('buriedMiddle').value;
-    const buriedLast = document.getElementById('buriedLast').value;
     const dob = document.getElementById('dofb').value;
     const dod = document.getElementById('dofd').value;
     const vessel = document.getElementById('vesselType').value;
     const owns = document.getElementById('owner').checked;
     const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
     
-    // Create the new row with all the details
-    const tableBody = document.getElementById('tableBody');
-    const newRow = document.createElement('tr');
-    const rowId = tableBody.rows.length; // Unique ID based on row count
-    newRow.id = rowId; // Assign an ID to the row
-    newRow.innerHTML = `
-        <td class="first-name">${firstName}</td>
-        <td class="middle-name">${middleName}</td>
-        <td class="last-name">${lastName}</td>
-        <td>
-            <button onclick="viewMore('${firstName}', '${middleName}', '${lastName}', '${rowId}')">View More</button>
-            <button onclick="deleteEntry('${rowId}')">Delete</button>
-        </td>
-    `;
-
-    tableBody.appendChild(newRow);
-    data[rowId] = {
+    // Add new entry to the data object
+    data[newId] = {
         lotNumber: lotNumber,
         lotPortion: lotPortion,
         section: section,
@@ -207,28 +192,13 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
         owns: owns
     };
     
-    
     // Clear the form fields
-    document.getElementById('firstName').value = '';
-    document.getElementById('middleName').value = '';
-    document.getElementById('lastName').value = '';
-    document.getElementById('lotNum').value = '';
-    document.getElementById('portion').value = '';
-    document.getElementById('cemSection').value = '';
-    document.getElementById('buriedFirst').value = '';
-    document.getElementById('buriedMiddle').value = '';
-    document.getElementById('buriedLast').value = '';
-    document.getElementById('dofb').value = '';
-    document.getElementById('dofd').value = '';
-    document.getElementById('vesselType').value = 'urn';
-    document.getElementById('owner').checked = false;
-    document.getElementById('note').value = '';
-    
+    document.getElementById('newEntryForm').reset();
+
     toggleForm(); // Hide the form after submission
 });
+
 function deleteEntry(id) {
-    const row = document.getElementById(id);
-    if (row) {
-        row.remove();
-    }
+    ownerResults[id] = null;
+    populateTable(ownerResults);
 }
