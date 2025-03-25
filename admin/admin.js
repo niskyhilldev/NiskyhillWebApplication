@@ -100,7 +100,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedLast || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}')">View More</button>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'owners')">View More</button>
                     <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
                 </td>
             `;
