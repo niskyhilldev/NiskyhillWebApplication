@@ -1,8 +1,56 @@
 const data = {
     "0": { lotNumber: "123", lotPortion: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
-    "1": { lotNumber: "456", lotPortion: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false }
+    "1": { lotNumber: "456", lotPortion: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
+    "2": { organization: "Heritage Trust", owns: true }
 };
 let currentRow;
+
+function performOwnerSearch() {
+    let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
+    let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
+
+    let results = Object.values(data).filter(entry => {
+        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName) {
+            return true;
+        }
+        if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    populateTable(results);
+}
+function populateTable(filteredData) {
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = ""; // Clear previous content
+
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+        return;
+    }
+
+    filteredData.forEach((entry, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${entry.buriedFirst || ""}</td>
+            <td>${entry.buriedMiddle || ""}</td>
+            <td>${entry.buriedLast || ""}</td>
+            <td>${entry.organization || ""}</td>
+            <td>
+                <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}')">View More</button>
+                <button onclick="deleteEntry('${index}')">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
 
 function viewMore(firstname, middleName, lastName, row) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number

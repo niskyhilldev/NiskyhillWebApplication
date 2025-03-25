@@ -9,12 +9,12 @@
 </head>
 <body>
     <div class="search-container">
-        <label for="searchFirst">First Name:</label>
-        <input type="text" id="searchFirst" placeholder="Search first name">
-        <label for="searchMiddle">Middle Name:</label>
-        <input type="text" id="searchMiddle" placeholder="Search middle name">
+        <h1>Owners</h1>
         <label for="searchLast">Last Name:</label>
         <input type="text" id="searchLast" placeholder="Search last name">
+        <label for="searchOrg">Organization:</label>
+        <input type="text" id="searchOrg" placeholder="Search organization">
+        <button onclick="performOwnerSearch()">Search</button>
     </div>
     
     <table>
@@ -23,30 +23,13 @@
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
+                <th>Organization</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            <tr id="0">
-                <td class="first-name">John</td>
-                <td class="middle-name">Michael</td>
-                <td class="last-name">Doe</td>
-                <td>
-                    <button onclick="viewMore('John', 'Michael', 'Doe', '0')">View More</button>
-                    <button onclick="deleteEntry('0')">Delete</button>
-                </td>
-            </tr>
-            <tr id="1">
-                <td class="first-name">Jane</td>
-                <td class="middle-name">Elizabeth</td>
-                <td class="last-name">Smith</td>
-                <td>
-                    <button onclick="viewMore('Jane', 'Elizabeth', 'Smith', '1')">View More</button>
-                    <button onclick="deleteEntry('1')">Delete</button>
-                </td>
-            </tr>
+            <!-- Table content will be dynamically populated -->
         </tbody>
-        
     </table>
     
     <!-- Plus Button -->
