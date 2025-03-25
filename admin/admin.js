@@ -177,6 +177,7 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     const vessel = document.getElementById('vesselType').value;
     const owns = document.getElementById('owner').checked;
     const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
+    const organization = document.getElementById('organization').value;
     
     // Add new entry to the data object
     data[newId] = {
@@ -189,8 +190,12 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
         dob: dob,
         dod: dod,
         vessel: vessel,
-        owns: owns
+        owns: owns,
+        notes: notes,
+        organization: organization
     };
+
+    console.log(data);
     
     // Clear the form fields
     document.getElementById('newEntryForm').reset();
