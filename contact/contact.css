@@ -19,16 +19,6 @@
   margin-left: 40px;
 }
 
-.topText a {
-    color: white;
-    text-decoration: none;
-}
-
-.bottomText a {
-    color: white;
-    text-decoration: none;
-}
-
 .bottomText {
   color: white;
   font-size: 22px;
@@ -39,6 +29,16 @@
   word-wrap: break-word;
   text-align: center;
   margin-left: 40px;
+}
+
+.topText a {
+  color: white;
+  text-decoration: none;
+}
+
+.bottomText a {
+  color: white;
+  text-decoration: none;
 }
 
 .navBar li {
@@ -109,11 +109,31 @@ a {
 }
 
 
-
 * {
   margin: 0;
   padding: 0;
 }
+
+
+.aboutHeader {
+  color: black;
+  font-size: 50px;
+  font-family: Instrument Sans;
+  font-weight: 600;
+  margin-top: 47px;
+  text-align: center;
+}
+
+.aboutInfo {
+  color: black;
+  font-size: 25px;
+  font-family: Instrument Sans;
+  font-weight: 400;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
 
 .footer {
   display: flex;
@@ -166,153 +186,78 @@ a {
   text-align: center;
 }
 
-.historyHeader {
-    margin-top: 25px;
-    color: black;
-    font-size: 50px;
-    font-family:  Instrument Sans;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  
-  .team-section{
-    width: 85%;
-    padding: 25px;
-    margin: auto;
-    text-align: center;
-  }
-
-  .team-section h2 {
-    font-size: 45px;
-    color: #000;
-    margin-bottom: 30px;
-  }
-
-  .team-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .team-member {
-    width: 25%;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s ease;
-    cursor: pointer;
-  }
-
-  .team-member:hover{
-    transform: translateY(-10px);
-  }
-
-  .team-member img{
-    border-radius: 50%;
-    border: 4px solid #0d2543;
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-
-  .team-member h3 {
-    font-size: 28px;
-    color: #af8c30;
-    margin-bottom: 10px;
-  }
-
-  .team-member .title{
-    font-size: 20px;
-    color: #0d2543;
-    margin-bottom: 10px;
-  }
-
-  .team-member content {
-    font-size: 16px;
-    color: #555;
-    line-height: 1.3;
-  }
-  
-.modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 450ms ease-in-out;
-    border: 1px solid black;
-    border-radius: 10px;
-    z-index: 10;
-    background-color: white;
-    width: 800px;
+.formContainer {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
 }
 
-.modal.active {
-    transform: translate(-50%, -50%) scale(1);
+#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea, #contact button[type="submit"] { font:400 12px/16px "Open Sans", Helvetica, Arial, sans-serif; }
+
+#contact {
+  background: #F9F9F9;
+  padding: 25px;
+  margin: 50px 0;
 }
 
-.modalHeader {
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid black;
+fieldset {
+  border: thick none black;
+  margin: 0 0 10px;
+  min-width: 97.5%;
+  padding: 0;
+  width: 97.5%;
 }
 
-.modalHeader .modalTitle {
-    font-size: 1.25rem;
-    font-weight: bold;
+
+#contact input[type="text"], #contact input[type="email"], #contact input[type="tel"], #contact input[type="url"], #contact textarea {
+	width:100%;
+	border:1px solid #CCC;
+	background:#FFF;
+	margin:0 0 5px;
+	padding:10px;
 }
 
-.modalHeader .closeButton {
-    cursor: pointer;
-    border:none;
-    outline: none;
-    background: none;
-    font-size: 1.25rem;
-    font-weight: bold;
+
+#contact textarea {
+  height: 100px;
+  max-width: 100%;
+  resize: none;
 }
 
-.modalBody {
-    padding: 10px 15px;
-    display: flex;
-    gap: 10px;
+
+#contact button[type="submit"] {
+	cursor:pointer;
+	width:100%;
+	border:none;
+	background: #0d2543;
+	color:#FFF;
+	padding:10px;
+	font-size:15px;
 }
 
-.modalImage {
-    flex: 0 0 auto;
-    width: 200px;
+#contact button[type="submit"]:hover {
+	background:black;
+	transition:background-color 0.3s ease-in-out;
 }
 
-.modalImage img{
-    max-width: 80%;
-    height: 150px;
-    top: 50%;
-    left: 50%;
+#contact button[type="submit"]:active { box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.5); }
+
+#contact input:focus, #contact textarea:focus {
+	outline:0;
+	border:1px solid #999;
 }
 
-#overlay {
-    position: fixed;
-    transition: 450ms ease-in-out;
-    opacity: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, .5);
-    pointer-events: none;
+.contactFormHeader {
+  color: #0d2543;
+  font-family: Instrument Sans;
+  font-size: 18px;
+  margin-bottom: 2px;
 }
 
-#overlay.active{
-    opacity: 1;
-    pointer-events: all;
-}
-
-#overlay.active ~ .team-section .team-member:hover {
-    transform: none;
+.contactFormFooter {
+  color: #0d2543;
+  font-family: Instrument Sans;
+  font-size: 15px;
+  margin-top: 3px;
 }
