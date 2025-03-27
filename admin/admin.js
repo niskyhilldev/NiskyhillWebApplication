@@ -1,7 +1,7 @@
 const data = {
     "0": { lotNumber: "123", lotId: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { organization: "Heritage Trust", owns: true }
+    "2": { organization: "Nisky Hill", owns: true }
 };
 let currentRow;
 let ownerResults, residentResults, lotResults;
@@ -182,7 +182,7 @@ function closePopup() {
     }
 }
 function createPopup(details, rowId, type) {
-    // Remove existing popup if it exists
+    //Remove existing popup if it exists
     closePopup();
     let popupHTML;
     if(type === 'resident'){
@@ -196,7 +196,7 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Organization: <input type="text" id="organization" disabled value="${details.organization || ''}"></label>
+            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
             <label>Vessel: 
@@ -227,7 +227,7 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Organization: <input type="text" id="organization" disabled value="${details.organization || ''}"></label>
+            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
             <label>Vessel: 
@@ -258,7 +258,7 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Organization: <input type="text" id="organization" disabled value="${details.organization || ''}"></label>
+            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
             <label>Vessel: 
@@ -285,7 +285,6 @@ function createPopup(details, rowId, type) {
     popupContainer.id = "popupContainer";
     popupContainer.innerHTML = popupHTML;
     document.body.appendChild(popupContainer);
-    console.log(popupContainer)
 }
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
@@ -304,6 +303,7 @@ function saveChanges(type) {
             ownerResults[rowId].dob = document.getElementById("dob").value;
             ownerResults[rowId].dod = document.getElementById("dod").value;
             ownerResults[rowId].vessel = document.getElementById("vessel").value;
+            ownerResults[rowId].organization = document.getElementById("org").value;
             ownerResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(ownerResults, 'owners');
@@ -321,6 +321,7 @@ function saveChanges(type) {
             residentResults[rowId].dob = document.getElementById("dob").value;
             residentResults[rowId].dod = document.getElementById("dod").value;
             residentResults[rowId].vessel = document.getElementById("vessel").value;
+            residentResults[rowId].organization = document.getElementById("org").value;
             residentResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(residentResults, 'residents'); 
@@ -338,6 +339,7 @@ function saveChanges(type) {
             lotResults[rowId].dob = document.getElementById("dob").value;
             lotResults[rowId].dod = document.getElementById("dod").value;
             lotResults[rowId].vessel = document.getElementById("vessel").value;
+            lotResults[rowId].organization = document.getElementById("org").value;
             lotResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(lotResults, 'lots'); 
@@ -399,7 +401,6 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
         organization: organization
     };
 
-    console.log(data);
     
     // Clear the form fields
     document.getElementById('newEntryForm').reset();
