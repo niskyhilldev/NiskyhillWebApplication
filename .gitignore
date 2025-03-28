@@ -5,6 +5,9 @@ target/
 dist/
 
 
+# Front End Files
+Server/server.java/src/main/resources/public/
+
 
 
 
