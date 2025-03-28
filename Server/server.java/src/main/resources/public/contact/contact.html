@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width", initial-scale="1.0">
+    <link rel="stylesheet" href="contact.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <title>Nisky Hill Cemetery - Contact Us</title>
+  </head>
+  <body>
+    <nav class='navBar'>
+        <div class="navLogo">
+            <span class="topText"><a href="../index.html">Nisky Hill</a></span>
+            <span class="bottomText"><a href="../index.html">Cemetery</a></span>
+        </div>
+        <ul class="navItems">
+            <li class="navOption"> <a href="../index.html" target = "_blank">HOME</a></li>
+            <li class="navOption"> <a href="../history/history.html" target = "_blank">HISTORY</a></li>
+            <li class="navOption"> <a href="../notableResidents/notableResidents.html" target = "_blank">NOTABLE RESIDENTS</a></li>
+            <li class="navOption"> <a href="" target = "_blank">CONTACT</a></li>
+            <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
+            <li><button class="findAGraveButton">FIND A GRAVE</button></li>
+        </ul>
+    </nav>
+    <!-- FormSubmit to send form data straight to email -->
+     <div class="formContainer">
+        <h1 class="aboutHeader">Contact Us</h1>
+        <p class="aboutInfo">Fill out the form below to get in contact with us!</p>
+        <form id="contact">
+          <h3 class="contactFormHeader">Name*</h3>
+          <fieldset>
+            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+          </fieldset>
+          <h3 class="contactFormHeader">Email*</h3>
+          <fieldset>
+            <input type="email" name="email" class="form-control" placeholder="Your Email Address" required>
+          </fieldset>
+          <h3 class="contactFormHeader">Phone Number</h3>
+          <fieldset>
+            <input type="tel" name="phoneNumber" class="form-control" placeholder="Your Phone Number (optional)">
+          </fieldset>
+          <h3 class="contactFormHeader">Subject*</h3>
+          <fieldset>
+            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+          </fieldset>
+          <h3 class="contactFormHeader">Your Message*</h3>
+          <fieldset>
+            <textarea placeholder="Type your message here..." class="form-control" name="message" rows="10" required></textarea>
+          </fieldset>
+          <fieldset>
+            <button type="submit" class="btn btn-lg btn-dark btn-block">Submit Form</button>
+          </fieldset>
+          <h3 class="contactFormFooter">* indicates a required field</h3>
+        </form>
+      </div>
+      
+    
+      
+    <footer class='footer'>
+        <div class="navLogo">
+            <span class="topText">Nisky Hill</span>
+            <span class="bottomText">Cemetery</span>
+        </div>
+        <div class="footerColumns">
+            <p class = "footerTopTitle">Open Daily 24 Hours</p>
+            <span class="footerTop">254 E Church St,</span>
+            <span class="footerBottom">Bethlehem, PA 18018</span>
+        </div>
+        <div class="footerColumns">
+            <p class = "footerTopTitle">Questions?</p>
+            <span class="footerTop">(610) 866-5742</span>
+        </div>
+    </footer>
+  </body>
+  <script>
+    document.getElementById("contact").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+  
+      const form = event.target;
+      const name = form.name.value;
+      const subject = form.subject.value;
+      const phone = form.phoneNumber.value;
+      const email = form.email.value;
+      const message = form.message.value;
+  
+      fetch("https://formsubmit.co/ajax/niskyhillcemeteryteam@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ name, email, phone, subject, message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Form submitted successfully:", data);
+        alert("Thank you! Your message has been sent.");
+        form.reset(); // Reset the form after successful submission
+      })
+      .catch(error => {
+        console.error("Error submitting form:", error);
+        alert("There was an issue submitting the form. Please try again.");
+      });
+    });
+  </script>
+</html>
