@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration</title>
+    <link rel="stylesheet" href="admin.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+</head>
+<body>
+    <div class="search-container">
+        <h1>Owners</h1>
+        <label for="searchLast">Last Name:</label>
+        <input type="text" id="searchLast" placeholder="Search last name">
+        <label for="searchOrg">Organization:</label>
+        <input type="text" id="searchOrg" placeholder="Search organization">
+        <button onclick="performOwnerSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="ownerTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <div class="search-container">
+        <h1>Residents</h1>
+        <label for="searchLast">Last Name:</label>
+        <input type="text" id="searchResidentLast" placeholder="Search last name">
+        <label for="searchOrg">Organization:</label>
+        <input type="text" id="searchResidentOrg" placeholder="Search organization">
+        <button onclick="performResidentSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="residentTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+    
+
+
+    <div class="search-container">
+        <h1>Lots</h1>
+        <label for="searchSection">Section:</label>
+        <input type="text" id="searchSection" placeholder="Search section">
+        <label for="searchLot">Lot:</label>
+        <input type="text" id="searchLot" placeholder="Search lot">
+        <button onclick="performLotSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="lotTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <h1>Add a Person</h1>
+
+    <!-- Plus Button -->
+    <button id="addEntryBtn" onclick="toggleForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addEntryForm" style="display:none;">
+        <h3>Add New Entry</h3>
+        <form id="newEntryForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName">
+            
+            <label for="middleName">Middle Name:</label>
+            <input type="text" id="middleName">
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName">
+
+            <label for="organization">Organization:</label>
+            <input type="text" id="organization">
+            
+            <label for="lotNum">Lot Number:</label>
+            <input type="text" id="lotNum">
+            
+            <label for="portion">Lot Portion:</label>
+            <input type="text" id="portion">
+            
+            <label for="cemSection">Section:</label>
+            <input type="text" id="cemSection">
+            
+            <label for="dofb">Date of Birth:</label>
+            <input type="date" id="dofb">
+            
+            <label for="dofd">Date of Death:</label>
+            <input type="date" id="dofd">
+            
+            <label for="vesselType">Vessel:</label>
+            <select id="vesselType">
+                <option value="urn">Urn</option>
+                <option value="casket">Casket</option>
+            </select>
+            
+            <label for="note">Notes:</label>
+            <input type="file" id="note" onchange="handleFileUpload(event)">
+            
+            <label for="owner">Owns:</label>
+            <input type="checkbox" id="owner">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+</body>
+</html>

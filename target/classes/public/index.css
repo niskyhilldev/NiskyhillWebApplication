@@ -1,0 +1,303 @@
+.navBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: #0d2543;
+    width: 100%;
+    margin: 0;  
+    padding: 20px; 
+    height: 55px;
+    align-items: center;
+}
+
+.topText {
+  color: white;
+  font-size: 40px;
+  font-family: Inria Serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  margin-left: 40px;
+}
+
+.bottomText {
+  color: white;
+  font-size: 22px;
+  font-family: Inria Serif;
+  line-height: 15.86px;
+  letter-spacing: 3.72px;
+  font-weight: 1000;
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: 40px;
+}
+
+.topText a {
+  color: white;
+  text-decoration: none;
+}
+
+.bottomText a {
+  color: white;
+  text-decoration: none;
+}
+
+.navBar li {
+  list-style: none;
+}
+
+.navLogo {
+  display: flex;
+  flex-direction: column; /* Stack text vertically */
+  color: white;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-align: left;
+  line-height: 1; /* Reduce spacing between lines */
+}
+
+.navItems {
+  display: flex;
+  flex-direction: row;
+  gap: 40px; /* Adds space between menu items */
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  margin-left: 200px;
+  text-align: center;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensures body does not exceed viewport */ 
+    overflow-x: hidden;
+}
+
+.navOption{
+  width: 83px; 
+  height: 14px; 
+  color: white; 
+  font-size: 14px; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+}
+
+
+a {
+  text-decoration: none;
+}
+
+.navOption a {
+  color: white;  /* white color for all links inside navOption */
+  text-decoration: none; /* Remove underline */
+}
+
+.findAGraveButton {
+  width: 154px; 
+  height: 40px; 
+  background: #af8c30; 
+  border-radius: 19px;
+  border-color: white;
+  border-style: solid;
+  color: white;
+  font-weight: 700; 
+}
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    border-radius: 19px;
+    border-color: white;
+    border-style: solid;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+}
+
+.learnMoreButtonAltColor {
+  width: 170px; 
+  height: 40px; 
+  background: #003a7f; 
+  border-radius: 19px;
+  border-color: white;
+  border-style: solid;
+  color: white;
+  font-weight: 700; 
+  font-family: Instrument Sans;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.headerTitle {
+  background-image: url('img/sampleCemetery.png');
+  color: white;
+  font-weight: 700; 
+  font-size: 50px;
+  height: 59vh;
+  background-repeat: no-repeat; 
+  background-position: bottom center;
+  background-size: cover; 
+  width: 100%; 
+  margin: 0 auto; 
+  padding: 100px; 
+  opacity: 0.85; 
+  font-family: Instrument Sans; 
+  font-weight: bold; 
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.headerSmallText {
+  font-size: 30px;
+  font-weight: 400; 
+}
+
+.headerLargeText {
+  font-size: 60px;
+  font-weight: 700;
+}
+
+
+.featuresBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 170px;
+  align-items: center;
+}
+
+.featureContainer {
+  display: inline-block; 
+  text-align: center; 
+  margin: 10px;
+}
+
+.imageWrapper {
+  display: inline-block; 
+  margin: 0 auto; 
+}
+
+.featureText {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  margin-top: 10px;  /* Space between the image and text */
+  text-align: center;
+}
+
+
+
+.aboutHeader {
+  color: black;
+  font-size: 32px;
+  font-family: Instrument Sans;
+  font-weight: 600;
+  margin-top: 47px;
+}
+
+.aboutInfo {
+  color: black;
+  font-size: 16px;
+  font-family: Instrument Sans;
+  font-weight: 400;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.aboutList {
+  color: black;
+  font-size: 16px;
+  font-family: Instrument Sans;
+  font-weight: 400;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.aboutList li {
+  margin-left: 30px;
+}
+
+.aboutSection{
+  width: 50%;
+}
+
+
+.aboutSectionSpacing {
+  margin-top: 45px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 65px;
+}
+
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #af8c30;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 90px;
+  align-items: center;
+}
+
+.footerColumns {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.footerTop {
+  color: white;
+  font-size: 20px;
+  font-family: Inria Serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  margin-left: 40px;
+  text-align: center;
+}
+
+.footerTopTitle {
+  color: white;
+  font-size: 30px;
+  font-family: Inria Serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  margin-left: 40px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.footerBottom {
+  color: white;
+  font-size: 20px;
+  font-family: Inria Serif;
+  line-height: 15.86px;
+  font-weight: 500;
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: 40px;
+  text-align: center;
+}
+

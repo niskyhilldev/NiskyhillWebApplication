@@ -1,0 +1,33 @@
+# Common settings that generally should always be used with your language specific settings
+# inspired by https://github.com/gitattributes/gitattributes/blob/main/Common.gitattributes
+
+# Auto detect text files and perform LF normalization
+*          text=auto
+
+#
+# The above will handle all files NOT found below
+#
+
+# dokku requires that the Procfile have lf line endings
+Procfile   text eol=lf
+
+# Scripts
+*.bash     text eol=lf
+*.ksh      text eol=lf
+*.sh       text eol=lf
+*.zsh      text eol=lf
+
+# Serialisation
+*.json     text
+*.toml     text
+*.xml      text
+*.yaml     text
+*.yml      text
+
+# Java sources
+*.java     text diff=java
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.jar           binary
+*.class         binary
