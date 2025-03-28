@@ -12,7 +12,7 @@ HEROKU_DEPLOY_BRANCH_NAME=${3:-"Heroku-Deployment"}
 TARGET_DIR="$(pwd)"  # Root directory of the Heroku-Deploy branch
 
 # Important files to exclude from deletion
-EXCLUDE_FILES=("Deploy.sh" "Procfile" ".gitattributes" "system.properties")
+EXCLUDE_FILES=("Deploy.sh" "Procfile" ".gitattributes" "system.properties" "pullWebFiles.bash" "Heroku.md")
 
 # Temporary directory for fetching the files
 TMP_DIR=$(mktemp -d)
