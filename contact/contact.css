@@ -16,7 +16,7 @@
   font-family: Inria Serif;
   font-weight: 500;
   word-wrap: break-word;
-  margin-left: 40px;
+  margin-left: 20px;
 }
 
 .bottomText {
@@ -28,7 +28,8 @@
   font-weight: 1000;
   word-wrap: break-word;
   text-align: center;
-  margin-left: 40px;
+  margin-left: 20px;
+  margin-top: 8px;
 }
 
 .topText a {
@@ -102,12 +103,12 @@ a {
   height: 40px; 
   background: #af8c30; 
   border-radius: 19px;
-  border-color: white;
   border-style: solid;
+  border-color: #af8c30;
   color: white;
   font-weight: 700; 
+  font-size: 14px;
 }
-
 
 * {
   margin: 0;
