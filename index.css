@@ -78,8 +78,6 @@ html, body {
 }
 
 .navOption{
-  width: 83px; 
-  height: 14px; 
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -98,7 +96,9 @@ a {
 .navOption a {
   color: white;  /* white color for all links inside navOption */
   text-decoration: none; /* Remove underline */
+  display: block;
   text-align: center;
+  white-space: nowrap;
 }
 
 .findAGraveButton {
@@ -163,7 +163,6 @@ a {
 }
 
 .headerTitle {
-  background-image: url('img/sampleCemetery.png');
   color: white;
   font-weight: 700; 
   font-size: 50px;
@@ -171,6 +170,7 @@ a {
   background-repeat: no-repeat; 
   background-position: bottom center;
   background-size: cover; 
+  background-image: url('img/niskyHomepage.JPG');
   width: 100%; 
   margin: 0 auto; 
   padding: 100px; 
@@ -283,6 +283,15 @@ a {
   flex-direction: row;
   justify-content: space-around;
   margin-bottom: 65px;
+}
+
+.aboutSectionSpacing2{
+  margin-top: 45px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 65px;
+  margin-left: 20px;
 }
 
 
