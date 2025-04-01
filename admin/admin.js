@@ -3,8 +3,16 @@ const data = {
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
     "2": { organization: "Nisky Hill", owns: true }
 };
+const plotsData = {
+    "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
+    "1": { lotNumber: "456", section: "2", lotPartition: "Southern Third", owner: "Jane Smith" },
+    "2": { lotNumber: "789", section: "3", lotPartition: "Western Half of Northern Half", owner: "Nisky Hill Organization" },
+    "3": { lotNumber: "101", section: "4", lotPartition: "Eastern Quarter", owner: "Alice Johnson" },
+    "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
+    "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
+};
 let currentRow;
-let ownerResults, residentResults, lotResults;
+let ownerResults, residentResults, lotResults, plotResults;
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
@@ -80,6 +88,25 @@ function performLotSearch() {
     }
     lotResults = results;
     populateTable(results, 'lots');
+}
+function performPlotSearch() {
+    let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
+    let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
+
+    let results = Object.values(plotsData).filter(entry => {
+        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    plotResults = results;
+    populateTable(results, 'plots');
 }
 function populateTable(filteredData, type) {
     if(type === 'owners'){
@@ -157,6 +184,30 @@ function populateTable(filteredData, type) {
             tableBody.appendChild(row);
         });
     }
+    else if(type === 'plots'){
+        const tableBody = document.getElementById("plotTableBody");
+        tableBody.innerHTML = ""; // Clear previous content
+
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='4'>No results found</td></tr>";
+            return;
+        }
+
+        filteredData.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${entry.section || ""}</td>
+                <td>${entry.lotNumber || ""}</td>
+                <td>${entry.lotPartition || ""}</td>
+                <td>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'plots')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 }
 
 function viewMore(firstname, middleName, lastName, row, type) {
@@ -170,6 +221,9 @@ function viewMore(firstname, middleName, lastName, row, type) {
     }
     else if (type == 'lots'){
         details = lotResults[rowId];
+    }
+    else if (type == 'plots'){
+        details = plotResults[rowId];
     }
     currentRow = document.getElementById(rowId);
     createPopup(details, rowId, type);
@@ -278,6 +332,24 @@ function createPopup(details, rowId, type) {
         </div>
         `;
     }
+    else if (type === 'plots') {
+        popupHTML = `
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup" data-row-id="${rowId}">
+            <h3>Details</h3>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
+            <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.lotPartition || ''}"></label>
+            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
+            <label>Internment Records: <input type="file" id="internmentRecords" disabled onchange="handleFileUpload(event)">
+                <a id="downloadLink" style="display:none;" download>Download File</a>
+            </label>
+            <button onclick="enableEditing()">Edit</button>
+            <button onclick="saveChanges('plots')">Save</button>
+            <button onclick="closePopup()">Close</button>
+        </div>
+        `;
+    }
     
 
     // Create a container div and insert the popup HTML
@@ -343,6 +415,17 @@ function saveChanges(type) {
             lotResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(lotResults, 'lots'); 
+    }
+    else if (type === 'plots'){
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+        if (plotResults[rowId]){
+            plotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+            plotResults[rowId].section = document.getElementById("section").value;
+            plotResults[rowId].lotPartition = document.getElementById("lotPartition").value;
+            plotResults[rowId].owner = document.getElementById("lotOwner").value;
+        }
+        populateTable(plotResults, 'plots'); 
     }
         
 }
@@ -420,5 +503,9 @@ function deleteEntry(id, type) {
     else if(type === 'lots'){
         lotResults[id] = null;
         populateTable(lotResults, 'lots');
+    }
+    else if(type === 'plots'){
+        plotResults[id] = null;
+        populateTable(plotResults, 'plots');
     }
 }
