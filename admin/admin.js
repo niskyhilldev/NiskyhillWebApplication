@@ -1,5 +1,5 @@
 const data = {
-    "0": { lotNumber: "123", lotId: "A", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
+    "0": { lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
     "2": { organization: "Nisky Hill", owns: true }
 };
@@ -12,7 +12,7 @@ const plotsData = {
     "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
 };
 let currentRow;
-let ownerResults, residentResults, lotResults, plotResults;
+let ownerResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
@@ -344,12 +344,36 @@ function createPopup(details, rowId, type) {
             <label>Internment Records: <input type="file" id="internmentRecords" disabled onchange="handleFileUpload(event)">
                 <a id="downloadLink" style="display:none;" download>Download File</a>
             </label>
+            <button onclick="viewPlots('${details.section || ''}', '${details.lotNumber || ''}', '${details.lotPartition || ''}')">View Plots</button>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
         `;
     }
+    else if (type === 'plotPeople') {
+        const peopleList = [];
+    
+        Object.values(details).forEach(person => {
+            if (person.buriedFirst && person.buriedLast) {
+                peopleList.push(`${person.buriedFirst} ${person.buriedMiddle || ""} ${person.buriedLast}`.trim());
+            }
+        });
+    
+        if (peopleList.length === 0) {
+            peopleList.push('No records available');
+        }
+    
+        popupHTML = `
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup" data-row-id="${rowId}">
+            <h3>People in Lot</h3>
+            <p>${peopleList.join('<br>')}</p>
+            <button onclick="closePopup()">Close</button>
+        </div>
+        `;
+    }
+    
     
 
     // Create a container div and insert the popup HTML
@@ -440,7 +464,6 @@ function handleFileUpload(event) {
     }
 }
 
-
 function toggleForm() {
     const form = document.getElementById('addEntryForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
@@ -508,4 +531,24 @@ function deleteEntry(id, type) {
         plotResults[id] = null;
         populateTable(plotResults, 'plots');
     }
+}
+function viewPlots(section, lotNumber, lotPartition){
+    let results = Object.values(data).filter(entry => {
+        console.log(entry);
+        
+        if (section && lotNumber && lotPartition && entry.section && entry.section.toLowerCase() === section.toLowerCase() 
+        && entry.lotNumber && entry.lotNumber.toLowerCase() === lotNumber.toLowerCase() 
+        && entry.lotId && entry.lotId.toLowerCase() === lotPartition.toLowerCase()) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    plotPeopleResults = results;
+    createPopup(results, 0, 'plotPeople');
 }
