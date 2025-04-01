@@ -160,5 +160,34 @@
             <!-- Table content will be dynamically populated -->
         </tbody>
     </table>
+
+    <h2>Add a Lot</h2>
+
+    <!-- Plus Button -->
+    <button id="addLotBtn" onclick="toggleLotForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addLotForm" style="display:none;">
+        <h3>Add New Lot</h3>
+        <form id="newPlotForm">            
+            <label for="lotNumber">Lot Number:</label>
+            <input type="text" id="lotNumber">
+            
+            <label for="lotPortion">Lot Portion:</label>
+            <input type="text" id="lotPortion">
+            
+            <label for="sectionId">Section:</label>
+            <input type="text" id="sectionId">
+            
+            <label for="record">Internment Record:</label>
+            <input type="file" id="record" onchange="handleFileUpload(event)">
+            
+            <label for="lotOwner">Owner:</label>
+            <input type="text" id="lotOwner">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
 </body>
 </html>

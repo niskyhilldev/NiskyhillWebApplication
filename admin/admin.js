@@ -468,6 +468,10 @@ function toggleForm() {
     const form = document.getElementById('addEntryForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
+function toggleLotForm() {
+    const form = document.getElementById('addLotForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
 
 document.getElementById('newEntryForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -513,7 +517,36 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
 
     toggleForm(); // Hide the form after submission
 });
+document.getElementById('newPlotForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Generate a new unique ID based on the highest existing key in data
+    const newId = Object.keys(plotsData).length > 0 
+        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
+        : 0;
 
+    // Get all the values from the form
+    const lotNumber = document.getElementById('lotNumber').value;
+    const lotPortion = document.getElementById('lotPortion').value;
+    const section = document.getElementById('sectionId').value;
+    const owner = document.getElementById('lotOwner').checked;
+    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
+    
+    // Add new entry to the data object
+    plotsData[newId] = {
+        lotNumber: lotNumber,
+        lotPartition: lotPortion,
+        section: section,
+        owner: owner,
+        internmentRecord: record,
+    };
+
+    
+    // Clear the form fields
+    document.getElementById('newPlotForm').reset();
+
+    toggleLotForm(); // Hide the form after submission
+});
 function deleteEntry(id, type) {
     if(type === 'residents'){
         residentResults[id] = null;
