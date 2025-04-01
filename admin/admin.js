@@ -529,7 +529,9 @@ document.getElementById('newPlotForm').addEventListener('submit', function(event
     const lotNumber = document.getElementById('lotNumber').value;
     const lotPortion = document.getElementById('lotPortion').value;
     const section = document.getElementById('sectionId').value;
-    const owner = document.getElementById('lotOwner').checked;
+    const ownerFirst = document.getElementById('ownerFirst').value;
+    const ownerMiddle = document.getElementById('ownerMiddle').value;
+    const ownerLast = document.getElementById('ownerLast').value;
     const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
     
     // Add new entry to the data object
@@ -537,7 +539,7 @@ document.getElementById('newPlotForm').addEventListener('submit', function(event
         lotNumber: lotNumber,
         lotPartition: lotPortion,
         section: section,
-        owner: owner,
+        owner: `${ownerFirst || ""} ${ownerMiddle || ""} ${ownerLast || ""}`,
         internmentRecord: record,
     };
 
