@@ -9,4 +9,3 @@ CREATE TABLE person(
   CHECK (lastname IS NOT NULL OR organization IS NOT NULL),   -- Ensures at least one is non-null
   PRIMARY KEY(person_id)
 );
-
