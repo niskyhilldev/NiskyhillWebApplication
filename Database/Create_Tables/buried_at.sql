@@ -3,7 +3,7 @@ CREATE TABLE burried_at(
   burial_date DATE,
   birth_date DATE,
   death_date DATE,
-  capsule VARCHAR(16) DEFAULT 'casket',
+  capsule VARCHAR(16),
   marker BOOLEAN DEFAULT FALSE,
   foundation BOOLEAN DEFAULT FALSE,
   lot_number VARCHAR(8) NOT NULL,
