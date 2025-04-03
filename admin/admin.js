@@ -11,9 +11,11 @@ const plotsData = {
     "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
     "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
 };
-const sections = {
-    "0" : {sectionId: "A"}
-};
+const sections = [
+    { name: "A", file: null },
+    { name: "B", file: null },
+    { name: "C", file: null }
+];
 let currentRow;
 let ownerResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
@@ -617,4 +619,39 @@ function viewPlots(section, lotNumber, lotPartition){
     }
     plotPeopleResults = results;
     createPopup(results, 0, 'plotPeople');
+}
+function showEditor() {
+    const editor = document.getElementById("sectionEditor");
+    editor.style.display = "block";
+
+    const tableBody = document.getElementById("sectionTableBody");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    sections.forEach((section, index) => {
+        const row = document.createElement("tr");
+
+        // Editable section name
+        const nameCell = document.createElement("td");
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.value = section.name;
+        nameInput.oninput = (e) => sections[index].name = e.target.value;
+        nameCell.appendChild(nameInput);
+
+        // File upload
+        const fileCell = document.createElement("td");
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.onchange = (e) => sections[index].file = e.target.files[0];
+        fileCell.appendChild(fileInput);
+
+        row.appendChild(nameCell);
+        row.appendChild(fileCell);
+        tableBody.appendChild(row);
+    });
+}
+
+function saveSections() {
+    const editor = document.getElementById("sectionEditor");
+    editor.style.display = "none";
 }
