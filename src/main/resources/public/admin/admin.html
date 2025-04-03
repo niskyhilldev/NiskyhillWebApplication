@@ -9,8 +9,9 @@
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
 </head>
 <body>
+    <h1>People</h1>
     <div class="search-container">
-        <h1>Owners</h1>
+        <h2>Owners</h2>
         <label for="searchLast">Last Name:</label>
         <input type="text" id="searchLast" placeholder="Search last name">
         <label for="searchOrg">Organization:</label>
@@ -34,7 +35,7 @@
     </table>
 
     <div class="search-container">
-        <h1>Residents</h1>
+        <h2>Residents</h2>
         <label for="searchLast">Last Name:</label>
         <input type="text" id="searchResidentLast" placeholder="Search last name">
         <label for="searchOrg">Organization:</label>
@@ -60,7 +61,7 @@
 
 
     <div class="search-container">
-        <h1>Lots</h1>
+        <h2>Lots</h2>
         <label for="searchSection">Section:</label>
         <input type="text" id="searchSection" placeholder="Search section">
         <label for="searchLot">Lot:</label>
@@ -83,7 +84,7 @@
         </tbody>
     </table>
 
-    <h1>Add a Person</h1>
+    <h2>Add a Person</h2>
 
     <!-- Plus Button -->
     <button id="addEntryBtn" onclick="toggleForm()">+</button>
@@ -130,6 +131,104 @@
             
             <label for="owner">Owns:</label>
             <input type="checkbox" id="owner">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+
+    <h1>Lots</h1>
+    <div class="search-container">
+        <h2>Lots</h2>
+        <label for="searchSectionPlots">Section:</label>
+        <input type="text" id="searchSectionPlots" placeholder="Search section">
+        <label for="searchLotPlots">Lot:</label>
+        <input type="text" id="searchLotPlots" placeholder="Search lot">
+        <button onclick="performPlotSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Section Name</th>
+                <th>Lot Number</th>
+                <th>Lot Partition</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="plotTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <h2>Add a Lot</h2>
+
+    <!-- Plus Button -->
+    <button id="addLotBtn" onclick="toggleLotForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addLotForm" style="display:none;">
+        <h3>Add New Lot</h3>
+        <form id="newLotForm">            
+            <label for="addLotNumber">Lot Number:</label>
+            <input type="text" id="addLotNumber">
+            
+            <label for="addLotPortion">Lot Portion:</label>
+            <input type="text" id="addLotPortion">
+            
+            <label for="sectionId">Section:</label>
+            <input type="text" id="sectionId">
+            
+            <label for="record">Internment Record:</label>
+            <input type="file" id="record" onchange="handleFileUpload(event)">
+            
+            <label for="ownerFirst">First Name:</label>
+            <input type="text" id="ownerFirst">
+            
+            <label for="ownerMiddle">Middle Name:</label>
+            <input type="text" id="ownerMiddle">
+            
+            <label for="ownerLast">Last Name:</label>
+            <input type="text" id="ownerLast">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+
+    <h1>Sections</h1>
+    <button onclick="showEditor()">Edit Sections</button>
+
+    <div id="sectionEditor">
+        <h3>Edit Sections</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Section Name</th>
+                    <th>Section Map</th>
+                </tr>
+            </thead>
+            <tbody id="sectionTableBody">
+                <!-- Rows will be inserted dynamically -->
+            </tbody>
+        </table>
+        <button onclick="saveSections()">Save Changes</button>
+    </div>
+
+    <h2>Add a Section</h2>
+
+    <!-- Plus Button -->
+    <button id="addSectionBtn" onclick="toggleSectionForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addSectionForm" style="display:none;">
+        <h3>Add New Lot</h3>
+        <form id="newSectionForm">                        
+            <label for="addSectionId">Section:</label>
+            <input type="text" id="addSectionId">
+            
+            <label for="internmentRecord">Internment Record:</label>
+            <input type="file" id="internmentRecord" onchange="handleFileUpload(event)">
             
             <button type="submit">Add Entry</button>
         </form>

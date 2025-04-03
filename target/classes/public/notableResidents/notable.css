@@ -16,7 +16,20 @@
   font-family: Inria Serif;
   font-weight: 500;
   word-wrap: break-word;
-  margin-left: 40px;
+  margin-left: 20px;
+}
+
+.bottomText {
+  color: white;
+  font-size: 22px;
+  font-family: Inria Serif;
+  line-height: 15.86px;
+  letter-spacing: 3.72px;
+  font-weight: 1000;
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: 20px;
+  margin-top: 8px;
 }
 
 .topText a {
@@ -29,17 +42,7 @@
     text-decoration: none;
 }
 
-.bottomText {
-  color: white;
-  font-size: 22px;
-  font-family: Inria Serif;
-  line-height: 15.86px;
-  letter-spacing: 3.72px;
-  font-weight: 1000;
-  word-wrap: break-word;
-  text-align: center;
-  margin-left: 40px;
-}
+
 
 .navBar li {
   list-style: none;
@@ -76,8 +79,6 @@ html, body {
 }
 
 .navOption{
-  width: 83px; 
-  height: 14px; 
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -85,6 +86,7 @@ html, body {
   line-height: 14.64px; 
   letter-spacing: 3.60px; 
   list-style: none;
+  text-align: center;
 }
 
 
@@ -95,6 +97,9 @@ a {
 .navOption a {
   color: white;  /* white color for all links inside navOption */
   text-decoration: none; /* Remove underline */
+  display: block;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .findAGraveButton {
@@ -102,10 +107,11 @@ a {
   height: 40px; 
   background: #af8c30; 
   border-radius: 19px;
-  border-color: white;
   border-style: solid;
+  border-color: #af8c30;
   color: white;
   font-weight: 700; 
+  font-size: 14px;
 }
 
 
