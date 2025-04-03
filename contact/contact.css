@@ -77,8 +77,6 @@ html, body {
 }
 
 .navOption{
-  width: 83px; 
-  height: 14px; 
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -86,6 +84,7 @@ html, body {
   line-height: 14.64px; 
   letter-spacing: 3.60px; 
   list-style: none;
+  text-align: center;
 }
 
 
@@ -96,6 +95,9 @@ a {
 .navOption a {
   color: white;  /* white color for all links inside navOption */
   text-decoration: none; /* Remove underline */
+  display: block;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .findAGraveButton {
