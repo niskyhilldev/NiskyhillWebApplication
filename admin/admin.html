@@ -137,9 +137,9 @@
         
     </div>
 
-    <h1>Lots/Plots</h1>
+    <h1>Lots</h1>
     <div class="search-container">
-        <h2>Lots/Plots</h2>
+        <h2>Lots</h2>
         <label for="searchSectionPlots">Section:</label>
         <input type="text" id="searchSectionPlots" placeholder="Search section">
         <label for="searchLotPlots">Lot:</label>
@@ -169,12 +169,12 @@
     <!-- Add Entry Form -->
     <div id="addLotForm" style="display:none;">
         <h3>Add New Lot</h3>
-        <form id="newPlotForm">            
-            <label for="lotNumber">Lot Number:</label>
-            <input type="text" id="lotNumber">
+        <form id="newLotForm">            
+            <label for="addLotNumber">Lot Number:</label>
+            <input type="text" id="addLotNumber">
             
-            <label for="lotPortion">Lot Portion:</label>
-            <input type="text" id="lotPortion">
+            <label for="addLotPortion">Lot Portion:</label>
+            <input type="text" id="addLotPortion">
             
             <label for="sectionId">Section:</label>
             <input type="text" id="sectionId">
@@ -190,6 +190,26 @@
             
             <label for="ownerLast">Last Name:</label>
             <input type="text" id="ownerLast">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+
+    <h2>Add a Section</h2>
+
+    <!-- Plus Button -->
+    <button id="addSectionBtn" onclick="toggleSectionForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addSectionForm" style="display:none;">
+        <h3>Add New Lot</h3>
+        <form id="newSectionForm">                        
+            <label for="addSectionId">Section:</label>
+            <input type="text" id="addSectionId">
+            
+            <label for="internmentRecord">Internment Record:</label>
+            <input type="file" id="internmentRecord" onchange="handleFileUpload(event)">
             
             <button type="submit">Add Entry</button>
         </form>

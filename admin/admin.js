@@ -11,6 +11,9 @@ const plotsData = {
     "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
     "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
 };
+const sections = {
+    "0" : {sectionId: "A"}
+};
 let currentRow;
 let ownerResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
@@ -472,6 +475,10 @@ function toggleLotForm() {
     const form = document.getElementById('addLotForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
+function toggleSectionForm() {
+    const form = document.getElementById('addSectionForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
 
 document.getElementById('newEntryForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -517,7 +524,7 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
 
     toggleForm(); // Hide the form after submission
 });
-document.getElementById('newPlotForm').addEventListener('submit', function(event) {
+document.getElementById('newLotForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
     // Generate a new unique ID based on the highest existing key in data
@@ -526,8 +533,8 @@ document.getElementById('newPlotForm').addEventListener('submit', function(event
         : 0;
 
     // Get all the values from the form
-    const lotNumber = document.getElementById('lotNumber').value;
-    const lotPortion = document.getElementById('lotPortion').value;
+    const lotNumber = document.getElementById('addLotNumber').value;
+    const lotPortion = document.getElementById('addLotPortion').value;
     const section = document.getElementById('sectionId').value;
     const ownerFirst = document.getElementById('ownerFirst').value;
     const ownerMiddle = document.getElementById('ownerMiddle').value;
@@ -545,9 +552,33 @@ document.getElementById('newPlotForm').addEventListener('submit', function(event
 
     
     // Clear the form fields
-    document.getElementById('newPlotForm').reset();
+    document.getElementById('newLotForm').reset();
 
     toggleLotForm(); // Hide the form after submission
+});
+document.getElementById('newSectionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Generate a new unique ID based on the highest existing key in data
+    const newId = Object.keys(plotsData).length > 0 
+        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
+        : 0;
+
+    // Get all the values from the form
+    const section = document.getElementById('addSectionId').value;
+    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
+    
+    // Add new entry to the data object
+    sections[newId] = {
+        section: section,
+        internmentRecord: record,
+    };
+
+    
+    // Clear the form fields
+    document.getElementById('newSectionForm').reset();
+
+    toggleSectionForm(); // Hide the form after submission
 });
 function deleteEntry(id, type) {
     if(type === 'residents'){
