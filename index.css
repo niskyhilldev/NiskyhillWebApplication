@@ -1,13 +1,13 @@
 .navBar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    background-color: #0d2543;
-    width: 100%;
-    margin: 0;  
-    padding: 20px; 
-    height: 55px;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 55px;
+  align-items: center;
 }
 
 .topText {
@@ -53,9 +53,8 @@
   font-family: 'Instrument Sans', sans-serif;
   font-weight: bold;
   letter-spacing: 1.5px;
-  text-align: left;
-  line-height: 1; /* Reduce spacing between lines */
   align-items: center;
+  line-height: 1; /* Reduce spacing between lines */
 }
 
 .navItems {
@@ -65,7 +64,6 @@
   list-style: none;
   align-items: center;
   margin: 0;
-  padding: 0;
   margin-left: 200px;
   text-align: center;
 }
@@ -86,11 +84,6 @@ html, body {
   letter-spacing: 3.60px; 
   list-style: none;
   text-align: center;
-}
-
-
-a {
-  text-decoration: none;
 }
 
 .navOption a {
@@ -264,13 +257,9 @@ a {
   font-size: 16px;
   font-family: Instrument Sans;
   font-weight: 400;
-  word-wrap: break-word;
   margin-bottom: 10px;
 }
 
-.aboutList li {
-  margin-left: 30px;
-}
 
 .aboutSection{
   width: 50%;
@@ -344,5 +333,54 @@ a {
   text-align: center;
   margin-left: 40px;
   text-align: center;
+}
+
+@media (max-width: 900px){
+  .aboutSectionSpacing{
+    flex-direction: column;
+  }
+  .aboutSectionSpacing2{
+    flex-direction: column;
+  }
+  .aboutSection {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .niskyLogo {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .googleMap{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .featuresBar{
+    height: 200px;
+  }
+  .featureContainer{
+    margin-right: 30px;
+  }
+  .niskyPath {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .headerTitle {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }
 

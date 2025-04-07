@@ -238,3 +238,36 @@ a {
     animation-delay: 0.40s;
   }
   
+
+@media (max-width: 1000px){
+  .aboutSectionSpacing{
+    flex-direction: column;
+  }
+  .aboutSectionSpacing2{
+    flex-direction: column;
+  }
+  .aboutSection {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .niskyLogo {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .historyImages {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+

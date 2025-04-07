@@ -322,3 +322,13 @@ a {
 #overlay.active ~ .team-section .team-member:hover {
     transform: none;
 }
+
+@media (max-width: 900px){
+  .team-member img{
+    width: 50%;
+    height: 50%;
+  }
+  .modal {
+    width: 90%;
+  }
+}
