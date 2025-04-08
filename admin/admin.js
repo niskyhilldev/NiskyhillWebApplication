@@ -287,19 +287,10 @@ function createPopup(details, rowId, type) {
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
             <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-            <label>Vessel: 
-                <select id="vessel" disabled>
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                </select>
-            </label>
             <label>
                 Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                 <a id="downloadLink" style="display:none;" download>Download File</a>
             </label>
-            <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('owners')">Save</button>
             <button onclick="closePopup()">Close</button>
