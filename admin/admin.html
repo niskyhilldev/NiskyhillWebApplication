@@ -173,6 +173,32 @@
         </tbody>
     </table>
 
+    <h2>Bury an Owner</h2>
+    <div class="search-container">
+        <label for="searchOwnLast">Last Name:</label>
+        <input type="text" id="searchOwnLast" placeholder="Search last name">
+        <label for="searchOwnOrg">Organization:</label>
+        <input type="text" id="searchOwnOrg" placeholder="Search organization">
+        <button onclick="performBurialSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Suffix</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="burialTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+
     <h1>Lots</h1>
     <div class="search-container">
         <h2>Lots</h2>

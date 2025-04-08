@@ -1,7 +1,8 @@
 const data = {
     "0": { lotOwnNumber: "123", lotOwnId: "Northern Half", sectionOwn: "1",lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { lotOwnNumber: "456", lotOwnId: "B", sectionOwn: "2", organization: "Nisky Hill", owns: true }
+    "2": { lotOwnNumber: "456", lotOwnId: "B", sectionOwn: "2", organization: "Nisky Hill", owns: true },
+    "3": { lotOwnNumber: "4", lotOwnId: "Northern Half", sectionOwn: "B", buriedFirst: "Matthew", buriedLast: "Bergin", owns: true}
 };
 const plotsData = {
     "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
@@ -17,7 +18,7 @@ const sections = [
     { name: "C", file: null }
 ];
 let currentRow;
-let ownerResults, residentResults, lotResults, plotResults, plotPeopleResults;
+let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
@@ -46,6 +47,37 @@ function performOwnerSearch() {
     }
     ownerResults = results;
     populateTable(results, 'owners');
+}
+function performBurialSearch() {
+    let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
+    let organization = document.getElementById("searchOwnOrg").value.trim().toLowerCase();
+
+    let results = Object.values(data).filter(entry => {
+        if(entry.dob){
+            return false;
+        }
+        if(lastName && organization){
+            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
+                return true;
+            }
+            return false;
+        }
+        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
+            return true;
+        }
+        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
+            return true;
+        }
+        return false;
+    });
+
+    if (results.length > 0) {
+        console.log("Search Results:", results);
+    } else {
+        console.log("No matching results found.");
+    }
+    burialResults = results;
+    populateTable(results, 'burial');
 }
 function performResidentSearch() {
     let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
@@ -195,6 +227,31 @@ function populateTable(filteredData, type) {
             tableBody.appendChild(row);
         });
     }
+    if(type === 'burial'){
+        const tableBody = document.getElementById("burialTableBody");
+        tableBody.innerHTML = ""; // Clear previous content
+
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            return;
+        }
+
+        filteredData.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${entry.buriedFirst || ""}</td>
+                <td>${entry.buriedMiddle || ""}</td>
+                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.suffix || ""}</td>
+                <td>${entry.organization || ""}</td>
+                <td>
+                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'burial')">Bury</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
     else if(type === 'plots'){
         const tableBody = document.getElementById("plotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
@@ -235,6 +292,12 @@ function viewMore(firstname, middleName, lastName, row, type) {
     }
     else if (type == 'plots'){
         details = plotResults[rowId];
+    }
+    else if(type === 'burial'){
+        details = burialResults[rowId];
+    }
+    else{
+        return;
     }
     currentRow = document.getElementById(rowId);
     createPopup(details, rowId, type);
@@ -412,6 +475,30 @@ function createPopup(details, rowId, type) {
         </div>
         `;
     }
+    else if (type === 'burial') {
+        popupHTML = `
+        <div class="overlay" id="overlay" onclick="closePopup()"></div>
+        <div class="popup" id="popup" data-row-id="${rowId}">
+            <h3>Details</h3>
+            <label>Lot Number: <input type="text" id="lotNumber" value="${details.lotNumber || ''}"></label>
+            <label>Lot Partition: <input type="text" id="lotPartition" value="${details.lotPartition || ''}"></label>
+            <label>Section: <input type="text" id="section" value="${details.section || ''}"></label>
+            <label>Date of Birth: <input type="date" id="dob" value="${details.dob || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" value="${details.dod || ''}"></label>
+            <label>Vessel: 
+                <select id="vessel">
+                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
+                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                </select>
+            </label>
+            <label>Internment Records: <input type="file" id="internmentRecords" onchange="handleFileUpload(event)">
+                <a id="downloadLink" style="display:none;" download>Download File</a>
+            </label>
+            <button onclick="saveChanges('burial')">Save</button>
+            <button onclick="closePopup()">Cancel</button>
+        </div>
+        `;
+    }
     else if (type === 'plotPeople') {
         const peopleList = [];
     
@@ -504,6 +591,34 @@ function saveChanges(type) {
             }
         }
         populateTable(lotResults, 'lots'); 
+    }
+    else if (type === 'burial'){
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+        if (burialResults[rowId]){
+            burialResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+            burialResults[rowId].lotId = document.getElementById("lotPartition").value;
+            burialResults[rowId].section = document.getElementById("section").value;
+            burialResults[rowId].dob = document.getElementById("dob").value;
+            burialResults[rowId].dod = document.getElementById("dod").value;
+            burialResults[rowId].vessel = document.getElementById("vessel").value;
+            //propogate to data
+            for (const key in data) {
+                const entry = data[key];
+                if (entry.buriedFirst === burialResults[rowId].buriedFirst &&
+                        entry.buriedLast === burialResults[rowId].buriedLast) {
+                            entry.lotNumber = document.getElementById("lotNumber").value;
+                            entry.lotId = document.getElementById("lotPartition").value;
+                            entry.section = document.getElementById("section").value;
+                            entry.dob = document.getElementById("dob").value;
+                            entry.dod = document.getElementById("dod").value;
+                            entry.vessel = document.getElementById("vessel").value;
+                            break;
+                }
+            }
+        }
+        window.alert(`Successfully buried ${burialResults[rowId].buriedFirst} ${burialResults[rowId].buriedLast}`);
+        closePopup();
     }
     else if (type === 'plots'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
