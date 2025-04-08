@@ -1,7 +1,7 @@
 const data = {
-    "0": { lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
+    "0": { lotOwnNumber: "123", lotOwnId: "Northern Half", sectionOwn: "1",lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { lotNumber: "456", lotId: "B", section: "2", organization: "Nisky Hill", owns: true }
+    "2": { lotOwnNumber: "456", lotOwnId: "B", sectionOwn: "2", organization: "Nisky Hill", owns: true }
 };
 const plotsData = {
     "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
@@ -81,6 +81,9 @@ function performLotSearch() {
 
     let results = Object.values(data).filter(entry => {
         if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
+            return true;
+        }
+        if (section && lot && entry.sectionOwn && entry.sectionOwn.toLowerCase() === section && entry.lotOwnNumber && entry.lotOwnNumber.toLowerCase() === lot) {
             return true;
         }
         return false;
@@ -302,7 +305,30 @@ function createPopup(details, rowId, type) {
         `;
     }
     else if (type === 'lots'){
-        if(details.owns && !details.dod){
+        if(details.owns && !details.dod){ //owner
+            popupHTML = `
+            <div class="overlay" id="overlay" onclick="closePopup()"></div>
+            <div class="popup" id="popup" data-row-id="${rowId}">
+                <h3>Details</h3>
+                <label>Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
+                <label>Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
+                <label>Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
+                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
+                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
+                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
+                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
+                <label>
+                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
+                    <a id="downloadLink" style="display:none;" download>Download File</a>
+                </label>
+                <button onclick="enableEditing()">Edit</button>
+                <button onclick="saveChanges('lots')">Save</button>
+                <button onclick="closePopup()">Close</button>
+            </div>
+            `;
+        }
+        else if (details.owns){ //owner and resident
             popupHTML = `
             <div class="overlay" id="overlay" onclick="closePopup()"></div>
             <div class="popup" id="popup" data-row-id="${rowId}">
@@ -310,11 +336,22 @@ function createPopup(details, rowId, type) {
                 <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
                 <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
                 <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+                <label>Owned Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
+                <label>Owned Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
+                <label>Owned Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
                 <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
                 <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
                 <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
                 <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
                 <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
+                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
+                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+                <label>Vessel: 
+                    <select id="vessel" disabled>
+                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
+                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                    </select>
+                </label>
                 <label>
                     Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                     <a id="downloadLink" style="display:none;" download>Download File</a>
@@ -349,7 +386,6 @@ function createPopup(details, rowId, type) {
                     Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                     <a id="downloadLink" style="display:none;" download>Download File</a>
                 </label>
-                <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
                 <button onclick="enableEditing()">Edit</button>
                 <button onclick="saveChanges('lots')">Save</button>
                 <button onclick="closePopup()">Close</button>
@@ -415,9 +451,9 @@ function saveChanges(type) {
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         if (ownerResults[rowId]){
-            ownerResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            ownerResults[rowId].lotId = document.getElementById("lotPortion").value;
-            ownerResults[rowId].section = document.getElementById("section").value;
+            ownerResults[rowId].lotOwnNumber = document.getElementById("lotNumber").value;
+            ownerResults[rowId].lotOwnId = document.getElementById("lotPortion").value;
+            ownerResults[rowId].sectionOwn = document.getElementById("section").value;
             ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
             ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
@@ -462,7 +498,9 @@ function saveChanges(type) {
             }
             lotResults[rowId].organization = document.getElementById("org").value;
             if(document.getElementById("owns")){
-                lotResults[rowId].owns = document.getElementById("owns").checked;
+                lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
+                lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
+                lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
             }
         }
         populateTable(lotResults, 'lots'); 
