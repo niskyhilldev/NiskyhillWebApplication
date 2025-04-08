@@ -80,7 +80,7 @@ function performLotSearch() {
     let lot = document.getElementById("searchLot").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotId && entry.lotId.toLowerCase() === lot) {
+        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
             return true;
         }
         return false;
