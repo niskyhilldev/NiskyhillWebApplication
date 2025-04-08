@@ -1,7 +1,7 @@
 CREATE TABLE files(
   id SERIAL, -- auto generated id
   lot_number VARCHAR(8) NOT NULL,
-  lot_descriptor VARCHAR(255) NOT NULL,
+  lot_descriptor VARCHAR(255) DEFAULT 'entire',
   section VARCHAR(4) NOT NULL,
   file TEXT,
 

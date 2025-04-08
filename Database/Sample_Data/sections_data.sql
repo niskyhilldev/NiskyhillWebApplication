@@ -1,0 +1,1 @@
+insert into section (section_name) values ('L')
