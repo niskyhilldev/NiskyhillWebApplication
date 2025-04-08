@@ -286,9 +286,9 @@ function createPopup(details, rowId, type) {
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
+            <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
@@ -530,7 +530,7 @@ function handleFileUpload(event) {
 }
 
 function toggleForm() {
-    const form = document.getElementById('addEntryForm');
+    const form = document.getElementById('addOwnerForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 function toggleLotForm() {
@@ -542,7 +542,7 @@ function toggleSectionForm() {
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
-document.getElementById('newEntryForm').addEventListener('submit', function(event) {
+document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
     // Generate a new unique ID based on the highest existing key in data
@@ -557,32 +557,25 @@ document.getElementById('newEntryForm').addEventListener('submit', function(even
     const lotNumber = document.getElementById('lotNum').value;
     const lotPortion = document.getElementById('portion').value;
     const section = document.getElementById('cemSection').value;
-    const dob = document.getElementById('dofb').value;
-    const dod = document.getElementById('dofd').value;
-    const vessel = document.getElementById('vesselType').value;
-    const owns = document.getElementById('owner').checked;
     const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
     const organization = document.getElementById('organization').value;
     
     // Add new entry to the data object
     data[newId] = {
-        lotNumber: lotNumber,
-        lotId: lotPortion,
-        section: section,
+        lotOwnNumber: lotNumber,
+        lotOwnId: lotPortion,
+        sectionOwn: section,
         buriedFirst: firstName,
         buriedMiddle: middleName,
         buriedLast: lastName,
-        dob: dob,
-        dod: dod,
-        vessel: vessel,
-        owns: owns,
+        owns: true,
         notes: notes,
         organization: organization
     };
 
     
     // Clear the form fields
-    document.getElementById('newEntryForm').reset();
+    document.getElementById('newOwnerForm').reset();
 
     toggleForm(); // Hide the form after submission
 });

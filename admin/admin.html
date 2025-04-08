@@ -35,6 +35,44 @@
         </tbody>
     </table>
 
+    <h2>Add an Owner</h2>
+
+    <!-- Plus Button -->
+    <button id="addOwnerBtn" onclick="toggleForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addOwnerForm" style="display:none;">
+        <h3>Add New Entry</h3>
+        <form id="newOwnerForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName">
+            
+            <label for="middleName">Middle Name:</label>
+            <input type="text" id="middleName">
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName">
+
+            <label for="organization">Organization:</label>
+            <input type="text" id="organization">
+            
+            <label for="lotNum">Lot Number:</label>
+            <input type="text" id="lotNum">
+            
+            <label for="portion">Lot Portion:</label>
+            <input type="text" id="portion">
+            
+            <label for="cemSection">Section:</label>
+            <input type="text" id="cemSection">
+            
+            <label for="note">Notes:</label>
+            <input type="file" id="note" onchange="handleFileUpload(event)">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+
     <div class="search-container">
         <h2>Residents</h2>
         <label for="searchLast">Last Name:</label>
@@ -86,59 +124,6 @@
             <!-- Table content will be dynamically populated -->
         </tbody>
     </table>
-
-    <h2>Add a Person</h2>
-
-    <!-- Plus Button -->
-    <button id="addEntryBtn" onclick="toggleForm()">+</button>
-
-    <!-- Add Entry Form -->
-    <div id="addEntryForm" style="display:none;">
-        <h3>Add New Entry</h3>
-        <form id="newEntryForm">
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName">
-            
-            <label for="middleName">Middle Name:</label>
-            <input type="text" id="middleName">
-            
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName">
-
-            <label for="organization">Organization:</label>
-            <input type="text" id="organization">
-            
-            <label for="lotNum">Lot Number:</label>
-            <input type="text" id="lotNum">
-            
-            <label for="portion">Lot Portion:</label>
-            <input type="text" id="portion">
-            
-            <label for="cemSection">Section:</label>
-            <input type="text" id="cemSection">
-            
-            <label for="dofb">Date of Birth:</label>
-            <input type="date" id="dofb">
-            
-            <label for="dofd">Date of Death:</label>
-            <input type="date" id="dofd">
-            
-            <label for="vesselType">Vessel:</label>
-            <select id="vesselType">
-                <option value="urn">Urn</option>
-                <option value="casket">Casket</option>
-            </select>
-            
-            <label for="note">Notes:</label>
-            <input type="file" id="note" onchange="handleFileUpload(event)">
-            
-            <label for="owner">Owns:</label>
-            <input type="checkbox" id="owner">
-            
-            <button type="submit">Add Entry</button>
-        </form>
-        
-    </div>
 
     <h1>Lots</h1>
     <div class="search-container">
