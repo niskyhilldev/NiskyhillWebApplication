@@ -1,5 +1,5 @@
 const data = {
-    "0": { lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
+    "0": { lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
     "2": { lotNumber: "456", lotId: "B", section: "2", organization: "Nisky Hill", owns: true }
 };
@@ -130,6 +130,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedFirst || ""}</td>
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
+                <td>${entry.suffix || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'owners')">View More</button>
@@ -155,6 +156,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedFirst || ""}</td>
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
+                <td>${entry.suffix || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
@@ -180,6 +182,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedFirst || ""}</td>
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
+                <td>${entry.suffix || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
@@ -255,6 +258,7 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
@@ -268,7 +272,6 @@ function createPopup(details, rowId, type) {
                 Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                 <a id="downloadLink" style="display:none;" download>Download File</a>
             </label>
-            <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
@@ -286,6 +289,7 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>
                 Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
@@ -309,6 +313,7 @@ function createPopup(details, rowId, type) {
                 <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
                 <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
                 <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
                 <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
                 <label>
                     Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
@@ -416,11 +421,8 @@ function saveChanges(type) {
             ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
             ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            ownerResults[rowId].dob = document.getElementById("dob").value;
-            ownerResults[rowId].dod = document.getElementById("dod").value;
-            ownerResults[rowId].vessel = document.getElementById("vessel").value;
+            ownerResults[rowId].suffix = document.getElementById("suffix").value;
             ownerResults[rowId].organization = document.getElementById("org").value;
-            ownerResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(ownerResults, 'owners');
     }
@@ -434,11 +436,11 @@ function saveChanges(type) {
             residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
             residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+            residentResults[rowId].suffix = document.getElementById("suffix").value;
             residentResults[rowId].dob = document.getElementById("dob").value;
             residentResults[rowId].dod = document.getElementById("dod").value;
             residentResults[rowId].vessel = document.getElementById("vessel").value;
             residentResults[rowId].organization = document.getElementById("org").value;
-            residentResults[rowId].owns = document.getElementById("owns").checked;
         }
         populateTable(residentResults, 'residents'); 
     }
@@ -452,11 +454,16 @@ function saveChanges(type) {
             lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
             lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
             lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            lotResults[rowId].dob = document.getElementById("dob").value;
-            lotResults[rowId].dod = document.getElementById("dod").value;
-            lotResults[rowId].vessel = document.getElementById("vessel").value;
+            lotResults[rowId].suffix = document.getElementById("suffix").value;
+            if(document.getElementById("dob")){ //resident
+                lotResults[rowId].dob = document.getElementById("dob").value;
+                lotResults[rowId].dod = document.getElementById("dod").value;
+                lotResults[rowId].vessel = document.getElementById("vessel").value;
+            }
             lotResults[rowId].organization = document.getElementById("org").value;
-            lotResults[rowId].owns = document.getElementById("owns").checked;
+            if(document.getElementById("owns")){
+                lotResults[rowId].owns = document.getElementById("owns").checked;
+            }
         }
         populateTable(lotResults, 'lots'); 
     }
