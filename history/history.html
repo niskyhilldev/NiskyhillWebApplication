@@ -16,6 +16,17 @@
             <span class="topText"><a href="../index.html">Nisky Hill</a></span>
             <span class="bottomText"><a href="../index.html">Cemetery</a></span>
         </div>
+        <div class="dropdown">
+            <button onclick="myFunction()" class="dropbtn">Menu</button>
+            <div id="myDropdown" class="dropdown-content">
+              <a href="../index.html">Home</a>
+              <a href="./history.html">History</a>
+              <a href="../notableResidents/notableResidents.html">Notable Residents</a>
+              <a href="../contact/contact.html">Contact</a>
+              <a href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
+              <a href="../admin/admin.html">Find a Grave</a>
+            </div>
+        </div>
         <ul class="navItems">
             <li class="navOption"> <a href="../index.html">HOME</a></li>
             <li class="navOption"> <a href="history.html">HISTORY</a></li>
@@ -39,7 +50,6 @@
         <div class = "aboutSection">
             <h1 class="aboutHeader">Nisky Hill Cemetery</h1>
                 <p  class="aboutInfo">Nisky Hill Cemetery, located in Bethlehem, Pennsylvania, is one of the region’s most historically significant burial grounds. Established in the mid-19th century, the cemetery reflects Bethlehem’s deep-rooted Moravian heritage and serves as the final resting place for many prominent figures from the area’s past. The name "Nisky" is believed to be derived from "Niesky," a town in Germany that was closely connected to the Moravian Church. The cemetery was originally created to accommodate the growing population of Bethlehem and to provide a space distinct from the traditional Moravian burial ground, God’s Acre, which had strict burial customs. Unlike God’s Acre, where all gravestones are flat and uniform to reflect the Moravian belief in equality in death, Nisky Hill allowed for more individualized markers and monuments.  </p>
-
                 <p class="aboutInfo">During the 19th and early 20th centuries, Nisky Hill Cemetery became the resting place for many notable residents, including influential industrialists, clergy, and civic leaders. Many individuals who played key roles in the rise of Bethlehem Steel, one of America’s largest steel producers, are buried here. The cemetery also contains graves of veterans from multiple wars, including the Civil War, World War I, and World War II. Over time, the cemetery expanded, adding sections to accommodate different religious and ethnic groups, reflecting Bethlehem’s diverse population.  </p>
         </div>
     </div>
@@ -66,7 +76,7 @@
                 <p class="aboutInfo">The Moravians faced persecution in the 1600s, forcing many to flee their homeland. In the early 18th century, a group of them found refuge on the estate of Count Nikolaus Ludwig von Zinzendorf in Saxony, Germany. Under his leadership, the Moravians experienced a spiritual revival and became one of the first Protestant denominations to engage in organized missionary work, spreading their beliefs to the Americas, Africa, the Caribbean, and beyond.  </p>
         </div>
     </div>
-    <div class=aboutSectionSpacing>
+    <div class = aboutSectionSpacing>
         <div class = "aboutSection">
             <p class="aboutInfo">Moravians played a significant role in colonial America, particularly in Pennsylvania and North Carolina, where they founded settlements like Bethlehem, Nazareth, and Winston-Salem. They emphasized education, music, and communal cooperation, and their missions reached Native American tribes as well.  </p>
             <br/>
@@ -78,7 +88,7 @@
     </div>
    
     <footer class='footer'>
-        <div class="navLogo">
+        <div class="navLogoFooter">
             <span class="topText">Nisky Hill</span>
             <span class="bottomText">Cemetery</span>
         </div>
@@ -92,5 +102,27 @@
             <span class="footerTop">(610) 866-5742</span>
         </div>
     </footer>
+    <!-- credit: https://www.w3schools.com/howto/howto_js_dropdown.asp -->
+    <script>
+        /* When the user clicks on the button, 
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+                }
+            }
+        }
+    </script>
   </body>
 </html>
