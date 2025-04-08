@@ -1,7 +1,7 @@
 const data = {
     "0": { lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
     "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { organization: "Nisky Hill", owns: true }
+    "2": { lotNumber: "456", lotId: "B", section: "2", organization: "Nisky Hill", owns: true }
 };
 const plotsData = {
     "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
@@ -298,35 +298,59 @@ function createPopup(details, rowId, type) {
         `;
     }
     else if (type === 'lots'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-            <label>Vessel: 
-                <select id="vessel" disabled>
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                </select>
-            </label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('lots')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
+        if(details.owns && !details.dod){
+            popupHTML = `
+            <div class="overlay" id="overlay" onclick="closePopup()"></div>
+            <div class="popup" id="popup" data-row-id="${rowId}">
+                <h3>Details</h3>
+                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
+                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
+                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
+                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
+                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
+                <label>
+                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
+                    <a id="downloadLink" style="display:none;" download>Download File</a>
+                </label>
+                <button onclick="enableEditing()">Edit</button>
+                <button onclick="saveChanges('lots')">Save</button>
+                <button onclick="closePopup()">Close</button>
+            </div>
+            `;
+        }
+        else{
+            popupHTML = `
+            <div class="overlay" id="overlay" onclick="closePopup()"></div>
+            <div class="popup" id="popup" data-row-id="${rowId}">
+                <h3>Details</h3>
+                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
+                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
+                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
+                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
+                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
+                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
+                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+                <label>Vessel: 
+                    <select id="vessel" disabled>
+                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
+                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                    </select>
+                </label>
+                <label>
+                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
+                    <a id="downloadLink" style="display:none;" download>Download File</a>
+                </label>
+                <label>Owns: <input type="checkbox" id="owns" disabled ${details.owns ? 'checked' : ''}></label>
+                <button onclick="enableEditing()">Edit</button>
+                <button onclick="saveChanges('lots')">Save</button>
+                <button onclick="closePopup()">Close</button>
+            </div>
+            `;
+        }
     }
     else if (type === 'plots') {
         popupHTML = `
