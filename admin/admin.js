@@ -154,7 +154,7 @@ function populateTable(filteredData, type) {
         tableBody.innerHTML = ""; // Clear previous content
 
         if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
@@ -180,7 +180,7 @@ function populateTable(filteredData, type) {
         tableBody.innerHTML = ""; // Clear previous content
 
         if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
@@ -206,7 +206,7 @@ function populateTable(filteredData, type) {
         tableBody.innerHTML = ""; // Clear previous content
 
         if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
@@ -232,7 +232,7 @@ function populateTable(filteredData, type) {
         tableBody.innerHTML = ""; // Clear previous content
 
         if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='5'>No results found</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
