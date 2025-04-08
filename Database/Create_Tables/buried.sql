@@ -12,6 +12,7 @@ CREATE TABLE buried(
   lot_number VARCHAR(8) NOT NULL,
   lot_descriptor VARCHAR(255) NOT NULL,
   section VARCHAR(4) NOT NULL,
+  public BOOLEAN DEFAULT TRUE -- false if cannot be viewed by public 
   
 
   CHECK (LOWER(TRIM(capsule)) IN ('urn', 'casket')),  -- sets domain for capsule and makes sure we do not store whitespace or any upercase characters
