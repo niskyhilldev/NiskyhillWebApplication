@@ -16,6 +16,17 @@
             <span class="topText"><a href="../index.html">Nisky Hill</a></span>
             <span class="bottomText"><a href="../index.html">Cemetery</a></span>
         </div>
+        <div class="dropdown">
+          <button onclick="myFunction()" class="dropbtn">Menu</button>
+          <div id="myDropdown" class="dropdown-content">
+            <a href="../index.html">Home</a>
+            <a href="../history/history.html">History</a>
+            <a href="..//notableResidents/notableResidents.html">Notable Residents</a>
+            <a href="./contact.html">Contact</a>
+            <a href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
+            <a href="../admin/admin.html">Find a Grave</a>
+          </div>
+      </div>
         <ul class="navItems">
             <li class="navOption"> <a href="../index.html">HOME</a></li>
             <li class="navOption"> <a href="../history/history.html">HISTORY</a></li>
@@ -60,7 +71,7 @@
     
       
     <footer class='footer'>
-        <div class="navLogo">
+        <div class="navLogoFooter">
             <span class="topText">Nisky Hill</span>
             <span class="bottomText">Cemetery</span>
         </div>
@@ -105,5 +116,24 @@
         alert("There was an issue submitting the form. Please try again.");
       });
     });
+        /* When the user clicks on the button, 
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+                }
+            }
+        }
   </script>
 </html>

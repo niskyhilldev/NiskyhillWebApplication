@@ -25,6 +25,7 @@
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
+                <th>Suffix</th>
                 <th>Organization</th>
                 <th>Action</th>
             </tr>
@@ -34,65 +35,15 @@
         </tbody>
     </table>
 
-    <div class="search-container">
-        <h2>Residents</h2>
-        <label for="searchLast">Last Name:</label>
-        <input type="text" id="searchResidentLast" placeholder="Search last name">
-        <label for="searchOrg">Organization:</label>
-        <input type="text" id="searchResidentOrg" placeholder="Search organization">
-        <button onclick="performResidentSearch()">Search</button>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Last Name</th>
-                <th>Organization</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="residentTableBody">
-            <!-- Table content will be dynamically populated -->
-        </tbody>
-    </table>
-    
-
-
-    <div class="search-container">
-        <h2>Lots</h2>
-        <label for="searchSection">Section:</label>
-        <input type="text" id="searchSection" placeholder="Search section">
-        <label for="searchLot">Lot:</label>
-        <input type="text" id="searchLot" placeholder="Search lot">
-        <button onclick="performLotSearch()">Search</button>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Last Name</th>
-                <th>Organization</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="lotTableBody">
-            <!-- Table content will be dynamically populated -->
-        </tbody>
-    </table>
-
-    <h2>Add a Person</h2>
+    <h2>Add an Owner</h2>
 
     <!-- Plus Button -->
-    <button id="addEntryBtn" onclick="toggleForm()">+</button>
+    <button id="addOwnerBtn" onclick="toggleForm()">+</button>
 
     <!-- Add Entry Form -->
-    <div id="addEntryForm" style="display:none;">
+    <div id="addOwnerForm" style="display:none;">
         <h3>Add New Entry</h3>
-        <form id="newEntryForm">
+        <form id="newOwnerForm">
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName">
             
@@ -114,6 +65,69 @@
             <label for="cemSection">Section:</label>
             <input type="text" id="cemSection">
             
+            <label for="note">Notes:</label>
+            <input type="file" id="note" onchange="handleFileUpload(event)">
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+
+    <div class="search-container">
+        <h2>Residents</h2>
+        <label for="searchLast">Last Name:</label>
+        <input type="text" id="searchResidentLast" placeholder="Search last name">
+        <label for="searchOrg">Organization:</label>
+        <input type="text" id="searchResidentOrg" placeholder="Search organization">
+        <button onclick="performResidentSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Suffix</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="residentTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+    
+    <h2>Add a Resident</h2>
+
+    <!-- Plus Button -->
+    <button id="addResidentBtn" onclick="toggleResForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addResidentForm" style="display:none;">
+        <h3>Add New Entry</h3>
+        <form id="newResidentForm">
+            <label for="fName">First Name:</label>
+            <input type="text" id="fName">
+            
+            <label for="mName">Middle Name:</label>
+            <input type="text" id="mName">
+            
+            <label for="lName">Last Name:</label>
+            <input type="text" id="lName">
+
+            <label for="resOrganization">Organization:</label>
+            <input type="text" id="resOrganization">
+            
+            <label for="resLotNum">Lot Number:</label>
+            <input type="text" id="resLotNum">
+            
+            <label for="resPortion">Lot Portion:</label>
+            <input type="text" id="resPortion">
+            
+            <label for="resCemSection">Section:</label>
+            <input type="text" id="resCemSection">
+
             <label for="dofb">Date of Birth:</label>
             <input type="date" id="dofb">
             
@@ -126,16 +140,64 @@
                 <option value="casket">Casket</option>
             </select>
             
-            <label for="note">Notes:</label>
-            <input type="file" id="note" onchange="handleFileUpload(event)">
-            
-            <label for="owner">Owns:</label>
-            <input type="checkbox" id="owner">
+            <label for="resNote">Notes:</label>
+            <input type="file" id="resNote" onchange="handleFileUpload(event)">
             
             <button type="submit">Add Entry</button>
         </form>
         
     </div>
+
+    <div class="search-container">
+        <h2>Lots</h2>
+        <label for="searchSection">Section:</label>
+        <input type="text" id="searchSection" placeholder="Search section">
+        <label for="searchLot">Lot:</label>
+        <input type="text" id="searchLot" placeholder="Search lot">
+        <button onclick="performLotSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Suffix</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="lotTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <h2>Bury an Owner</h2>
+    <div class="search-container">
+        <label for="searchOwnLast">Last Name:</label>
+        <input type="text" id="searchOwnLast" placeholder="Search last name">
+        <label for="searchOwnOrg">Organization:</label>
+        <input type="text" id="searchOwnOrg" placeholder="Search organization">
+        <button onclick="performBurialSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Suffix</th>
+                <th>Organization</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="burialTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
 
     <h1>Lots</h1>
     <div class="search-container">

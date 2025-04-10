@@ -1,13 +1,13 @@
 .navBar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    background-color: #0d2543;
-    width: 100%;
-    margin: 0;  
-    padding: 20px; 
-    height: 55px;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  height: 120px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .topText {
@@ -55,8 +55,19 @@
   font-family: 'Instrument Sans', sans-serif;
   font-weight: bold;
   letter-spacing: 1.5px;
-  text-align: left;
   line-height: 1; /* Reduce spacing between lines */
+  text-align: center;
+}
+
+.navLogoFooter{
+  display: flex;
+  flex-direction: column; /* Stack text vertically */
+  color: white;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  line-height: 1; /* Reduce spacing between lines */
+  text-align: center;
 }
 
 .navItems {
@@ -65,9 +76,6 @@
   gap: 40px; /* Adds space between menu items */
   list-style: none;
   align-items: center;
-  margin: 0;
-  padding: 0;
-  margin-left: 200px;
   text-align: center;
 }
 
@@ -202,17 +210,20 @@ a {
   }
 
   .team-member {
-    width: 25%;
+    width: 20%;
+    min-width: 180px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin: 10px;
     text-align: center;
-    cursor: pointer;
     transition: 0.3s ease;
     cursor: pointer;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
+
 
   .team-member:hover{
     transform: translateY(-10px);
@@ -228,15 +239,16 @@ a {
   }
 
   .team-member h3 {
-    font-size: 28px;
+    font-size: 1.5rem;
     color: #af8c30;
     margin-bottom: 10px;
   }
 
   .team-member .title{
-    font-size: 20px;
+    font-size: 1rem;
     color: #0d2543;
     margin-bottom: 10px;
+    font-family: 'Instrument Sans', sans-serif;
   }
 
   .team-member content {
@@ -255,7 +267,11 @@ a {
     border-radius: 10px;
     z-index: 10;
     background-color: white;
-    width: 800px;
+    width: 90%;
+    max-width: 800px; 
+    min-height: 70vh;
+    max-height: 90vh; 
+    overflow-y: auto; 
 }
 
 .modal.active {
@@ -273,6 +289,8 @@ a {
 .modalHeader .modalTitle {
     font-size: 1.25rem;
     font-weight: bold;
+    font-family: 'Instrument Sans', sans-serif;
+
 }
 
 .modalHeader .closeButton {
@@ -284,22 +302,27 @@ a {
     font-weight: bold;
 }
 
+.modalText {
+  font-family: 'Instrument Sans', sans-serif;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
 .modalBody {
     padding: 10px 15px;
     display: flex;
+    flex-direction: row;
     gap: 10px;
+    align-items: center;
 }
 
-.modalImage {
-    flex: 0 0 auto;
-    width: 200px;
-}
 
 .modalImage img{
-    max-width: 80%;
-    height: 150px;
-    top: 50%;
-    left: 50%;
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    max-width: 16rem;
+    max-height: 16rem;
 }
 
 #overlay {
@@ -321,4 +344,95 @@ a {
 
 #overlay.active ~ .team-section .team-member:hover {
     transform: none;
+}
+
+
+/* Dropdown Button */
+/* credit: https://www.w3schools.com/howto/howto_js_dropdown.asp */
+.dropbtn {
+  background-color: #0d2543;
+  color: white;
+  padding: 16px;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  display: none;
+  font-size: 20px; 
+  font-family: Inria Serif; 
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #0d2543;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: none;
+}
+
+.dropdown{
+  color: white; 
+  font-size: 18px; 
+  font-family: Inria Serif; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+@media (max-width: 900px){
+  .team-member img{
+    width: 50%;
+    height: 50%;
+  }
+  .modal {
+    width: 90%;
+  }
+  .navOption, .findAGraveButton{
+    display: none;
+  }
+  .dropbtn{
+    display: block;
+  }
+  .dropdown{
+    display: inline-block;
+  }
+  .navLogo {
+    width: 50%;
+  }
+  .navLogoFooter{
+    display: none;
+  }
+  .footerColumns {
+    width: 50%;
+  }
 }
