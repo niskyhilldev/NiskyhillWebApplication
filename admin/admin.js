@@ -334,10 +334,7 @@ function createPopup(details, rowId, type) {
                     <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
                 </select>
             </label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
+            <label>Public: <input type="checkbox" id="public" disabled ${details.valid ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
@@ -564,7 +561,9 @@ function saveChanges(type) {
             residentResults[rowId].dod = document.getElementById("dod").value;
             residentResults[rowId].vessel = document.getElementById("vessel").value;
             residentResults[rowId].organization = document.getElementById("org").value;
+            residentResults[rowId].valid = document.getElementById("public").checked;
         }
+        console.log(document.getElementById("public").checked);
         populateTable(residentResults, 'residents'); 
     }
     else if (type === 'lots'){
@@ -717,11 +716,12 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     const lotNumber = document.getElementById('resLotNum').value;
     const lotPortion = document.getElementById('resPortion').value;
     const section = document.getElementById('resCemSection').value;
-    const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
+    // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
     const organization = document.getElementById('resOrganization').value;
     const dob = document.getElementById('dofb').value;
     const dod = document.getElementById('dofd').value;
     const vessel = document.getElementById('vesselType').value;
+    const valid = document.getElementById('valid').checked;
     
     // Add new entry to the data object
     data[newId] = {
@@ -734,8 +734,9 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
         dob: dob,
         dod: dod,
         vessel: vessel,
+        valid: valid,
         owns: false,
-        notes: notes,
+        // notes: notes,
         organization: organization
     };
 
