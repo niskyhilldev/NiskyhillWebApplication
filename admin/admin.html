@@ -296,5 +296,31 @@
         </form>
         
     </div>
+
+    <h1>Files</h1>
+    <h2>Add a File</h2>
+    <!-- Plus Button -->
+    <button id="addFileBtn" onclick="toggleFileForm()">+</button>
+
+    <!-- Add Entry Form -->
+    <div id="addFileForm" style="display:none;">
+        <h3>Add New Lot</h3>
+        <form id="newFileForm">                        
+            <label for="fileSectionId">Section:</label>
+            <input type="text" id="fileSectionId" required>
+
+            <label for="fileLotId">Lot:</label>
+            <input type="text" id="fileLotId" required>
+
+            <label for="filePartition">Lot:</label>
+            <input type="text" id="filePartition" required>
+            
+            <label for="newFile">File:</label>
+            <input type="file" id="newFile" onchange="handleFileUpload(event)" required>
+            
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
 </body>
 </html>
