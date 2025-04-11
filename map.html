@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nisky Hill Cemetery Map</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #f5f5f5;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      padding: 1rem;
+    }
+    #map {
+      height: 500px;
+      width: 100%;
+      border: 1px solid #ccc;
+    }
+    .info-panel {
+      width: 250px;
+      text-align: left;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+    .info-panel img {
+      width: 100%;
+      border-radius: 5px;
+      display: none;
+    }
+    .search-container {
+      margin-top: 1rem;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 8px;
+    }
+    .search-button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 8px;
+    }
+    .suggestions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+    }
+    .suggestions li {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestions li:hover {
+      background-color: #eee;
+    }
+
+    /* Fade-in for outlines and routes */
+    .leaflet-interactive.fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nisky Hill Cemetery Interactive Map</h1>
+  </header>
+
+  <div class="container">
+    <div style="flex: 1">
+      <p>Nisky Hill Search Demo</p>
+      <div class="search-container">
+        <input type="text" id="grave-search" class="search-bar" placeholder="Search for a name..." oninput="updateSuggestions()" />
+        <ul id="suggestions" class="suggestions"></ul>
+        <button class="search-button" onclick="searchGrave()">Search</button>
+      </div>
+      <div id="map"></div>
+    </div>
+    <div class="info-panel" id="info-panel">
+      <h2>Person Info</h2>
+      <img id="grave-image" src="" alt="Grave Image" />
+      <p id="grave-name">Search a name</p>
+      <p id="grave-dates"></p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: -2,
+      zoomSnap: 0.5
+    });
+
+    const bounds = [[0, 0], [1000, 2000]];
+    L.imageOverlay('map-1.png', bounds).addTo(map);
+    map.fitBounds(bounds);
+    map.setView([300, 1000], map.getZoom() + 2);
+
+    const graveLocations = {
+      "John Doe": {
+        coords: [380, 1050],
+        image: "https://hiddenca.com/wp-content/uploads/2018/02/John-Doe-Cemetery-16-1024x683.jpg",
+        name: "John Doe",
+        dates: "1999 - 2025",
+        section: "L"
+      },
+      "Jane Doe": {
+        coords: [360, 1000],
+        image: "https://gray-wlox-prod.gtv-cdn.com/resizer/v2/SUWIM3LOQNAB7PNY7D2XSA2R7A.jpg",
+        name: "Jane Doe",
+        dates: "1850 - 1920",
+        section: "L"
+      },
+      "Sam Maloof": {
+        coords: [400, 1100],
+        image: "https://t3.ftcdn.net/jpg/05/56/37/98/360_F_556379859_zsEe3OELnG166W3ektfY2f0nVQKeOluH.jpg",
+        name: "Sam Maloof",
+        dates: "2002 - ",
+        section: "L"
+      }
+    };
+
+    const graveMarkers = {};
+    for (const person in graveLocations) {
+      const data = graveLocations[person];
+      const marker = L.marker(data.coords)
+        .bindPopup(`<b>${data.name}</b><br>${data.dates}`);
+      graveMarkers[person] = marker;
+    }
+
+    const sectionLRoute = L.polyline([
+      [460, 881], [393, 881], [370, 900], [357, 917], [350, 933],
+      [350, 947], [355, 965], [360, 975], [367, 988], [388, 1014], [392, 1019]
+    ], {
+      color: 'blue',
+      weight: 3
+    });
+
+    const sectionLOutline = L.polygon([
+      [332, 958], [334, 956], [338, 954], [344, 954], [346, 955], [350, 958], [355, 970],
+      [364, 988], [380, 1009], [400, 1027], [420, 1046], [430, 1060], [435, 1075], [437, 1088],
+      [435, 1098], [433, 1104], [424, 1116], [410, 1123], [395, 1125], [387, 1124], [370, 1118],
+      [353, 1100], [348, 1090], [341, 1075], [334, 1050], [328, 1025], [327, 1000], [328, 975]
+    ], {
+      color: 'blue',
+      fillColor: '#89cff0',
+      fillOpacity: 0.5,
+      weight: 2
+    }).bindPopup("Section L Outline");
+
+    L.marker([455, 881]).addTo(map).bindPopup("Main Entrance");
+
+    const searchInput = document.getElementById("grave-search");
+    const suggestionsList = document.getElementById("suggestions");
+
+    function updateSuggestions() {
+      const input = searchInput.value.toLowerCase();
+      suggestionsList.innerHTML = "";
+      suggestionsList.style.display = "none";
+
+      if (input.length > 0) {
+        Object.keys(graveLocations).forEach(name => {
+          if (name.toLowerCase().includes(input)) {
+            const li = document.createElement("li");
+            li.textContent = `${name} (${graveLocations[name].dates})`;
+            li.onclick = () => {
+              searchInput.value = name;
+              suggestionsList.style.display = "none";
+              searchGrave();
+            };
+            suggestionsList.appendChild(li);
+          }
+        });
+        if (suggestionsList.children.length > 0) {
+          suggestionsList.style.display = "block";
+        }
+      }
+    }
+
+    function searchGrave() {
+      const name = searchInput.value;
+      const data = graveLocations[name];
+
+      if (data) {
+        // Remove previous markers and overlays
+        for (const key in graveMarkers) map.removeLayer(graveMarkers[key]);
+        map.removeLayer(sectionLRoute);
+        map.removeLayer(sectionLOutline);
+
+        // Add marker and center map
+        graveMarkers[name].addTo(map);
+        map.setView(data.coords, map.getZoom());
+        graveMarkers[name].openPopup();
+
+        // Show section L visuals if applicable
+        if (data.section === "L") {
+          sectionLRoute.addTo(map);
+          sectionLOutline.addTo(map);
+
+          const routeElem = sectionLRoute.getElement();
+          const outlineElem = sectionLOutline.getElement();
+          if (routeElem) routeElem.classList.add("fade-in");
+          if (outlineElem) outlineElem.classList.add("fade-in");
+        }
+
+        // Update info panel
+        document.getElementById("grave-image").src = data.image;
+        document.getElementById("grave-image").style.display = "block";
+        document.getElementById("grave-name").textContent = data.name;
+        document.getElementById("grave-dates").textContent = data.dates;
+        suggestionsList.style.display = "none";
+      } else {
+        alert("Grave not found.");
+        document.getElementById("grave-image").style.display = "none";
+        document.getElementById("grave-name").textContent = "Search a name";
+        document.getElementById("grave-dates").textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
