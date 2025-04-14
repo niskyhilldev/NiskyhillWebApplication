@@ -143,15 +143,14 @@ a {
 
 
 .aboutSectionSpacing {
-  margin-top: 45px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  margin: 2.5rem;
 }
 
-.historyImages {
-  transform: translateY(-50px);
-}
+
 
 
 .footer {
