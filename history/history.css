@@ -84,7 +84,8 @@ html, body {
     overflow-x: hidden;
 }
 
-.navOption{
+
+.navOption {
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -93,6 +94,33 @@ html, body {
   letter-spacing: 3.60px; 
   list-style: none;
   text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+/* #4: https://prismic.io/blog/css-hover-effects */
+.navOption::after,
+.navOption::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, white, white);
+  bottom: -5px;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease-out;
+}
+
+.navOption::before {
+  top: -5px;
+  transform-origin: left;
+}
+
+.navOption:hover::after,
+.navOption:hover::before {
+  transform: scaleX(1);
 }
 
 
@@ -119,6 +147,13 @@ a {
   font-weight: 700; 
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.findAGraveButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 * {
