@@ -350,9 +350,7 @@ a {
 @media (max-width: 1000px){
   .aboutSectionSpacing{
     flex-direction: column;
-  }
-  .aboutSectionSpacing2{
-    flex-direction: column;
+    margin: 0.5rem;
   }
   .aboutSection {
     width: 100%;
