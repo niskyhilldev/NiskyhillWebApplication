@@ -84,6 +84,19 @@ html, body {
     overflow-x: hidden;
 }
 
+.menuOption {
+  color: white; 
+  font-size: 1rem; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
 
 .navOption {
   color: white; 
@@ -362,7 +375,7 @@ fieldset {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: white;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -372,7 +385,7 @@ fieldset {
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: #0d2543;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
