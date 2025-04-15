@@ -182,7 +182,6 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
                 <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
@@ -208,7 +207,6 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
                 <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
                     <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
@@ -315,7 +313,6 @@ function createPopup(details, rowId, type) {
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
             <label>Vessel: 
@@ -367,7 +364,6 @@ function createPopup(details, rowId, type) {
                 <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
                 <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
                 <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
                 <label>
                     Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                     <a id="downloadLink" style="display:none;" download>Download File</a>
