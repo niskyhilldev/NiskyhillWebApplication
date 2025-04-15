@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Lot</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="form.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <script>
+        function submitForm() {
+            document.getElementById("newLotForm").reset();
+        }
+    </script>
+</head>
+<body>
+    <h1 style="text-align:center;">Add a Lot</h1>
+    <div id="addLotForm">
+        <form id="newLotForm">            
+            <label for="addLotNumber">Lot Number:</label>
+            <input type="text" id="addLotNumber">
+            
+            <label for="addLotPortion">Lot Portion:</label>
+            <input type="text" id="addLotPortion">
+            
+            <label for="sectionId">Section:</label>
+            <input type="text" id="sectionId">
+            
+            <label for="ownerFirst">Owner First Name:</label>
+            <input type="text" id="ownerFirst">
+            
+            <label for="ownerMiddle">Owner Middle Name:</label>
+            <input type="text" id="ownerMiddle">
+            
+            <label for="ownerLast">Owner Last Name:</label>
+            <input type="text" id="ownerLast">
+
+            <label for="ownerSuffix">Owner Suffix:</label>
+            <input type="text" id="ownerSuffix">
+
+            <button type="submit" onclick="submitForm()">Add Entry</button>
+        </form>
+        
+    </div>
+</body>

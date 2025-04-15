@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="form.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <script>
+        function submitForm() {
+            document.getElementById("addResidentForm").reset();
+        }
+    </script>
+</head>
+<body>
+    <h1 style="text-align:center;">Add a Resident</h1>
+    <div id="addResidentForm">
+        <form id="newResidentForm">
+            <label for="fName">First Name:</label>
+            <input type="text" id="fName">
+            
+            <label for="mName">Middle Name:</label>
+            <input type="text" id="mName">
+            
+            <label for="lName">Last Name:</label>
+            <input type="text" id="lName">
+
+            <label for="suffix">Suffix:</label>
+            <input type="text" id="suffix">
+
+            <label for="resOrganization">Organization:</label>
+            <input type="text" id="resOrganization">
+            
+            <label for="resLotNum">Lot Number:</label>
+            <input type="text" id="resLotNum">
+            
+            <label for="resPortion">Lot Portion:</label>
+            <input type="text" id="resPortion">
+            
+            <label for="resCemSection">Section:</label>
+            <input type="text" id="resCemSection">
+
+            <label for="dofb">Date of Birth:</label>
+            <input type="date" id="dofb">
+            
+            <label for="dofd">Date of Death:</label>
+            <input type="date" id="dofd">
+            
+            <label for="vesselType">Vessel:</label>
+            <select id="vesselType">
+                <option value="urn">Urn</option>
+                <option value="casket">Casket</option>
+            </select>
+
+            <label for="valid">Public:</label>
+            <input type="checkbox" id="valid" checked>
+            
+            <button type="submit" onclick="submitForm()">Add Entry</button>
+        </form>
+    </div>
+</body>
