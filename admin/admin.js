@@ -81,19 +81,9 @@ function performBurialSearch() {
 }
 function performResidentSearch() {
     let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchResidentOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
-            }
-            return false;
-        }
         if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.dod) {
             return true;
         }
         return false;
