@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="form.css" />
     <script type="text/javascript" src="admin.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <script>
+        function submitForm() {
+            document.getElementById("newOwnerForm").reset();
+        }
+    </script>
 </head>
 <body>
     <h1 style="text-align:center;">Add an Owner</h1>
@@ -37,7 +42,7 @@
             <label for="cemSection">Section:</label>
             <input type="text" id="cemSection">
             
-            <button type="submit">Add Entry</button>
+            <button type="submit" onclick="submitForm()">Add Entry</button>
         </form>
     </div>
 </body>
