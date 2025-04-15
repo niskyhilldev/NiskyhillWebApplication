@@ -31,7 +31,7 @@ input::placeholder {
     color: #af8c30;
 }
 
-button {
+button [type="submit"]{
     background-color: #af8c30;
     color: black;
     padding: 10px;
