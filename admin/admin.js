@@ -918,3 +918,47 @@ function saveSections() {
         tableBody.appendChild(row);
     });
 }
+
+function performFileSearch() {
+    const fileTableBody = document.getElementById("fileTableBody");
+    
+    // Clear existing table content
+    fileTableBody.innerHTML = "";
+
+    // Temporary file data
+    const tempFiles = [
+        { partition: "Northern Half", name: "File1.pdf", action: "Download" },
+        { partition: "Southern Half", name: "File2.docx", action: "Download" }
+    ];
+
+    // Populate the table with temporary files
+    tempFiles.forEach(file => {
+        const row = document.createElement("tr");
+
+        const fileCell = document.createElement("td");
+        fileCell.textContent = file.name;
+
+        const partitionCell = document.createElement("td");
+        partitionCell.textContent = file.partition;
+
+        const actionCell = document.createElement("td");
+        const actionButton = document.createElement("button");
+        actionButton.textContent = file.action;
+        actionButton.onclick = () => alert(`Downloading ${file.name}`);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginLeft = "10px"; 
+        deleteButton.onclick = (event) => {
+            const rowIndex = event.target.parentNode.parentNode.rowIndex; // Get row index
+            document.querySelector("table").deleteRow(rowIndex); // Delete row from the table
+        };
+
+        actionCell.appendChild(actionButton);
+        actionCell.appendChild(deleteButton);
+        row.appendChild(partitionCell);
+        row.appendChild(fileCell);
+        row.appendChild(actionCell);
+
+        fileTableBody.appendChild(row);
+    });
+}

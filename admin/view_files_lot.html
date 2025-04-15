@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lot Search</title>
+    <link rel="stylesheet" href="admin.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <script>
+        function submitForm() {
+            document.getElementById("addFileForm").reset();
+        }
+    </script>
+</head>
+<body>
+    <h1 style="text-align:center;">Search for a Lot</h1>
+    <div class="search-container">
+        <label for="searchSectionPlots">Section:</label>
+        <input type="text" id="searchSectionPlots" placeholder="Search section">
+        <label for="searchLotPlots">Lot:</label>
+        <input type="text" id="searchLotPlots" placeholder="Search lot">
+        <button onclick="performFileSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Partition</th>
+                <th>File</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="fileTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+</body>
