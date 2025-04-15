@@ -487,11 +487,13 @@ html, body {
   .aboutSectionSpacing{
     flex-direction: column;
     margin-bottom: 0;
+    margin-top: 1rem;
   }
   .aboutSectionSpacing2{
     flex-direction: column;
     margin-bottom: 0;
-
+    margin-top: 1rem;
+    margin-left: 0;
   }
   .aboutSection {
     width: 100%;
