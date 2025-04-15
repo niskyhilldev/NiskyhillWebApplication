@@ -897,6 +897,24 @@ function showEditor() {
 }
 
 function saveSections() {
-    const editor = document.getElementById("sectionEditor");
-    editor.style.display = "none";
+    const tableBody = document.getElementById("sectionTableBody");
+    
+    // Clear existing rows to update them
+    tableBody.innerHTML = "";
+
+    sections.forEach((section) => {
+        const row = document.createElement("tr");
+
+        // Non-editable section name
+        const nameCell = document.createElement("td");
+        nameCell.textContent = section.name;
+
+        // Non-editable file information
+        const fileCell = document.createElement("td");
+        fileCell.textContent = section.file ? section.file.name : "No file available";
+
+        row.appendChild(nameCell);
+        row.appendChild(fileCell);
+        tableBody.appendChild(row);
+    });
 }
