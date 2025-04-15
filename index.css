@@ -85,7 +85,21 @@ html, body {
     overflow-x: hidden;
 }
 
-.navOption{
+.menuOption {
+  color: white; 
+  font-size: 1rem; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+
+.navOption {
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -94,6 +108,33 @@ html, body {
   letter-spacing: 3.60px; 
   list-style: none;
   text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+/* #4: https://prismic.io/blog/css-hover-effects */
+.navOption::after,
+.navOption::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, white, white);
+  bottom: -5px;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease-out;
+}
+
+.navOption::before {
+  top: -5px;
+  transform-origin: left;
+}
+
+.navOption:hover::after,
+.navOption:hover::before {
+  transform: scaleX(1);
 }
 
 .navOption a {
@@ -115,6 +156,13 @@ html, body {
   font-weight: 700; 
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.findAGraveButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 .learnMoreButton {
@@ -130,6 +178,13 @@ html, body {
     font-family: Instrument Sans;
     font-size: 14px;
     cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 .learnMoreButtonAltColor {
@@ -145,6 +200,13 @@ html, body {
   font-family: Instrument Sans;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 .learnMoreButtonAltColor2 {
@@ -160,6 +222,13 @@ html, body {
   font-family: Instrument Sans;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor2:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 
@@ -389,7 +458,8 @@ html, body {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: white;
+  color: #0d2543;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -399,7 +469,7 @@ html, body {
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: #0d2543;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
