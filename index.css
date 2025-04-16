@@ -392,6 +392,7 @@ html, body {
   word-wrap: break-word;
   margin-left: 40px;
   text-align: center;
+  text-decoration: none;
 }
 
 .footerTopTitle {
