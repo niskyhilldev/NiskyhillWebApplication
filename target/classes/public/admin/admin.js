@@ -81,19 +81,9 @@ function performBurialSearch() {
 }
 function performResidentSearch() {
     let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchResidentOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
-            }
-            return false;
-        }
         if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.dod) {
             return true;
         }
         return false;
@@ -192,7 +182,6 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
                 <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
@@ -218,7 +207,6 @@ function populateTable(filteredData, type) {
                 <td>${entry.buriedMiddle || ""}</td>
                 <td>${entry.buriedLast || ""}</td>
                 <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
                     <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
@@ -325,7 +313,6 @@ function createPopup(details, rowId, type) {
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
             <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
             <label>Vessel: 
@@ -334,10 +321,7 @@ function createPopup(details, rowId, type) {
                     <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
                 </select>
             </label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
+            <label>Public: <input type="checkbox" id="public" disabled ${details.valid ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
@@ -380,7 +364,6 @@ function createPopup(details, rowId, type) {
                 <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
                 <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
                 <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
                 <label>
                     Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
                     <a id="downloadLink" style="display:none;" download>Download File</a>
@@ -564,7 +547,9 @@ function saveChanges(type) {
             residentResults[rowId].dod = document.getElementById("dod").value;
             residentResults[rowId].vessel = document.getElementById("vessel").value;
             residentResults[rowId].organization = document.getElementById("org").value;
+            residentResults[rowId].valid = document.getElementById("public").checked;
         }
+        console.log(document.getElementById("public").checked);
         populateTable(residentResults, 'residents'); 
     }
     else if (type === 'lots'){
@@ -660,6 +645,10 @@ function toggleSectionForm() {
     const form = document.getElementById('addSectionForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
+function toggleFileForm() {
+    const form = document.getElementById('addFileForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
 
 document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -713,11 +702,12 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     const lotNumber = document.getElementById('resLotNum').value;
     const lotPortion = document.getElementById('resPortion').value;
     const section = document.getElementById('resCemSection').value;
-    const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
+    // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
     const organization = document.getElementById('resOrganization').value;
     const dob = document.getElementById('dofb').value;
     const dod = document.getElementById('dofd').value;
     const vessel = document.getElementById('vesselType').value;
+    const valid = document.getElementById('valid').checked;
     
     // Add new entry to the data object
     data[newId] = {
@@ -730,8 +720,9 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
         dob: dob,
         dod: dod,
         vessel: vessel,
+        valid: valid,
         owns: false,
-        notes: notes,
+        // notes: notes,
         organization: organization
     };
 
@@ -797,6 +788,31 @@ document.getElementById('newSectionForm').addEventListener('submit', function(ev
 
     toggleSectionForm(); // Hide the form after submission
 });
+document.getElementById('newFileForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // // Generate a new unique ID based on the highest existing key in data
+    // const newId = Object.keys(plotsData).length > 0 
+    //     ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
+    //     : 0;
+
+    // // Get all the values from the form
+    // const section = document.getElementById('addSectionId').value;
+    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
+    
+    // // Add new entry to the data object
+    // sections[newId] = {
+    //     section: section,
+    //     internmentRecord: record,
+    // };
+
+    
+    // Clear the form fields
+    document.getElementById('newFileForm').reset();
+
+    toggleFileForm(); // Hide the form after submission
+});
+
 function deleteEntry(id, type) {
     if(type === 'residents'){
         residentResults[id] = null;
@@ -867,6 +883,68 @@ function showEditor() {
 }
 
 function saveSections() {
-    const editor = document.getElementById("sectionEditor");
-    editor.style.display = "none";
+    const tableBody = document.getElementById("sectionTableBody");
+    
+    // Clear existing rows to update them
+    tableBody.innerHTML = "";
+
+    sections.forEach((section) => {
+        const row = document.createElement("tr");
+
+        // Non-editable section name
+        const nameCell = document.createElement("td");
+        nameCell.textContent = section.name;
+
+        // Non-editable file information
+        const fileCell = document.createElement("td");
+        fileCell.textContent = section.file ? section.file.name : "No file available";
+
+        row.appendChild(nameCell);
+        row.appendChild(fileCell);
+        tableBody.appendChild(row);
+    });
+}
+
+function performFileSearch() {
+    const fileTableBody = document.getElementById("fileTableBody");
+    
+    // Clear existing table content
+    fileTableBody.innerHTML = "";
+
+    // Temporary file data
+    const tempFiles = [
+        { partition: "Northern Half", name: "File1.pdf", action: "Download" },
+        { partition: "Southern Half", name: "File2.docx", action: "Download" }
+    ];
+
+    // Populate the table with temporary files
+    tempFiles.forEach(file => {
+        const row = document.createElement("tr");
+
+        const fileCell = document.createElement("td");
+        fileCell.textContent = file.name;
+
+        const partitionCell = document.createElement("td");
+        partitionCell.textContent = file.partition;
+
+        const actionCell = document.createElement("td");
+        const actionButton = document.createElement("button");
+        actionButton.textContent = file.action;
+        actionButton.onclick = () => alert(`Downloading ${file.name}`);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginLeft = "10px"; 
+        deleteButton.onclick = (event) => {
+            const rowIndex = event.target.parentNode.parentNode.rowIndex; // Get row index
+            document.querySelector("table").deleteRow(rowIndex); // Delete row from the table
+        };
+
+        actionCell.appendChild(actionButton);
+        actionCell.appendChild(deleteButton);
+        row.appendChild(partitionCell);
+        row.appendChild(fileCell);
+        row.appendChild(actionCell);
+
+        fileTableBody.appendChild(row);
+    });
 }

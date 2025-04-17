@@ -19,12 +19,12 @@
         <div class="dropdown">
             <button onclick="myFunction()" class="dropbtn">Menu</button>
             <div id="myDropdown" class="dropdown-content">
-              <a href="./index.html">Home</a>
-              <a href="./history/history.html">History</a>
-              <a href="./notableResidents/notableResidents.html">Notable Residents</a>
-              <a href="./contact/contact.html">Contact</a>
-              <a href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
-              <a href="./admin/admin.html">Find a Grave</a>
+              <a class = 'menuOption' href="./index.html">Home</a>
+              <a class = 'menuOption' href="./history/history.html">History</a>
+              <a class = 'menuOption' href="./notableResidents/notableResidents.html">Notable Residents</a>
+              <a class = 'menuOption' href="./contact/contact.html">Contact</a>
+              <a class = 'menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
+              <a class = 'menuOption' href="./contact/contact.html">Find a Grave</a>
             </div>
         </div>
         <ul class="navItems">
@@ -33,7 +33,7 @@
             <li class="navOption"> <a href="notableResidents/notableResidents.html">NOTABLE RESIDENTS</a></li>
             <li class="navOption"> <a href="contact/contact.html">CONTACT</a></li>
             <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
-            <li><button onclick="location.href='../admin/admin.html';" class="findAGraveButton">FIND A GRAVE</button></li>
+            <li><button onclick="location.href='../contact/contact.html';" class="findAGraveButton">FIND A GRAVE</button></li>
         </ul>
     </nav>
     <h1 class="headerTitle" alt="Image of Nisky Hill" title="Image of Nisky Hill">
@@ -127,7 +127,8 @@
                 <li>Explore our Notable Residents</li>
                 <li>Identify Vacant Plots</li>
             </ul>
-            <button class="learnMoreButtonAltColor2">GO TO INTERACTIVE MAP</button>
+            <p class="aboutInfo">Our interactive map is still in production. It is expected to be completed by Q4 2025.</p>
+            <!-- <button class="learnMoreButtonAltColor2">GO TO INTERACTIVE MAP</button> -->
         </div>
     </div>
     <div class="aboutSectionSpacing2">
@@ -146,13 +147,13 @@
             <span class="bottomText">Cemetery</span>
         </div>
         <div class="footerColumns">
-            <p class = "footerTopTitle">Open Daily 24 Hours</p>
+            <p class = "footerTopTitle">Open Dusk til Dawn</p>
             <span class="footerTop">254 E Church St,</span>
             <span class="footerBottom">Bethlehem, PA 18018</span>
         </div>
         <div class="footerColumns">
             <p class = "footerTopTitle">Questions?</p>
-            <span class="footerTop">(610) 866-5742</span>
+            <a class = 'footerTop' href="./contact/contact.html">Contact</a>
         </div>
     </footer>
     <!-- credit: https://www.w3schools.com/howto/howto_js_dropdown.asp -->

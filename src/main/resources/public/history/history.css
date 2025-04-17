@@ -84,7 +84,20 @@ html, body {
     overflow-x: hidden;
 }
 
-.navOption{
+.menuOption {
+  color: white; 
+  font-size: 1rem; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.navOption {
   color: white; 
   font-size: 14px; 
   font-family: Instrument Sans; 
@@ -93,6 +106,33 @@ html, body {
   letter-spacing: 3.60px; 
   list-style: none;
   text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+/* #4: https://prismic.io/blog/css-hover-effects */
+.navOption::after,
+.navOption::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, white, white);
+  bottom: -5px;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease-out;
+}
+
+.navOption::before {
+  top: -5px;
+  transform-origin: left;
+}
+
+.navOption:hover::after,
+.navOption:hover::before {
+  transform: scaleX(1);
 }
 
 
@@ -118,6 +158,14 @@ a {
   color: white;
   font-weight: 700; 
   font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.findAGraveButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
 }
 
 * {
@@ -142,15 +190,14 @@ a {
 
 
 .aboutSectionSpacing {
-  margin-top: 45px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  margin: 2.5rem;
 }
 
-.historyImages {
-  transform: translateY(-50px);
-}
+
 
 
 .footer {
@@ -179,6 +226,7 @@ a {
   word-wrap: break-word;
   margin-left: 40px;
   text-align: center;
+  text-decoration: none;
 }
 
 .footerTopTitle {
@@ -249,6 +297,7 @@ a {
   display: none;
   font-size: 20px; 
   font-family: Inria Serif; 
+  transition: 0.3s ease;
 }
 
 /* Dropdown button on hover & focus */
@@ -277,7 +326,7 @@ a {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: white;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -287,7 +336,7 @@ a {
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: #0d2543;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -302,9 +351,7 @@ a {
 @media (max-width: 1000px){
   .aboutSectionSpacing{
     flex-direction: column;
-  }
-  .aboutSectionSpacing2{
-    flex-direction: column;
+    margin: 0.5rem;
   }
   .aboutSection {
     width: 100%;

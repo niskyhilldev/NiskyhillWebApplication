@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Section</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="form.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+    <script>
+        function submitForm() {
+            document.getElementById("newSectionForm").reset();
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="dropdown">
+            <button><a href="dashboard.html" style="text-decoration:none;color:black;">Home</a></button>
+        </div>
+        <div class="dropdown">
+            <button>Owners</button>
+            <div class="dropdown-content">
+                <a href="add_owner.html">Add Owner</a>
+                <a href="search_owner.html">Search Owner</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button>Residents</button>
+            <div class="dropdown-content">
+                <a href="add_resident.html">Add Resident</a>
+                <a href="search_resident_name.html">Search Resident by Name</a>
+                <a href="search_resident_lot.html">Search Resident by Lot</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button>Lots</button>
+            <div class="dropdown-content">
+                <a href="add_lot.html">Add Lot</a>
+                <a href="search_lot.html">Search Lot</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button>Sections</button>
+            <div class="dropdown-content">
+                <a href="add_section.html">Add Section</a>
+                <a href="edit_section.html">Edit Section</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button>Files</button>
+            <div class="dropdown-content">
+                <a href="add_file.html">Add File</a>
+                <a href="view_files_lot.html">View Files for Lot</a>
+            </div>
+        </div>
+    </div>
+    <h1 style="text-align:center;">Add a Section</h1>
+    <div id="addSectionForm">
+        <form id="newSectionForm">                        
+            <label for="addSectionId">Section:</label>
+            <input type="text" id="addSectionId">
+            
+            <label for="internmentRecord">Section Map:</label>
+            <input type="file" id="internmentRecord" onchange="handleFileUpload(event)">
+            
+            <button type="submit" onclick="submitForm()">Add Entry</button>
+        </form>
+    </div>
+</body>

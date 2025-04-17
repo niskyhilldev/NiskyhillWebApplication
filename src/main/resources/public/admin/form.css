@@ -1,0 +1,46 @@
+form {
+    display: flex;
+    flex-direction: column;
+    background: #003a7f;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #af8c30;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+label {
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #fef5bc;
+}
+
+input[type="text"], input[type="file"] {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #af8c30;
+    border-radius: 4px;
+    background: #fef5bc;
+    color: black;
+}
+
+input::placeholder {
+    color: #af8c30;
+}
+
+button [type="submit"]{
+    background-color: #af8c30;
+    color: black;
+    padding: 10px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #fef5bc;
+}
