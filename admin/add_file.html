@@ -20,16 +20,16 @@
     <h1 style="text-align:center;">Add Files</h1>
     <div id="addFileForm">
         <form id="newFileForm">                        
-            <label for="fileSectionId">Section:</label>
+            <label for="fileSectionId">Section*:</label>
             <input type="text" id="fileSectionId" required>
 
-            <label for="fileLotId">Lot:</label>
+            <label for="fileLotId">Lot*:</label>
             <input type="text" id="fileLotId" required>
 
-            <label for="filePartition">Partition:</label>
+            <label for="filePartition">Partition*:</label>
             <input type="text" id="filePartition" required>
             
-            <label for="newFile">Files:</label>
+            <label for="newFile">Files*:</label>
             <input type="file" id="newFile" onchange="handleFileUpload(event)" multiple required>
             
             <button type="submit" onclick="submitForm()">Add Entry</button>
