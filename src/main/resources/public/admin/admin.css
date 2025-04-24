@@ -100,3 +100,7 @@ button:hover {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+button[type="submit"] {
+    margin-top: 5px;
+}

@@ -18,12 +18,21 @@
             <span class="bottomText"><a href="../index.html">Cemetery</a></span>
         </div>
         <div class="dropdown">
-            <button onclick="myFunction()" class="dropbtn">Menu</button>
+                <button onclick="myFunction()" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                    <span class="flex items-center justify-center">
+                      <span class="flex">
+                        <svg rpl="" fill="currentColor" height="30" width="30" icon-name="menu-outline" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18.25 4.7H1.75A.772.772 0 0 1 1 3.95c0-.399.352-.75.75-.75h16.5c.398 0 .75.351.75.75 0 .397-.352.75-.75.75ZM19 9.996a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Zm0 6.047a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Z"></path>
+                        </svg>
+                      </span>
+                    </span>
+            </button>
             <div id="myDropdown" class="dropdown-content">
               <a class = 'menuOption' href="../index.html">Home</a>
               <a class = 'menuOption' href="../history/history.html">History</a>
               <a class = 'menuOption' href="./notableResidents.html">Notable Residents</a>
               <a class = 'menuOption' href="../contact/contact.html">Contact</a>
+              <a class = 'menuOption' href="../faq/faq.html">FAQs</a>
               <a class = 'menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
               <a class = 'menuOption' href="../contact/contact.html">Find a Grave</a>
             </div>
@@ -33,6 +42,7 @@
             <li class="navOption"> <a href="../history/history.html">HISTORY</a></li>
             <li class="navOption"> <a href="">NOTABLE RESIDENTS</a></li>
             <li class="navOption"> <a href="../contact/contact.html">CONTACT</a></li>
+            <li class="navOption"> <a href="../faq/faq.html">FAQs</a></li>
             <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
             <li><button onclick="location.href='../contact/contact.html';" class="findAGraveButton">FIND A GRAVE</button></li>
         </ul>
@@ -269,10 +279,14 @@
         function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
         }
+        if (event) {
+            event.stopPropagation();
+        }
 
         // Close the dropdown menu if the user clicks outside of it
         window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
+            // Check if the clicked element or any parent is the dropdown button
+            if (!event.target.closest('.dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 var i;
                 for (i = 0; i < dropdowns.length; i++) {
