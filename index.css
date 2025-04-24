@@ -482,7 +482,11 @@ html, body {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
 
-
+@media (max-width: 600px){
+  .imageWrapper{
+    display: none;
+  }
+}
 
 @media (max-width: 900px){
   .aboutSectionSpacing{
