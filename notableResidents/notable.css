@@ -484,4 +484,7 @@ a {
   .footerColumns {
     width: 50%;
   }
+  .modalBody {
+    flex-direction: column;
+  }
 }
