@@ -487,4 +487,7 @@ a {
   .modalBody {
     flex-direction: column;
   }
+  .footerTop, .footerBottom, .footerTopTitle{
+    font-size: 1.5rem;
+  }
 }

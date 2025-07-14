@@ -421,4 +421,7 @@ fieldset {
   .footerColumns {
     width: 50%;
   }
+  .footerTop, .footerBottom, .footerTopTitle{
+    font-size: 1.5rem;
+  }
 }
