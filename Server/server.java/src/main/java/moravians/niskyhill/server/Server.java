@@ -29,7 +29,7 @@ public class Server {
 
             /* Create A Terminal Logger to View requests */
             config.requestLogger.http((ctx, ms) -> {
-                System.out.printf("%s\t%s\t%s\n", ctx.method(), ctx.path(), ctx.status());
+                System.out.printf("%-10s\t%-50s\t%s\n", ctx.method(), ctx.path(), ctx.status());
             });
 
             /* Create a Place to hold the Static HTML and CSS Files */
