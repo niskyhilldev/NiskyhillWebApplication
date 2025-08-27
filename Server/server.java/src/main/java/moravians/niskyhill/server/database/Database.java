@@ -9,6 +9,8 @@ import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Owner;
 import moravians.niskyhill.server.models.Resident;
+import moravians.niskyhill.server.models.Section;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -61,7 +63,11 @@ public class Database {
     }
 
     public List<Resident> getAllResidents() throws HttpStatusException {
-        final String q = "SELECT * FROM buried";
+        final String q = """
+            SELECT * 
+            FROM buried 
+        """;
+        
         List<Resident> residents = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
@@ -94,18 +100,20 @@ public class Database {
         return residents;
     }
 
-
     public List<Lot> getAllLots() throws HttpStatusException {
-        final String q = "SELECT * FROM lot";
+        final String q = """
+                        SELECT *
+                        FROM lot
+                """;
+
         List<Lot> lots = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Lot lot = new Lot(
-                    rs.getString("lot_number"),
-                    rs.getString("lot_descriptor"),
-                    rs.getString("section")
-                );
+                        rs.getString("lot_number"),
+                        rs.getString("lot_descriptor"),
+                        rs.getString("section"));
 
                 lots.add(lot);
             }
@@ -117,25 +125,28 @@ public class Database {
         return lots;
     }
 
-
     public List<Owner> getAllOwners() throws HttpStatusException {
-        final String q = "SELECT * FROM owners NATURAL JOIN lot";
+        final String q = """
+                    SELECT *
+                    FROM owners
+                """;
+
         List<Owner> owners = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Owner owner = new Owner(
-                    rs.getLong("id"),
-                    rs.getString("firstname"),
-                    rs.getString("middlename"),
-                    rs.getString("lastname"),
-                    rs.getString("suffix"),
-                    rs.getString("organization"),
-                    new Lot(
-                        rs.getString("lot_number"),
-                        rs.getString("lot_descriptor"),
-                        rs.getString("section")
-                    )
+                        rs.getLong("id"),
+                        rs.getString("firstname"),
+                        rs.getString("middlename"),
+                        rs.getString("lastname"),
+                        rs.getString("suffix"),
+                        rs.getString("organization"),
+                        new Lot(
+                            rs.getString("lot_number"),
+                            rs.getString("lot_descriptor"),
+                            rs.getString("section")
+                        )
                 );
 
                 owners.add(owner);
@@ -146,6 +157,33 @@ public class Database {
         }
 
         return owners;
+    }
+
+
+    public List<Section> getAllSections() throws HttpStatusException {
+        final String q = """
+                    SELECT *
+                    FROM section
+                """;
+
+        List<Section> sections = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Section section = new Section(
+                    rs.getString("section_name"),
+                    rs.getString("section_map")
+                );
+                
+
+                sections.add(section);
+            }
+        } catch (Exception e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to Retrieve Sections", e);
+        }
+
+        return sections;
     }
 
 }

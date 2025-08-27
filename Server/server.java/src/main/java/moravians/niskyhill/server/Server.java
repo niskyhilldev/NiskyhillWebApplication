@@ -4,12 +4,11 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.database.Database;
-import moravians.niskyhill.server.dtos.ResidentDTO;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.mappers.LotMapper;
 import moravians.niskyhill.server.mappers.OwnerMapper;
 import moravians.niskyhill.server.mappers.ResidentMapper;
-import java.util.List;
+import moravians.niskyhill.server.mappers.SectionMapper;
 
 
 
@@ -24,7 +23,7 @@ public class Server {
         Database database = Database.getDatabase(); 
 
         /*
-         * Create the Instance of the Javalin Server
+         * Configure the Instance of the Javalin Server
          */
         Javalin app = Javalin.create(config -> {
 
@@ -33,7 +32,7 @@ public class Server {
                 System.out.printf("%s\t%s\t%s\n", ctx.method(), ctx.path(), ctx.status());
             });
 
-            /* Place to hold the Static HTML and CSS Files */
+            /* Create a Place to hold the Static HTML and CSS Files */
             config.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/";
                 staticFiles.directory = "/public"; 
@@ -55,6 +54,12 @@ public class Server {
         app.get("/owners/all", ctx -> {
             ctx.json(OwnerMapper.mapOwnerList(database.getAllOwners())); 
         });
+
+        app.get("/sections/all", ctx -> {
+            ctx.json(SectionMapper.mapSectionList(database.getAllSections())); 
+        });
+
+
 
 
 

@@ -1,7 +1,6 @@
 package moravians.niskyhill.server.mappers;
 
 import java.util.List;
-import moravians.niskyhill.server.dtos.LotDTO;
 import moravians.niskyhill.server.dtos.ResidentDTO;
 import moravians.niskyhill.server.models.Resident;
 
