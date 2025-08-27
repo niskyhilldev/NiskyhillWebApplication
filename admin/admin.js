@@ -123,13 +123,12 @@ function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
 
-    fetch('http://localhost:8080/lots/all')
+    fetch('http://localhost:8080/owners/all')
         .then(response => response.json())
         .then(serverData => {
             console.log(serverData[0])
             let results = Object.values(serverData).filter(entry => {
-                console.log(section && lot && entry.sectionName && entry.sectionName.toLowerCase() === section)
-                if (section && lot && entry.sectionName && entry.sectionName.toLowerCase() === section && entry.number && entry.number.toLowerCase() === lot) {
+                if (section && lot && entry.lot.sectionName && entry.lot.sectionName.toLowerCase() === section && entry.lot.number && entry.lot.number.toLowerCase() === lot) {
                     return true;
                 }
                 return false;
@@ -262,11 +261,11 @@ function populateTable(filteredData, type) {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.section || ""}</td>
-                <td>${entry.lotNumber || ""}</td>
-                <td>${entry.lotPartition || ""}</td>
+                <td>${entry.lot.sectionName || ""}</td>
+                <td>${entry.lot.number || ""}</td>
+                <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'plots')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'plots')">View More</button>
                     <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
                 </td>
             `;
@@ -275,7 +274,7 @@ function populateTable(filteredData, type) {
     }
 }
 
-function viewMore(firstname, middleName, lastName, row, type) {
+function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
     if(type === 'resident'){
@@ -288,7 +287,12 @@ function viewMore(firstname, middleName, lastName, row, type) {
         details = lotResults[rowId];
     }
     else if (type == 'plots'){
-        details = plotResults[rowId];
+        details = {
+            "lotNumber": plotResults[rowId].lot.number, 
+            "section": plotResults[rowId].lot.sectionName, 
+            "lotPartition": plotResults[rowId].lot.descriptor, 
+            "owner": `${plotResults[rowId].firstName || ''} ${plotResults[rowId].middleName || ''} ${plotResults[rowId].lastName || ''}`
+        }
     }
     else if(type === 'burial'){
         details = burialResults[rowId];
