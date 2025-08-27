@@ -25,28 +25,39 @@ function performOwnerSearch() {
     let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
-            }
-            return false;
-        }
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
-            return true;
-        }
-        return false;
-    });
+        fetch('http://localhost:8080/owners/all')
+        .then(response => response.json())
+        .then(serverData => {
+            let results = Object.values(serverData).filter(entry => {
+                
+                if(lastName && organization){
+                    if(entry.lastName && entry.lastName.toLowerCase() === lastName  && entry.organization && entry.organization.toLowerCase() === organization){
+                        return true;
+                    }
+                    return false;
+                }
+                if (lastName && entry.lastName && entry.lastName.toLowerCase() === lastName) {
+                    return true;
+                }
+                if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+                    return true;
+                }
+                return false;
+            });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    ownerResults = results;
-    populateTable(results, 'owners');
+            if (results.length > 0) {
+                console.log("Search Results:", results);
+            } else {
+                console.log("No matching results found.");
+            }
+            ownerResults = results;
+            populateTable(results, 'owners');
+        })
+        .catch(error => {
+            console.error("Error fetching lots:", error);
+        });
+        
+    });
 }
 function performBurialSearch() {
     let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
@@ -160,13 +171,13 @@ function populateTable(filteredData, type) {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.lastName || ""}</td>
+                <td>${entry.middleName || ""}</td>
+                <td>${entry.lastName || ""}</td>
                 <td>${entry.suffix || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'owners')">View More</button>
+                    <button onclick="viewMore('${entry.lastName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'owners')">View More</button>
                     <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
                 </td>
             `;
@@ -281,7 +292,17 @@ function viewMore(firstname, middleName, lastName, suffix, row, type) {
         details = residentResults[rowId];
     }
     else if(type == 'owners') {
-        details = ownerResults[rowId];
+        console.log(ownerResults)
+        details = {
+            "lotOwnNumber": ownerResults[rowId].lot.number, 
+            "sectionOwn": ownerResults[rowId].lot.sectionName, 
+            "lotOwnId": ownerResults[rowId].lot.descriptor, 
+            "firstName": ownerResults[rowId].firstName,
+            "middleName": ownerResults[rowId].middleName,
+            "lastName": ownerResults[rowId].lastName,
+            "suffix": ownerResults[rowId].suffix,
+            "organization": ownerResults[rowId].organization
+        }
     }
     else if (type == 'lots'){
         details = lotResults[rowId];
@@ -349,9 +370,9 @@ function createPopup(details, rowId, type) {
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
             <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
             <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>
