@@ -123,20 +123,29 @@ function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
 
-    let results = Object.values(plotsData).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
+    fetch('http://localhost:8080/lots/all')
+        .then(response => response.json())
+        .then(serverData => {
+            console.log(serverData[0])
+            let results = Object.values(serverData).filter(entry => {
+                console.log(section && lot && entry.sectionName && entry.sectionName.toLowerCase() === section)
+                if (section && lot && entry.sectionName && entry.sectionName.toLowerCase() === section && entry.number && entry.number.toLowerCase() === lot) {
+                    return true;
+                }
+                return false;
+            });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    plotResults = results;
-    populateTable(results, 'plots');
+            if (results.length > 0) {
+                console.log("Search Results:", results);
+            } else {
+                console.log("No matching results found.");
+            }
+            plotResults = results;
+            populateTable(results, 'plots');
+        })
+        .catch(error => {
+            console.error("Error fetching lots:", error);
+        });
 }
 function populateTable(filteredData, type) {
     if(type === 'owners'){
