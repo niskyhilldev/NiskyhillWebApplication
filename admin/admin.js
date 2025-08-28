@@ -25,28 +25,39 @@ function performOwnerSearch() {
     let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
-            }
-            return false;
-        }
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
-            return true;
-        }
-        return false;
-    });
+        fetch('http://localhost:8080/owners/all')
+        .then(response => response.json())
+        .then(serverData => {
+            let results = Object.values(serverData).filter(entry => {
+                
+                if(lastName && organization){
+                    if(entry.lastName && entry.lastName.toLowerCase() === lastName  && entry.organization && entry.organization.toLowerCase() === organization){
+                        return true;
+                    }
+                    return false;
+                }
+                if (lastName && entry.lastName && entry.lastName.toLowerCase() === lastName) {
+                    return true;
+                }
+                if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
+                    return true;
+                }
+                return false;
+            });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    ownerResults = results;
-    populateTable(results, 'owners');
+            if (results.length > 0) {
+                console.log("Search Results:", results);
+            } else {
+                console.log("No matching results found.");
+            }
+            ownerResults = results;
+            populateTable(results, 'owners');
+        })
+        .catch(error => {
+            console.error("Error fetching lots:", error);
+        });
+        
+    });
 }
 function performBurialSearch() {
     let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
@@ -123,20 +134,28 @@ function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
 
-    let results = Object.values(plotsData).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
+    fetch('http://localhost:8080/owners/all')
+        .then(response => response.json())
+        .then(serverData => {
+            console.log(serverData[0])
+            let results = Object.values(serverData).filter(entry => {
+                if (section && lot && entry.lot.sectionName && entry.lot.sectionName.toLowerCase() === section && entry.lot.number && entry.lot.number.toLowerCase() === lot) {
+                    return true;
+                }
+                return false;
+            });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    plotResults = results;
-    populateTable(results, 'plots');
+            if (results.length > 0) {
+                console.log("Search Results:", results);
+            } else {
+                console.log("No matching results found.");
+            }
+            plotResults = results;
+            populateTable(results, 'plots');
+        })
+        .catch(error => {
+            console.error("Error fetching lots:", error);
+        });
 }
 function populateTable(filteredData, type) {
     if(type === 'owners'){
@@ -152,13 +171,13 @@ function populateTable(filteredData, type) {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
+                <td>${entry.lastName || ""}</td>
+                <td>${entry.middleName || ""}</td>
+                <td>${entry.lastName || ""}</td>
                 <td>${entry.suffix || ""}</td>
                 <td>${entry.organization || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'owners')">View More</button>
+                    <button onclick="viewMore('${entry.lastName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'owners')">View More</button>
                     <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
                 </td>
             `;
@@ -253,11 +272,11 @@ function populateTable(filteredData, type) {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.section || ""}</td>
-                <td>${entry.lotNumber || ""}</td>
-                <td>${entry.lotPartition || ""}</td>
+                <td>${entry.lot.sectionName || ""}</td>
+                <td>${entry.lot.number || ""}</td>
+                <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'plots')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'plots')">View More</button>
                     <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
                 </td>
             `;
@@ -266,20 +285,35 @@ function populateTable(filteredData, type) {
     }
 }
 
-function viewMore(firstname, middleName, lastName, row, type) {
+function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
     if(type === 'resident'){
         details = residentResults[rowId];
     }
     else if(type == 'owners') {
-        details = ownerResults[rowId];
+        console.log(ownerResults)
+        details = {
+            "lotOwnNumber": ownerResults[rowId].lot.number, 
+            "sectionOwn": ownerResults[rowId].lot.sectionName, 
+            "lotOwnId": ownerResults[rowId].lot.descriptor, 
+            "firstName": ownerResults[rowId].firstName,
+            "middleName": ownerResults[rowId].middleName,
+            "lastName": ownerResults[rowId].lastName,
+            "suffix": ownerResults[rowId].suffix,
+            "organization": ownerResults[rowId].organization
+        }
     }
     else if (type == 'lots'){
         details = lotResults[rowId];
     }
     else if (type == 'plots'){
-        details = plotResults[rowId];
+        details = {
+            "lotNumber": plotResults[rowId].lot.number, 
+            "section": plotResults[rowId].lot.sectionName, 
+            "lotPartition": plotResults[rowId].lot.descriptor, 
+            "owner": `${plotResults[rowId].firstName || ''} ${plotResults[rowId].middleName || ''} ${plotResults[rowId].lastName || ''}`
+        }
     }
     else if(type === 'burial'){
         details = burialResults[rowId];
@@ -336,9 +370,9 @@ function createPopup(details, rowId, type) {
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
             <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
             <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
             <label>
@@ -812,6 +846,39 @@ document.getElementById('newFileForm').addEventListener('submit', function(event
 
     toggleFileForm(); // Hide the form after submission
 });
+
+window.onload = function() {
+    console.log("Fetching sections...");
+    let results = Object.values(data).filter(entry => {
+        fetch('http://localhost:8080/sections/all')
+        .then(response => response.json())
+        .then(serverData => {
+            let results = Object.values(serverData).filter(entry => {            
+                return true; //include all entries
+            });
+
+            const table = document.getElementById('sectionTableBody');
+            table.innerHTML = ''; // Clear existing rows
+            for(let i = 0; i < results.length; i++){
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = results[i].name || 'N/A';
+                row.appendChild(nameCell);
+
+                const fileCell = document.createElement('td');
+                fileCell.textContent = results[i].file || 'No file available';
+                row.appendChild(fileCell);
+
+                table.appendChild(row);
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching sections:", error);
+        });
+        
+    });
+};
 
 function deleteEntry(id, type) {
     if(type === 'residents'){
