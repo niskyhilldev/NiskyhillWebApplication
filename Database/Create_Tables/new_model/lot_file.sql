@@ -1,0 +1,9 @@
+CREATE TABLE lot_file(
+    fid SERIAL NOT NULL,
+    lot INTEGER NOT NULL,
+    name VARCHAR(255),
+    file TEXT NOT NULL,
+
+    FOREIGN KEY (lot) REFERENCES lot(lid) ON DELETE CASCADE,
+    PRIMARY KEY (fid)
+);
