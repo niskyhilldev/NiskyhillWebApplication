@@ -11,7 +11,6 @@ CREATE TABLE resident(
   marker BOOLEAN,
   foundation BOOLEAN,
   viewable BOOLEAN DEFAULT TRUE, -- false if cannot be viewed by public 
-
   CHECK (LOWER(TRIM(capsule)) IN ('urn', 'casket')),  -- sets domain for capsule and makes sure we do not store whitespace or any upercase characters
   FOREIGN KEY (lot) REFERENCES lot(lid) ON DELETE CASCADE,
   PRIMARY KEY(rid)
