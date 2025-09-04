@@ -8,6 +8,7 @@ public class SectionMapper {
 
     public static SectionDTO mapSection(Section section){
         return new SectionDTO(
+            section.sid(),
             section.name(),
             section.map()
         );

@@ -10,7 +10,6 @@ import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Owner;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -171,6 +170,7 @@ public class Database {
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Section section = new Section(
+                    rs.getLong("sid"),
                     rs.getString("section_name"),
                     rs.getString("section_map")
                 );
