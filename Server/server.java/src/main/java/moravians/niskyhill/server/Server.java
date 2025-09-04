@@ -38,8 +38,21 @@ public class Server {
                 staticFiles.directory = "/public"; 
                 staticFiles.location = Location.CLASSPATH;
             });
+        });
 
+        /* Enable CORS */
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed orgin address 
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        });
 
+        /*  Handle preflight requests */
+        app.options("/*", ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed orgin addres
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.status(204);
         });
 
  
