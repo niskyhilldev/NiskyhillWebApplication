@@ -17,6 +17,8 @@ const sections = [
     { name: "B", file: null },
     { name: "C", file: null }
 ];
+
+
 let currentRow;
 let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
@@ -684,6 +686,8 @@ function toggleFileForm() {
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
+
+
 document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
@@ -847,38 +851,7 @@ document.getElementById('newFileForm').addEventListener('submit', function(event
     toggleFileForm(); // Hide the form after submission
 });
 
-window.onload = function() {
-    console.log("Fetching sections...");
-    let results = Object.values(data).filter(entry => {
-        fetch('http://localhost:8080/sections/all')
-        .then(response => response.json())
-        .then(serverData => {
-            let results = Object.values(serverData).filter(entry => {            
-                return true; //include all entries
-            });
 
-            const table = document.getElementById('sectionTableBody');
-            table.innerHTML = ''; // Clear existing rows
-            for(let i = 0; i < results.length; i++){
-                const row = document.createElement('tr');
-
-                const nameCell = document.createElement('td');
-                nameCell.textContent = results[i].name || 'N/A';
-                row.appendChild(nameCell);
-
-                const fileCell = document.createElement('td');
-                fileCell.textContent = results[i].file || 'No file available';
-                row.appendChild(fileCell);
-
-                table.appendChild(row);
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching sections:", error);
-        });
-        
-    });
-};
 
 function deleteEntry(id, type) {
     if(type === 'residents'){
