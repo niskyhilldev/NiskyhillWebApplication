@@ -2,8 +2,9 @@ import re
 import argparse
 import pandas as pd
 
-# last number in the string = Lot number
-LAST_NUMBER_RE = re.compile(r'(\d+)(?!.*\d)')
+# Last lot token: digits with an optional trailing letter (e.g., 46, 46a, 12B)
+# We still pick the *last* such token in the string.
+LAST_LOT_TOKEN_RE = re.compile(r'(\d+[A-Za-z]?)(?!.*\d)')
 
 def split_details_and_lot(text: str):
     """Return (details_left, lot_number)."""
@@ -14,19 +15,19 @@ def split_details_and_lot(text: str):
     if not s:
         return "", ""
 
-    m = LAST_NUMBER_RE.search(s)
+    m = LAST_LOT_TOKEN_RE.search(s)
     if not m:
-        # no number found
+        # no lot-like token found
         return clean_left_text(s), ""
 
     lot_num = m.group(1)
     start, end = m.start(), m.end()
 
-    # remove the number
+    # remove the lot token
     before = s[:start]
     after  = s[end:]
 
-    # if right before the number there is '#', drop it (and any surrounding space)
+    # if right before the token there is '#', drop it (and any surrounding space)
     before = re.sub(r'\s*#\s*$', '', before)
 
     # join remaining parts (usually 'after' is empty)
@@ -45,7 +46,11 @@ def clean_left_text(s: str) -> str:
     s = re.sub(r'[,.;:-]+$', '', s)
     return s
 
-def process_excel(input_path: str, output_path: str, sheet=0, col_name="Lot", drop_original=False):
+def process_excel(input_path: str, output_path: str = None, sheet=0, col_name="Lot", drop_original=False):
+    # If no output is given, overwrite the original file in place
+    if output_path is None:
+        output_path = input_path
+
     df = pd.read_excel(input_path, sheet_name=sheet)
 
     if col_name not in df.columns:
@@ -65,12 +70,13 @@ def process_excel(input_path: str, output_path: str, sheet=0, col_name="Lot", dr
     if drop_original:
         df.drop(columns=[col_name], inplace=True)
 
+    # Overwrite (or write) the file
     df.to_excel(output_path, index=False)
 
 def main():
-    ap = argparse.ArgumentParser(description="Split 'Lot' into two columns: Lot_Details and Lot_Number.")
+    ap = argparse.ArgumentParser(description="Split 'Lot' into Lot_Details and Lot_Number (in-place by default).")
     ap.add_argument("input", help="Path to input Excel (e.g., input.xlsx)")
-    ap.add_argument("-o", "--output", default="cleaned.xlsx", help="Output Excel path (default: cleaned.xlsx)")
+    ap.add_argument("-o", "--output", default=None, help="Optional output Excel path (default: overwrite input)")
     ap.add_argument("-s", "--sheet", default=0, help="Sheet name or index (default: 0)")
     ap.add_argument("-c", "--column", default="Lot", help="Column name to split (default: 'Lot')")
     ap.add_argument("--drop-original", action="store_true",
@@ -84,7 +90,7 @@ def main():
         col_name=args.column,
         drop_original=args.drop_original
     )
-    print(f"Done. Wrote: {args.output}")
+    print(f"Done. Wrote: {args.output or args.input}")
 
 if __name__ == "__main__":
     main()
