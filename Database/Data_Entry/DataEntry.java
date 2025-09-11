@@ -19,21 +19,21 @@ public class DataEntry {
             System.err.println("Error: Both startLine and endLine must be valid integers.");
             System.exit(1);
         }
-        if(line_end == line_start){
+        if (line_end == line_start) {
             System.err.println("Error: Span Must be Greater Than 0");
             System.exit(1);
         }
-        if(line_end < 2 || line_start < 2 ){
+        if (line_end < 2 || line_start < 2) {
             System.err.println("Error: Start and/or End must Be Greater Than 2 ");
             System.exit(1);
         }
-        if(line_start > line_end){
+        if (line_start > line_end) {
             System.err.println("Error: End must be > Start");
             System.exit(1);
         }
 
-        line_start-= 2;
-        line_end-= 2;
+        line_start -= 2;
+        line_end -= 2;
 
         Connection c = null;
 
@@ -42,7 +42,7 @@ public class DataEntry {
             Scanner scanner = new Scanner(new File("data.csv"));
             FileWriter writer = new FileWriter("error_log.txt", true); // true means append to file
             writer.write("\n");
-            
+
             c = getDatabaseConnection();
             long currentLine = 0;
             System.out.println("\nReading Data..........\n");
@@ -168,15 +168,13 @@ public class DataEntry {
                     // do nothing, its non - critical
                 }
 
-
-
                 // try to retreive the section id from the database (if it exists)
                 Long sectionId = getSection(section, c);
                 if (sectionId == null) {
                     writer.write(String.format("%-5d\tInvalid Section\n", currentLine + 2));
                     currentLine++;
                     continue;
-                } else if (sectionId == -1L){
+                } else if (sectionId == -1L) {
                     writer.write(String.format("%-5d\tDatabase Error Searching for Section\n", currentLine + 2));
                     currentLine++;
                     continue;
@@ -190,12 +188,13 @@ public class DataEntry {
                         writer.write(String.format("%-5d\tFailed to Create New Lot for Entry\n", currentLine + 2));
                         currentLine++;
                         continue;
-                    }else if (lotId == -1L){
-                        writer.write(String.format("%-5d\tFailed to Create New Lot for Entry due to Database Error\n", currentLine + 2));
+                    } else if (lotId == -1L) {
+                        writer.write(String.format("%-5d\tFailed to Create New Lot for Entry due to Database Error\n",
+                                currentLine + 2));
                         currentLine++;
                         continue;
                     }
-                } else if (lotId == -1){
+                } else if (lotId == -1) {
                     writer.write(String.format("%-5d\tDatabase Error getting Lot\n", currentLine + 2));
                     currentLine++;
                     continue;
@@ -207,8 +206,9 @@ public class DataEntry {
                     writer.write(String.format("%-5d\tFailed to Create New Resident\n", currentLine + 2));
                     currentLine++;
                     continue;
-                } else if (residentId == -1L){ // already enterd or database error
-                    writer.write(String.format("%-5d\tFailed to Create New Resident from Database Error\n", currentLine + 2));
+                } else if (residentId == -1L) { // already enterd or database error
+                    writer.write(String.format("%-5d\tFailed to Create New Resident from Database Error\n",
+                            currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -270,125 +270,127 @@ public class DataEntry {
                 VALUES (?, ?, ?, ?)
                 RETURNING lid
                 """;
-        try{
+        try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, lotNumber);
-            if(lotDetails == null){
+            if (lotDetails == null) {
                 ps.setNull(2, Types.VARCHAR);
-            }else{
+            } else {
                 ps.setString(2, lotDetails);
             }
-            if(lotOwner == null){
+            if (lotOwner == null) {
                 ps.setNull(3, Types.VARCHAR);
-            }else{
+            } else {
                 ps.setString(3, lotOwner);
             }
             ps.setLong(4, sectionId);
             ResultSet rs = ps.executeQuery();
 
             Long lotId = null;
-            if (rs.next()){
+            if (rs.next()) {
                 lotId = rs.getLong("lid");
             }
             return lotId;
-        } catch (SQLException e){
+        } catch (SQLException e) {
             return -1L;
         }
     }
 
     /*
-     * Gets the lid from the database, returns null if not found, -1 if a database error
+     * Gets the lid from the database, returns null if not found, -1 if a database
+     * error
      */
     public static Long getLot(Long sectionId, String lotNumber, String lotDetails, Connection c) {
         System.out.println(lotNumber + "\t" + lotDetails);
-        
+
         String sql = """
-            SELECT lid
-            FROM lot
-            WHERE 
-                section = ? AND
-                LOWER(number) = LOWER(?) AND
-        """;
-    
+                    SELECT lid
+                    FROM lot
+                    WHERE
+                        section = ? AND
+                        LOWER(number) = LOWER(?) AND
+                """;
+
         boolean isDescriptorNull = (lotDetails == null);
-    
+
         // Adjust the query based on whether descriptor is null
         if (isDescriptorNull) {
             sql += "descriptor IS NULL";
         } else {
             sql += "LOWER(descriptor) = LOWER(?)";
         }
-    
+
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setLong(1, sectionId);
             ps.setString(2, lotNumber);
-    
+
             if (!isDescriptorNull) {
                 ps.setString(3, lotDetails);
             }
-    
+
             ResultSet rs = ps.executeQuery();
-    
+
             Long lotId = null;
             if (rs.next()) {
                 lotId = rs.getLong("lid");
             }
             return lotId;
-    
+
         } catch (SQLException e) {
             return -1L;
         }
     }
-    
 
     /*
-     * Get the sid form the database, returns null if not found, -1 if there was an database error */
+     * Get the sid form the database, returns null if not found, -1 if there was an
+     * database error
+     */
     public static Long getSection(String sectionName, Connection c) {
         String sql = """
-                SELECT sid 
+                SELECT sid
                 FROM section
                 WHERE LOWER(name) = LOWER(?)
                 """;
-        try{
+        try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, sectionName);
             ResultSet rs = ps.executeQuery();
-            
+
             Long sectionId = null;
-            if(rs.next()){
+            if (rs.next()) {
                 sectionId = rs.getLong("sid");
             }
             return sectionId;
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             return -1L;
         }
 
     }
 
-    public static Long createResident(String firstName, String middleName, String lastName, String burialDate, Long lotId, Connection c) {
+    public static Long createResident(String firstName, String middleName, String lastName, String burialDate,
+            Long lotId, Connection c) {
         String sql = """
                 INSERT INTO resident (firstname, middlename, lastname, burial_date, lot)
                 VALUES (?, ?, ?, ?::DATE, ?)
                 RETURNING rid
                 """;
-        try{
+        try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, firstName);
-            if(middleName == null){
+            if (middleName == null) {
                 ps.setNull(2, Types.VARCHAR);
-            }else{
+            } else {
                 ps.setString(2, middleName);
             }
             ps.setString(3, lastName);
-            if(burialDate == null || burialDate.equals("")){
+            if (burialDate == null || burialDate.equals("")) {
                 ps.setNull(4, Types.VARCHAR);
-            }
-            else{
-                if(burialDate.matches("^(0?[1-9]|1[0-2])/([1-9]|[12][0-9]|3[01])/\\d{4}$")){
+            } else {
+                if (burialDate.matches("^(0?[1-9]|1[0-2])/([1-9]|[12][0-9]|3[01])/\\d{4}$")) {
                     ps.setString(4, burialDate);
-                }else{
+                } else {
                     ps.setNull(4, Types.VARCHAR);
                 }
             }
@@ -396,11 +398,11 @@ public class DataEntry {
             ResultSet rs = ps.executeQuery();
 
             Long residentId = null;
-            if (rs.next()){
+            if (rs.next()) {
                 residentId = rs.getLong("rid");
             }
             return residentId;
-        } catch (SQLException e){
+        } catch (SQLException e) {
             return -1L;
         }
     }
