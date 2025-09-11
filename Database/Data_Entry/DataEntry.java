@@ -75,12 +75,12 @@ public class DataEntry {
                     if ((!(tokens[3].equals(""))) && tokens[3] != null) {
                         section = tokens[3];
                     } else {
-                        writer.write(String.format("%-5d\tNo Section Found\n", currentLine + 2));
+                        writer.write(String.format("%-5d\tNo Section Name Found on Entry\n", currentLine + 2));
                         currentLine++;
                         continue;
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    writer.write(String.format("%-5d\tNo Section Found\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tNo Section Name Found on Entry\n", currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -90,12 +90,12 @@ public class DataEntry {
                     if ((!(tokens[5].equals(""))) && tokens[5] != null) {
                         lotNumber = tokens[5];
                     } else {
-                        writer.write(String.format("%-5d\tNo Lot Number Found\n", currentLine + 2));
+                        writer.write(String.format("%-5d\tNo Lot Number Found on Entry\n", currentLine + 2));
                         currentLine++;
                         continue;
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    writer.write(String.format("%-5d\tNo Lot Number Found\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tNo Lot Number Found on Entry\n", currentLine + 2));
                     currentLine++;
                     continue;
 
@@ -106,13 +106,13 @@ public class DataEntry {
                     if ((!(tokens[0].equals(""))) && tokens[0] != null) {
                         firstName = tokens[0];
                     } else {
-                        writer.write(String.format("%-5d\tNo First Name Found\n", currentLine + 2));
+                        writer.write(String.format("%-5d\tNo First Name Found on Entry\n", currentLine + 2));
                         currentLine++;
                         continue;
                     }
 
                 } catch (IndexOutOfBoundsException e) {
-                    writer.write(String.format("%-5d\tNo First Name Found\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tNo First Name Found on Entry\n", currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -122,13 +122,13 @@ public class DataEntry {
                     if ((!(tokens[2].equals(""))) && tokens[2] != null) {
                         lastName = tokens[2];
                     } else {
-                        writer.write(String.format("%-5d\tNo Last Name Found\n", currentLine + 2));
+                        writer.write(String.format("%-5d\tNo Last Name Found On Entry\n", currentLine + 2));
                         currentLine++;
                         continue;
                     }
 
                 } catch (IndexOutOfBoundsException e) {
-                    writer.write(String.format("%-5d\tNo Last Name Found\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tNo Last Name Found On Entry\n", currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -171,11 +171,11 @@ public class DataEntry {
                 // try to retreive the section id from the database (if it exists)
                 Long sectionId = getSection(section, c);
                 if (sectionId == null) {
-                    writer.write(String.format("%-5d\tInvalid Section\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tInvalid Section Detected\n", currentLine + 2));
                     currentLine++;
                     continue;
                 } else if (sectionId == -1L) {
-                    writer.write(String.format("%-5d\tDatabase Error Searching for Section\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tDatabase Error while Searching for Section\n", currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -189,13 +189,13 @@ public class DataEntry {
                         currentLine++;
                         continue;
                     } else if (lotId == -1L) {
-                        writer.write(String.format("%-5d\tFailed to Create New Lot for Entry due to Database Error\n",
+                        writer.write(String.format("%-5d\tFailed to Create New Lot for Entry (Database Error)\n",
                                 currentLine + 2));
                         currentLine++;
                         continue;
                     }
                 } else if (lotId == -1) {
-                    writer.write(String.format("%-5d\tDatabase Error getting Lot\n", currentLine + 2));
+                    writer.write(String.format("%-5d\tDatabase Error While Searching For Lot\n", currentLine + 2));
                     currentLine++;
                     continue;
                 }
@@ -207,7 +207,7 @@ public class DataEntry {
                     currentLine++;
                     continue;
                 } else if (residentId == -1L) { // already enterd or database error
-                    writer.write(String.format("%-5d\tFailed to Create New Resident from Database Error\n",
+                    writer.write(String.format("%-5d\tFailed to Create New Resident (Database Error)\n",
                             currentLine + 2));
                     currentLine++;
                     continue;
@@ -219,7 +219,6 @@ public class DataEntry {
             writer.close();
         } catch (Exception e) {
             System.err.println("Error Reading/Writting to File");
-
         } finally {
             if (disconnect(c)) {
                 c = null;
@@ -292,6 +291,7 @@ public class DataEntry {
             }
             return lotId;
         } catch (SQLException e) {
+            e.printStackTrace();
             return -1L;
         }
     }
@@ -307,26 +307,18 @@ public class DataEntry {
                     WHERE
                         section = ? AND
                         LOWER(number) = LOWER(?) AND
+                        LOWER(descriptor) = LOWER(?)
                 """;
-
-        boolean isDescriptorNull = (lotDetails == null);
-
-        // Adjust the query based on whether descriptor is null
-        if (isDescriptorNull) {
-            sql += "descriptor IS NULL";
-        } else {
-            sql += "LOWER(descriptor) = LOWER(?)";
-        }
 
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setLong(1, sectionId);
             ps.setString(2, lotNumber);
-
-            if (!isDescriptorNull) {
+            if (lotDetails == null || lotDetails.equals("")) {
+                ps.setString(3, "entire");
+            }else{
                 ps.setString(3, lotDetails);
             }
-
             ResultSet rs = ps.executeQuery();
 
             Long lotId = null;
