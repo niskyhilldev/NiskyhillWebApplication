@@ -301,8 +301,6 @@ public class DataEntry {
      * error
      */
     public static Long getLot(Long sectionId, String lotNumber, String lotDetails, Connection c) {
-        System.out.println(lotNumber + "\t" + lotDetails);
-
         String sql = """
                     SELECT lid
                     FROM lot
