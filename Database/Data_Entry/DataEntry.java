@@ -274,7 +274,7 @@ public class DataEntry {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, lotNumber);
             if (lotDetails == null) {
-                ps.setNull(2, Types.VARCHAR);
+                ps.setString(2, "entire");
             } else {
                 ps.setString(2, lotDetails);
             }
