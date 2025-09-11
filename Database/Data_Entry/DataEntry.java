@@ -273,8 +273,16 @@ public class DataEntry {
         try{
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, lotNumber);
-            ps.setString(2, lotDetails);
-            ps.setString(3, lotOwner);
+            if(lotDetails == null){
+                ps.setNull(2, Types.VARCHAR);
+            }else{
+                ps.setString(2, lotDetails);
+            }
+            if(lotOwner == null){
+                ps.setNull(3, Types.VARCHAR);
+            }else{
+                ps.setString(3, lotOwner);
+            }
             ps.setLong(4, sectionId);
             ResultSet rs = ps.executeQuery();
 
@@ -292,32 +300,47 @@ public class DataEntry {
      * Gets the lid from the database, returns null if not found, -1 if a database error
      */
     public static Long getLot(Long sectionId, String lotNumber, String lotDetails, Connection c) {
+        System.out.println(lotNumber + "\t" + lotDetails);
+        
         String sql = """
-                SELECT lid
-                FROM lot
-                WHERE 
-                    section = ? AND
-                    LOWER(number) = LOWER(?) AND
-                    LOWER(descriptor) = LOWER(?)
-                """;
-        try{
+            SELECT lid
+            FROM lot
+            WHERE 
+                section = ? AND
+                LOWER(number) = LOWER(?) AND
+        """;
+    
+        boolean isDescriptorNull = (lotDetails == null);
+    
+        // Adjust the query based on whether descriptor is null
+        if (isDescriptorNull) {
+            sql += "descriptor IS NULL";
+        } else {
+            sql += "LOWER(descriptor) = LOWER(?)";
+        }
+    
+        try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setLong(1, sectionId);
             ps.setString(2, lotNumber);
-            ps.setString(3, lotDetails);
+    
+            if (!isDescriptorNull) {
+                ps.setString(3, lotDetails);
+            }
+    
             ResultSet rs = ps.executeQuery();
-            
+    
             Long lotId = null;
-            if (rs.next()){
+            if (rs.next()) {
                 lotId = rs.getLong("lid");
             }
             return lotId;
-
-        } catch (SQLException e){
+    
+        } catch (SQLException e) {
             return -1L;
         }
-
     }
+    
 
     /*
      * Get the sid form the database, returns null if not found, -1 if there was an database error */
@@ -353,7 +376,11 @@ public class DataEntry {
         try{
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, firstName);
-            ps.setString(2, middleName);
+            if(middleName == null){
+                ps.setNull(2, Types.VARCHAR);
+            }else{
+                ps.setString(2, middleName);
+            }
             ps.setString(3, lastName);
             if(burialDate == null || burialDate.equals("")){
                 ps.setNull(4, Types.VARCHAR);
