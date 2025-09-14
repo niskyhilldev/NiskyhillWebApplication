@@ -21,6 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (username.value === "admin" && password.value === "password123") {
       errorMessage.style.color = "green";
       errorMessage.textContent = "✅ Login successful!";
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html"; 
+      }, 1500);
     } else {
       errorMessage.style.color = "red";
       errorMessage.textContent = "❌ Invalid username or password.";
