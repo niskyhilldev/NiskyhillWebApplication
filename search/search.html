@@ -1,247 +1,291 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width", initial-scale="1.0">
-    <link rel="stylesheet" href="search.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
-    <title>Nisky Hill Cemetery - Contact Us</title>
-  </head>
-  <body>
-    <nav class='navBar'>
-        <div class="navLogo">
-            <span class="topText"><a href="../index.html">Nisky Hill</a></span>
-            <span class="bottomText"><a href="../index.html">Cemetery</a></span>
-        </div>
-        <div class="dropdown">
-            <button onclick="myFunction()" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="search.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+        <title>Nisky Hill Cemetery - Search</title>
+    </head>
+    <body>
+        <nav class='navBar'>
+            <div class="navLogo">
+                <span class="topText"><a href="../index.html">Nisky Hill</a></span>
+                <span class="bottomText"><a href="../index.html">Cemetery</a></span>
+            </div>
+            <div class="dropdown">
+                <button onclick="myFunction()" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
                 <span class="flex items-center justify-center">
-                  <span class="flex">
+                <span class="flex">
                     <svg rpl="" fill="currentColor" height="30" width="30" icon-name="menu-outline" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.25 4.7H1.75A.772.772 0 0 1 1 3.95c0-.399.352-.75.75-.75h16.5c.398 0 .75.351.75.75 0 .397-.352.75-.75.75ZM19 9.996a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Zm0 6.047a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Z"></path>
+                    <path d="M18.25 4.7H1.75A.772.772 0 0 1 1 3.95c0-.399.352-.75.75-.75h16.5c.398 0 .75.351.75.75 0 .397-.352.75-.75.75ZM19 9.996a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Zm0 6.047a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Z"></path>
                     </svg>
-                  </span>
                 </span>
-        </button>
-          <div id="myDropdown" class="dropdown-content">
-            <a class = 'menuOption' href="../index.html">Home</a>
-            <a class = 'menuOption' href="../history/history.html">History</a>
-            <a class = 'menuOption' href="../notableResidents/notableResidents.html">Notable Residents</a>
-            <a class = 'menuOption' href="../contact/contact.html">Contact</a>
-            <a class = 'menuOption' href="../faq/faq.html">FAQs</a>
-            <a class = 'menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
-            <a class = 'menuOption' href="./search.html">Find a Grave</a>
-          </div>
-      </div>
-        <ul class="navItems">
-            <li class="navOption"> <a href="../index.html">HOME</a></li>
-            <li class="navOption"> <a href="../history/history.html">HISTORY</a></li>
-            <li class="navOption"> <a href="../notableResidents/notableResidents.html">NOTABLE RESIDENTS</a></li>
-            <li class="navOption"> <a href="../contact/contact.html">CONTACT</a></li>
-            <li class="navOption"> <a href="../faq/faq.html">FAQs</a></li>
-            <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
-            <li><button onclick="location.href='../search/search.html';" class="findAGraveButton">FIND A GRAVE</button></li>
-        </ul>
-    </nav>
-
-
-    <!-- Search Form Section -->
-    <div class="search-container" style="padding: 20px; max-width: 800px; margin: 0 auto;">
-        <h1>Find a Grave</h1>
-        <div class="search-form" style="margin-bottom: 30px;">
-            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                <div>
-                    <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: bold;">First Name:</label>
-                    <input type="text" id="firstName" placeholder="Enter first name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
-                </div>
-                <div>
-                    <label for="lastName" style="display: block; margin-bottom: 5px; font-weight: bold;">Last Name:</label>
-                    <input type="text" id="lastName" placeholder="Enter last name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
+                </span>
+                </button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a class = 'menuOption' href="../index.html">Home</a>
+                    <a class = 'menuOption' href="../history/history.html">History</a>
+                    <a class = 'menuOption' href="../notableResidents/notableResidents.html">Notable Residents</a>
+                    <a class = 'menuOption' href="../contact/contact.html">Contact</a>
+                    <a class = 'menuOption' href="../faq/faq.html">FAQs</a>
+                    <a class = 'menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
+                    <a class = 'menuOption' href="./search.html">Find a Grave</a>
                 </div>
             </div>
-            
-            <div id="searchStatus" style="margin-bottom: 15px; font-style: italic; color: #666;"></div>
-            <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px;"></div>
-        </div>
-    </div>
+            <ul class="navItems">
+                <li class="navOption"> <a href="../index.html">HOME</a></li>
+                <li class="navOption"> <a href="../history/history.html">HISTORY</a></li>
+                <li class="navOption"> <a href="../notableResidents/notableResidents.html">NOTABLE RESIDENTS</a></li>
+                <li class="navOption"> <a href="../contact/contact.html">CONTACT</a></li>
+                <li class="navOption"> <a href="../faq/faq.html">FAQs</a></li>
+                <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
+                <li><button onclick="location.href='./search.html';" class="findAGraveButton">FIND A GRAVE</button></li>
+            </ul>
+        </nav>
 
-    <footer class='footer'>
-        <div class="navLogoFooter">
-            <span class="topText">Nisky Hill</span>
-            <span class="bottomText">Cemetery</span>
+<!-- Search Form Section -->
+<div style="position: relative;">
+    <h1 class="aboutInfo">Find a Grave</h1>
+    
+    <div>
+        <div class="search-form" style="margin-bottom: 30px;">
+            <div style="margin: 1rem;">
+                <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: bold;">First Name:</label>
+                <input type="text" id="firstName" placeholder="Enter first name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
+            </div>
+            <div style="margin: 1rem;" >
+                <label for="lastName" style="display: block; margin-bottom: 5px; font-weight: bold;">Last Name:</label>
+                <input type="text" id="lastName" placeholder="Enter last name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
+            </div>
+        </div>
+        
+        <div id="searchStatus" style="margin-bottom: 15px; font-style: italic; color: #666;"></div>
+        <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 20rem;"></div>
     </div>
-        <div class="footerColumns">
-            <p class = "footerTopTitle">Open Dawn til Dusk</p>
-            <span class="footerTop">254 E Church St,</span>
-            <span class="footerBottom">Bethlehem, PA 18018</span>
-        </div>
-        <div class="footerColumns">
-            <p class = "footerTopTitle">Questions?</p>
-            <a class = 'footerTop' href="../contact/contact.html">Contact</a>
-        </div>
-    </footer>
+</div>
+
+<footer class='footer'>
+    <div class="navLogoFooter">
+        <span class="topText">Nisky Hill</span>
+        <span class="bottomText">Cemetery</span>
+    </div>
+    <div class="footerColumns">
+        <p class = "footerTopTitle">Open Dawn til Dusk</p>
+        <span class="footerTop">254 E Church St,</span>
+        <span class="footerBottom">Bethlehem, PA 18018</span>
+    </div>
+    <div class="footerColumns">
+        <p class = "footerTopTitle">Questions?</p>
+        <a class = 'footerTop' href="../contact/contact.html">Contact</a>
+    </div>
+</footer>
 
 <script>
-    // Base URL for your API
-    const API_BASE = '';
+// Base URL for your API
+const API_BASE = '';
 
-    // Debounce function to limit API calls
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            func(...args);
         };
-    }
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
-    // Function to search for residents by name
-    async function searchResidents(firstName, lastName) {
-        const statusDiv = document.getElementById('searchStatus');
-        const resultsDiv = document.getElementById('searchResults');
-        
-        // Clear previous results if both fields are empty
-        if (!firstName.trim() && !lastName.trim()) {
-            statusDiv.innerHTML = '';
-            resultsDiv.innerHTML = '';
-            return;
-        }
-        
-        // Show loading state
-        statusDiv.innerHTML = 'Searching...';
+// Mock data for testing
+const mockResidents = [
+    {
+        id: 1,
+        firstName: "John",
+        middleName: "David",
+        lastName: "Smith",
+        birthDate: "1945-03-15",
+        deathDate: "2020-11-22",
+        section: "A",
+        lot: "15",
+    },
+    {
+        id: 2,
+        firstName: "Mary",
+        lastName: "Johnson",
+        birthDate: "1932-07-08",
+        deathDate: "2018-05-14",
+        section: "B",
+        lot: "23",
+    },
+    {
+        id: 3,
+        firstName: "Robert",
+        middleName: "James",
+        lastName: "Williams",
+        birthDate: "1928-12-03",
+        deathDate: "2015-09-30",
+        section: "C",
+        lot: "7",
+    },
+    {
+        id: 4,
+        firstName: "Elizabeth",
+        lastName: "Brown",
+        birthDate: "1950-01-20",
+        deathDate: "2019-03-12",
+        section: "A",
+        lot: "8",
+    },
+    {
+        id: 5,
+        firstName: "William",
+        lastName: "Davis",
+        birthDate: "1942-09-14",
+        deathDate: "2021-07-05",
+        section: "D",
+        lot: "12",
+    }
+];
+
+// Function to search for residents by name
+async function searchResidents(firstName, lastName) {
+    const statusDiv = document.getElementById('searchStatus');
+    const resultsDiv = document.getElementById('searchResults');
+    
+    if (!firstName.trim() && !lastName.trim()) {
+        statusDiv.innerHTML = '';
         resultsDiv.innerHTML = '';
-        
-        try {
-            // Construct query parameters
-            const params = new URLSearchParams();
-            if (firstName.trim()) params.append('firstName', firstName.trim());
-            if (lastName.trim()) params.append('lastName', lastName.trim());
-            
-            // Make the API call - adjust endpoint as needed based on your backend
-            const response = await fetch(`${API_BASE}/residents/search?${params.toString()}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            // Clear status and display results
-            statusDiv.innerHTML = '';
-            displaySearchResults(data, firstName, lastName);
-            
-        } catch (error) {
-            statusDiv.innerHTML = `Error searching: ${error.message}`;
-            resultsDiv.innerHTML = '';
-            console.error('Search error:', error);
-        }
+        return;
     }
-
-    // Function to display search results
-    function displaySearchResults(data, firstName, lastName) {
-        const resultsDiv = document.getElementById('searchResults');
+    
+    statusDiv.innerHTML = 'Searching...';
+    resultsDiv.innerHTML = '';
+    
+    try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
         
-        if (!data || data.length === 0) {
-            const searchTerms = [firstName, lastName].filter(name => name.trim()).join(' ');
-            resultsDiv.innerHTML = `
-                <div style="text-align: center; color: #666; padding: 20px;">
-                    <p>No residents found${searchTerms ? ` for "${searchTerms}"` : ''}.</p>
-                    <p>Try adjusting your search terms or check the spelling.</p>
+        const filteredResults = mockResidents.filter(resident => {
+            const firstMatch = !firstName.trim() || 
+                (resident.firstName && resident.firstName.toLowerCase().includes(firstName.toLowerCase()));
+            const lastMatch = !lastName.trim() || 
+                (resident.lastName && resident.lastName.toLowerCase().includes(lastName.toLowerCase()));
+            return firstMatch && lastMatch;
+        });
+        
+        statusDiv.innerHTML = '';
+        displaySearchResults(filteredResults, firstName, lastName);
+        
+    } catch (error) {
+        statusDiv.innerHTML = `Error searching: ${error.message}`;
+        resultsDiv.innerHTML = '';
+        console.error('Search error:', error);
+    }
+}
+
+// Function to display search results
+function displaySearchResults(data, firstName, lastName) {
+    const resultsDiv = document.getElementById('searchResults');
+    
+    if (!data || data.length === 0) {
+        const searchTerms = [firstName, lastName].filter(name => name.trim()).join(' ');
+        resultsDiv.innerHTML = `
+            <div style="text-align: center; color: #666; padding: 20px;">
+                <p>No residents found${searchTerms ? ` for "${searchTerms}"` : ''}.</p>
+                <p>Try adjusting your search terms or check the spelling.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `<h2>Search Results (${data.length} found)</h2>`;
+    
+    data.forEach((resident) => {
+        html += `
+            <div class="resident-card"
+                 style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; background-color: #f9f9f9;">
+                
+                <h3 style="margin: 0 0 8px 0; color: #333; font-size: 1.2em;">${formatName(resident)}</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><strong>Birth Date:</strong> ${formatDate(resident.birthDate)}</div>
+                    <div><strong>Death Date:</strong> ${formatDate(resident.deathDate)}</div>
+                    <div><strong>Section:</strong> ${resident.section || ''}</div>
+                    <div><strong>Lot:</strong> ${resident.lot || ''}</div>
                 </div>
-            `;
-            return;
-        }
-        
-        let html = `<h2>Search Results (${data.length} found)</h2>`;
-        
-        data.forEach((resident, index) => {
-            html += `
-                <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; background-color: #f9f9f9;">
-                    <h3 style="margin-top: 0; color: #333;">${formatName(resident)}</h3>
-                    ${formatResidentDetails(resident)}
-                </div>
-            `;
-        });
-        
-        resultsDiv.innerHTML = html;
-    }
-
-    // Helper function to format resident name
-    function formatName(resident) {
-        const parts = [];
-        if (resident.firstName) parts.push(resident.firstName);
-        if (resident.middleName) parts.push(resident.middleName);
-        if (resident.lastName) parts.push(resident.lastName);
-        return parts.join(' ') || 'Unknown Name';
-    }
-
-    // Helper function to format resident details
-    function formatResidentDetails(resident) {
-        let details = '';
-        
-        // Add each available field
-        Object.entries(resident).forEach(([key, value]) => {
-            if (key !== 'firstName' && key !== 'middleName' && key !== 'lastName' && value !== null && value !== undefined && value !== '') {
-                const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                details += `<p><strong>${displayKey}:</strong> ${value}</p>`;
-            }
-        });
-        
-        return details || '<p><em>No additional details available</em></p>';
-    }
-
-    // Debounced search function (waits 300ms after user stops typing)
-    const debouncedSearch = debounce((firstName, lastName) => {
-        searchResidents(firstName, lastName);
-    }, 300);
-
-    // Event listeners for real-time search
-    document.addEventListener('DOMContentLoaded', function() {
-        const firstNameInput = document.getElementById('firstName');
-        const lastNameInput = document.getElementById('lastName');
-        
-        // Add event listeners for both input and keyup events
-        firstNameInput.addEventListener('input', () => {
-            debouncedSearch(firstNameInput.value, lastNameInput.value);
-        });
-        
-        lastNameInput.addEventListener('input', () => {
-            debouncedSearch(firstNameInput.value, lastNameInput.value);
-        });
-        
-        // Also listen for keyup for better responsiveness
-        firstNameInput.addEventListener('keyup', () => {
-            debouncedSearch(firstNameInput.value, lastNameInput.value);
-        });
-        
-        lastNameInput.addEventListener('keyup', () => {
-            debouncedSearch(firstNameInput.value, lastNameInput.value);
-        });
+            </div>
+        `;
     });
+    
+    resultsDiv.innerHTML = html;
+}
 
-    // Dropdown menu function (assuming this exists in your existing code)
-    function myFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
+// Helper function to format resident name
+function formatName(resident) {
+    const parts = [];
+    if (resident.firstName) parts.push(resident.firstName);
+    if (resident.middleName) parts.push(resident.middleName);
+    if (resident.lastName) parts.push(resident.lastName);
+    if (resident.suffix) parts.push(resident.suffix);
+    return parts.join(' ');
+}
+
+// Helper function to format dates
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    } catch {
+        return dateStr;
     }
+}
 
-    // Close dropdown when clicking outside
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
+// Debounced search function
+const debouncedSearch = debounce((firstName, lastName) => {
+    searchResidents(firstName, lastName);
+}, 300);
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    
+    firstNameInput.addEventListener('input', () => {
+        debouncedSearch(firstNameInput.value, lastNameInput.value);
+    });
+    
+    lastNameInput.addEventListener('input', () => {
+        debouncedSearch(firstNameInput.value, lastNameInput.value);
+    });
+});
+
+// Dropdown menu function
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close dropdown when clicking outside
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
             }
         }
     }
-    </script>
+}
+</script>
+
     </body>
 </html>
