@@ -17,7 +17,7 @@
                 <span class="bottomText"><a href="../index.html">Cemetery</a></span>
             </div>
             <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                <button onclick="myFunction(event)" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
                 <span class="flex items-center justify-center">
                 <span class="flex">
                     <svg rpl="" fill="currentColor" height="30" width="30" icon-name="menu-outline" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,7 @@
             </div>
         </div>
         
-        <div id="searchStatus" style="margin-bottom: 15px; font-style: italic; color: #666;"></div>
+        <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
         <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 20rem;"></div>
     </div>
 </div>
@@ -85,207 +85,215 @@
 </footer>
 
 <script>
-// Base URL for your API
-const API_BASE = '';
-
-// Debounce function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Mock data for testing
-const mockResidents = [
-    {
-        id: 1,
-        firstName: "John",
-        middleName: "David",
-        lastName: "Smith",
-        birthDate: "1945-03-15",
-        deathDate: "2020-11-22",
-        section: "A",
-        lot: "15",
-    },
-    {
-        id: 2,
-        firstName: "Mary",
-        lastName: "Johnson",
-        birthDate: "1932-07-08",
-        deathDate: "2018-05-14",
-        section: "B",
-        lot: "23",
-    },
-    {
-        id: 3,
-        firstName: "Robert",
-        middleName: "James",
-        lastName: "Williams",
-        birthDate: "1928-12-03",
-        deathDate: "2015-09-30",
-        section: "C",
-        lot: "7",
-    },
-    {
-        id: 4,
-        firstName: "Elizabeth",
-        lastName: "Brown",
-        birthDate: "1950-01-20",
-        deathDate: "2019-03-12",
-        section: "A",
-        lot: "8",
-    },
-    {
-        id: 5,
-        firstName: "William",
-        lastName: "Davis",
-        birthDate: "1942-09-14",
-        deathDate: "2021-07-05",
-        section: "D",
-        lot: "12",
+    function myFunction(event) {
+        document.getElementById("myDropdown").classList.toggle("show");
+        event.stopPropagation();
     }
-];
 
-// Function to search for residents by name
-async function searchResidents(firstName, lastName) {
-    const statusDiv = document.getElementById('searchStatus');
-    const resultsDiv = document.getElementById('searchResults');
-    
-    if (!firstName.trim() && !lastName.trim()) {
-        statusDiv.innerHTML = '';
-        resultsDiv.innerHTML = '';
-        return;
-    }
-    
-    statusDiv.innerHTML = 'Searching...';
-    resultsDiv.innerHTML = '';
-    
-    try {
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-        
-        const filteredResults = mockResidents.filter(resident => {
-            const firstMatch = !firstName.trim() || 
-                (resident.firstName && resident.firstName.toLowerCase().includes(firstName.toLowerCase()));
-            const lastMatch = !lastName.trim() || 
-                (resident.lastName && resident.lastName.toLowerCase().includes(lastName.toLowerCase()));
-            return firstMatch && lastMatch;
-        });
-        
-        statusDiv.innerHTML = '';
-        displaySearchResults(filteredResults, firstName, lastName);
-        
-    } catch (error) {
-        statusDiv.innerHTML = `Error searching: ${error.message}`;
-        resultsDiv.innerHTML = '';
-        console.error('Search error:', error);
-    }
-}
-
-// Function to display search results
-function displaySearchResults(data, firstName, lastName) {
-    const resultsDiv = document.getElementById('searchResults');
-    
-    if (!data || data.length === 0) {
-        const searchTerms = [firstName, lastName].filter(name => name.trim()).join(' ');
-        resultsDiv.innerHTML = `
-            <div style="text-align: center; color: #666; padding: 20px;">
-                <p>No residents found${searchTerms ? ` for "${searchTerms}"` : ''}.</p>
-                <p>Try adjusting your search terms or check the spelling.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    let html = `<h2>Search Results (${data.length} found)</h2>`;
-    
-    data.forEach((resident) => {
-        html += `
-            <div class="resident-card"
-                 style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; background-color: #f9f9f9;">
-                
-                <h3 style="margin: 0 0 8px 0; color: #333; font-size: 1.2em;">${formatName(resident)}</h3>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div><strong>Birth Date:</strong> ${formatDate(resident.birthDate)}</div>
-                    <div><strong>Death Date:</strong> ${formatDate(resident.deathDate)}</div>
-                    <div><strong>Section:</strong> ${resident.section || ''}</div>
-                    <div><strong>Lot:</strong> ${resident.lot || ''}</div>
-                </div>
-            </div>
-        `;
-    });
-    
-    resultsDiv.innerHTML = html;
-}
-
-// Helper function to format resident name
-function formatName(resident) {
-    const parts = [];
-    if (resident.firstName) parts.push(resident.firstName);
-    if (resident.middleName) parts.push(resident.middleName);
-    if (resident.lastName) parts.push(resident.lastName);
-    if (resident.suffix) parts.push(resident.suffix);
-    return parts.join(' ');
-}
-
-// Helper function to format dates
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    try {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        });
-    } catch {
-        return dateStr;
-    }
-}
-
-// Debounced search function
-const debouncedSearch = debounce((firstName, lastName) => {
-    searchResidents(firstName, lastName);
-}, 300);
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
-    
-    firstNameInput.addEventListener('input', () => {
-        debouncedSearch(firstNameInput.value, lastNameInput.value);
-    });
-    
-    lastNameInput.addEventListener('input', () => {
-        debouncedSearch(firstNameInput.value, lastNameInput.value);
-    });
-});
-
-// Dropdown menu function
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-}
-
-// Close dropdown when clicking outside
-window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            // Check if the clicked element or any parent is the dropdown button
+            if (!event.target.closest('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+                }
             }
+    }
+    // Base URL for your API
+    const API_BASE = '';
+
+    //debounce function so constant calls aren't made
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Mock data for testing
+    const mockResidents = [
+        {
+            id: 1,
+            firstName: "John",
+            middleName: "David",
+            lastName: "Smith",
+            birthDate: "1945-03-15",
+            deathDate: "2020-11-22",
+            section: "A",
+            lot: "15",
+        },
+        {
+            id: 2,
+            firstName: "Mary",
+            lastName: "Johnson",
+            birthDate: "1932-07-08",
+            deathDate: "2018-05-14",
+            section: "B",
+            lot: "23",
+        },
+        {
+            id: 3,
+            firstName: "Robert",
+            middleName: "James",
+            lastName: "Williams",
+            birthDate: "1928-12-03",
+            deathDate: "2015-09-30",
+            section: "C",
+            lot: "7",
+        },
+        {
+            id: 4,
+            firstName: "Elizabeth",
+            lastName: "Brown",
+            birthDate: "1950-01-20",
+            deathDate: "2019-03-12",
+            section: "A",
+            lot: "8",
+        },
+        {
+            id: 5,
+            firstName: "William",
+            lastName: "Davis",
+            birthDate: "1942-09-14",
+            deathDate: "2021-07-05",
+            section: "D",
+            lot: "12",
+        }
+    ];
+
+    //function to search for residents by name (later replace with api call)
+    async function searchResidents(firstName, lastName) {
+        const statusDiv = document.getElementById('searchStatus');
+        const resultsDiv = document.getElementById('searchResults');
+        
+        //nothing is in either text box
+        if (!firstName.trim() && !lastName.trim()) {
+            statusDiv.innerHTML = '';
+            resultsDiv.innerHTML = '';
+            return;
+        }
+        
+        statusDiv.innerHTML = 'Searching...';
+        resultsDiv.innerHTML = '';
+        
+        try {
+            await new Promise(resolve => setTimeout(resolve, 500)); //simulate network delay
+            
+            //filter results by both first and last name
+            const filteredResults = mockResidents.filter(resident => {
+                const firstMatch = !firstName.trim() || 
+                    (resident.firstName && resident.firstName.toLowerCase().includes(firstName.toLowerCase()));
+                const lastMatch = !lastName.trim() || 
+                    (resident.lastName && resident.lastName.toLowerCase().includes(lastName.toLowerCase()));
+                return firstMatch && lastMatch;
+            });
+            
+            statusDiv.innerHTML = '';
+            //send call to display results with filtered data and first and last name entered
+            displaySearchResults(filteredResults, firstName, lastName);
+            
+            //network error
+        } catch (error) {
+            statusDiv.innerHTML = `Error searching: ${error.message}`;
+            resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
         }
     }
-}
-</script>
 
-    </body>
+    //function to display search results
+    function displaySearchResults(data, firstName, lastName) {
+        const resultsDiv = document.getElementById('searchResults');
+        
+        //case where there is no data or no matching results
+        if (!data || data.length === 0) {
+            const searchTerms = [firstName, lastName].filter(name => name.trim()).join(' ');
+            resultsDiv.innerHTML = `
+                <div style="text-align: center; color: #666; padding: 20px;">
+                    <p>No residents found${searchTerms ? ` for "${searchTerms}"` : ''}.</p>
+                    <p>Try adjusting your search terms or check the spelling.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        //add in a new block for each new resident that has a matching name
+        let html = `<h2 style='margin: 0 20px 10px 20px;'>Search Results (${data.length} found)</h2>`;
+        
+        data.forEach((resident) => {
+            html += `
+                <div class='resident-card' onclick="location.href='./profile/profile.html?id=${resident.id}';" style="border: 1px solid #ddd; padding: 15px; margin: 0 20px 10px 20px; border-radius: 5px; background-color: #f9f9f9; cursor: pointer; border-color: black;">
+                    
+                    <h3 style="margin: 0 0 8px 0; color: #333; font-size: 1.2em;">${formatName(resident)}</h3>              
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><strong>Birth Date:</strong> ${formatDate(resident.birthDate)}</div>
+                        <div><strong>Death Date:</strong> ${formatDate(resident.deathDate)}</div>
+                        <div><strong>Section:</strong> ${resident.section || ''}</div>
+                        <div><strong>Lot:</strong> ${resident.lot || ''}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        resultsDiv.innerHTML = html;
+    }
+
+
+    // Helper function to format resident name
+    function formatName(resident) {
+        const parts = [];
+        if (resident.firstName) parts.push(resident.firstName);
+        if (resident.middleName) parts.push(resident.middleName);
+        if (resident.lastName) parts.push(resident.lastName);
+        if (resident.suffix) parts.push(resident.suffix);
+        return parts.join(' ');
+    }
+
+    // Helper function to format dates
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        } catch {
+            return dateStr;
+        }
+    }
+
+    //debounced search function that searches for names once input has changed
+    const debouncedSearch = debounce((firstName, lastName) => {
+        searchResidents(firstName, lastName);
+    }, 300);
+
+    //event listeners that will trigger functions once an update has been made in either first or last name boxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        
+        firstNameInput.addEventListener('input', () => {
+            debouncedSearch(firstNameInput.value, lastNameInput.value);
+        });
+        
+        lastNameInput.addEventListener('input', () => {
+            debouncedSearch(firstNameInput.value, lastNameInput.value);
+        });
+    });
+
+
+    </script>
+</body>
 </html>
