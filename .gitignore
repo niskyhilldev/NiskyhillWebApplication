@@ -54,3 +54,5 @@ Thumbs.db
 .vscode/
 .settings/
 **/node_modules/**
+
+/Server

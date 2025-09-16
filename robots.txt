@@ -1,0 +1,32 @@
+# Robots.txt for Nisky Hill Cemetery
+# Allow all web crawlers to access the site
+
+User-agent: *
+Allow: /
+
+# Block access to sensitive or unnecessary files
+Disallow: /admin/
+Disallow: /private/
+Disallow: /cgi-bin/
+Disallow: /temp/
+Disallow: /backup/
+Disallow: *.log$
+Disallow: *.tmp$
+
+# Block access to sensitive file types
+Disallow: /*.pdf$
+Disallow: /*.doc$
+Disallow: /*.docx$
+
+# Allow access to CSS and JS files (important for SEO)
+Allow: /css/
+Allow: /js/
+Allow: /img/
+Allow: *.css$
+Allow: *.js$
+
+# Specify the location of your sitemap
+Sitemap: https://niskyhill.org/sitemap.xml
+
+# Crawl delay (optional - be careful not to set too high)
+# Crawl-delay: 1
