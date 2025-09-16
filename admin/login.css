@@ -23,7 +23,7 @@ body {
 
 .login-container input[type="text"],
 .login-container input[type="password"] {
-  width: 100%;
+  width: 95%;
   padding: 0.8rem;
   margin: 0.5rem 0;
   border: 1px solid #ccc;
@@ -61,4 +61,8 @@ body {
   font-size: 0.9rem;
   text-align: center;
   margin-top: 0.5rem;
+}
+
+#username, #password {
+  padding-right: 0px;
 }
