@@ -23,28 +23,20 @@ let currentRow;
 let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
 function performOwnerSearch() {
-    let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
+    let lastName = document.getElementById("searchName").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        fetch('http://localhost:8080/owners/all')
+        fetch('http://localhost:8080/owners/all',
+            {
+                method: 'GET',
+                body: JSON.stringify(data)
+            }
+        )
         .then(response => response.json())
         .then(serverData => {
             let results = Object.values(serverData).filter(entry => {
                 
-                if(lastName && organization){
-                    if(entry.lastName && entry.lastName.toLowerCase() === lastName  && entry.organization && entry.organization.toLowerCase() === organization){
-                        return true;
-                    }
-                    return false;
-                }
-                if (lastName && entry.lastName && entry.lastName.toLowerCase() === lastName) {
-                    return true;
-                }
-                if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
-                    return true;
-                }
-                return false;
+                return true;
             });
 
             if (results.length > 0) {
