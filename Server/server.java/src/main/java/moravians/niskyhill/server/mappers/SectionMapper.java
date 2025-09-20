@@ -6,16 +6,16 @@ import java.util.List;
 
 public class SectionMapper {
 
-    public static SectionDTO mapSection(Section section){
+    public static SectionDTO mapSectionDTO(Section section){
         return new SectionDTO(
             section.sid(),
-            section.name(),
-            section.map()
+            section.name() 
+            // no map() becuase we dont want to keep transfering that big file all the time
         );
     }
 
-    public static List<SectionDTO> mapSectionList(List<Section> sections){
-        return sections.stream().map(section -> mapSection(section)).toList();
+    public static List<SectionDTO> mapSectionDTOList(List<Section> sections){
+        return sections.stream().map(section -> mapSectionDTO(section)).toList();
     }
     
 }

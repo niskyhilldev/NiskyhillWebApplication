@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
-import moravians.niskyhill.server.models.Owner;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
 import java.sql.PreparedStatement;
@@ -64,7 +63,9 @@ public class Database {
     public List<Resident> getAllResidents() throws HttpStatusException {
         final String q = """
             SELECT * 
-            FROM buried 
+            FROM 
+                resident JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid
         """;
         
         List<Resident> residents = new ArrayList<>();
@@ -72,23 +73,136 @@ public class Database {
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Resident resident = new Resident(
-                        rs.getLong("id"),
-                        rs.getString("firstname"),
-                        rs.getString("middlename"),
-                        rs.getString("lastname"),
-                        rs.getString("suffix"),
-                        rs.getString("age"),
-                        rs.getString("death_date"),
-                        rs.getString("capsule"),
-                        rs.getBoolean("foundation"),
-                        rs.getBoolean("public"),
-                        new Lot(
-                            rs.getString("lot_number"),
-                            rs.getString("lot_descriptor"),
-                            rs.getString("section")
+                    rs.getLong("rid"),
+                    rs.getString("firstname"),
+                    rs.getString("middlename"),
+                    rs.getString("lastname"),
+                    rs.getString("birth_date"),
+                    rs.getString("burial_date"),
+                    rs.getString("death_date"),
+                    rs.getString("capsule"),
+                    rs.getBoolean("marker"),
+                    rs.getBoolean("foundation"),
+                    rs.getBoolean("viewable"),
+                    new Lot(
+                        rs.getLong("lid"),
+                        rs.getString("number"),
+                        rs.getString("descriptor"),
+                        rs.getString("owner"),
+                        new Section(
+                            rs.getLong("sid"),
+                            rs.getString("name"),
+                            rs.getString("map")
                         )
+                    )
                 );
+                residents.add(resident);
+            }
+        } catch (Exception e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
+        }
 
+        return residents;
+    }
+
+    public Resident getResident(String rid) throws HttpStatusException {
+        
+        final String q = """
+            SELECT * 
+            FROM 
+                resident JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid
+            WHERE resident.rid = ?
+        """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, Long.parseLong(rid));
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Resident(
+                    rs.getLong("rid"),
+                    rs.getString("firstname"),
+                    rs.getString("middlename"),
+                    rs.getString("lastname"),
+                    rs.getString("birth_date"),
+                    rs.getString("burial_date"),
+                    rs.getString("death_date"),
+                    rs.getString("capsule"),
+                    rs.getBoolean("marker"),
+                    rs.getBoolean("foundation"),
+                    rs.getBoolean("viewable"),
+                    new Lot(
+                        rs.getLong("lid"),
+                        rs.getString("number"),
+                        rs.getString("descriptor"),
+                        rs.getString("owner"),
+                        new Section(
+                            rs.getLong("sid"),
+                            rs.getString("name"),
+                            rs.getString("map")
+                        )
+                    )
+                );
+            }else{
+                throw new HttpStatusException(404, "Could not find Resident with id " + rid);
+            }
+        } catch (NumberFormatException e) {
+            System.err.printf("Rid must be a numeric value: %s\n", e.getMessage());
+            throw new HttpStatusException(400, "rid must be numeric", e);
+        } catch (Exception e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
+        }
+    }
+
+    public List<Resident> searchResidents(String name) throws HttpStatusException {
+        final String q = """
+            SELECT *
+            FROM resident
+                JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid
+            WHERE LOWER(resident.firstname) LIKE LOWER(?)
+                OR LOWER(resident.middlename) LIKE LOWER(?)
+                OR LOWER(resident.lastname) LIKE LOWER(?);
+        """;
+        
+        List<Resident> residents = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            String pattern = "%" + name.trim() + "%";
+
+            ps.setString(1, pattern);
+            ps.setString(2, pattern);
+            ps.setString(3, pattern);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Resident resident = new Resident(
+                    rs.getLong("rid"),
+                    rs.getString("firstname"),
+                    rs.getString("middlename"),
+                    rs.getString("lastname"),
+                    rs.getString("birth_date"),
+                    rs.getString("burial_date"),
+                    rs.getString("death_date"),
+                    rs.getString("capsule"),
+                    rs.getBoolean("marker"),
+                    rs.getBoolean("foundation"),
+                    rs.getBoolean("viewable"),
+                    new Lot(
+                        rs.getLong("lid"),
+                        rs.getString("number"),
+                        rs.getString("descriptor"),
+                        rs.getString("owner"),
+                        new Section(
+                            rs.getLong("sid"),
+                            rs.getString("name"),
+                            rs.getString("map")
+                        )
+                    )
+                );
                 residents.add(resident);
             }
         } catch (Exception e) {
@@ -102,7 +216,7 @@ public class Database {
     public List<Lot> getAllLots() throws HttpStatusException {
         final String q = """
                         SELECT *
-                        FROM lot
+                        FROM lot JOIN section ON lot.section = section.sid
                 """;
 
         List<Lot> lots = new ArrayList<>();
@@ -110,9 +224,16 @@ public class Database {
         try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Lot lot = new Lot(
-                        rs.getString("lot_number"),
-                        rs.getString("lot_descriptor"),
-                        rs.getString("section"));
+                    rs.getLong("lid"),
+                    rs.getString("number"),
+                    rs.getString("descriptor"),
+                    rs.getString("owner"),
+                    new Section(
+                        rs.getLong("sid"),
+                        rs.getString("name"),
+                        rs.getString("map")
+                    )
+                );
 
                 lots.add(lot);
             }
@@ -122,40 +243,6 @@ public class Database {
         }
 
         return lots;
-    }
-
-    public List<Owner> getAllOwners() throws HttpStatusException {
-        final String q = """
-                    SELECT *
-                    FROM owners
-                """;
-
-        List<Owner> owners = new ArrayList<>();
-
-        try (PreparedStatement ps = connection.prepareStatement(q); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Owner owner = new Owner(
-                        rs.getLong("id"),
-                        rs.getString("firstname"),
-                        rs.getString("middlename"),
-                        rs.getString("lastname"),
-                        rs.getString("suffix"),
-                        rs.getString("organization"),
-                        new Lot(
-                            rs.getString("lot_number"),
-                            rs.getString("lot_descriptor"),
-                            rs.getString("section")
-                        )
-                );
-
-                owners.add(owner);
-            }
-        } catch (Exception e) {
-            System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Owners", e);
-        }
-
-        return owners;
     }
 
 
@@ -171,8 +258,8 @@ public class Database {
             while (rs.next()) {
                 Section section = new Section(
                     rs.getLong("sid"),
-                    rs.getString("section_name"),
-                    rs.getString("section_map")
+                    rs.getString("name"),
+                    rs.getString("map")
                 );
                 
 

@@ -6,11 +6,8 @@ import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.mappers.LotMapper;
-import moravians.niskyhill.server.mappers.OwnerMapper;
 import moravians.niskyhill.server.mappers.ResidentMapper;
 import moravians.niskyhill.server.mappers.SectionMapper;
-
-
 
 
 /**
@@ -55,26 +52,27 @@ public class Server {
             ctx.status(204);
         });
 
- 
+        
+        /* HTTP Routes */
         app.get("/residents/all", ctx -> {
-            ctx.json(ResidentMapper.mapResidentList(database.getAllResidents())); 
+            ctx.json(ResidentMapper.mapResidentDTOList(database.getAllResidents())); 
+        });
+
+        app.get("/residents/{rid}", ctx -> {
+            ctx.json(ResidentMapper.mapResidentDTO(database.getResident(ctx.pathParam("rid")))); 
+        });
+
+        app.get("/residents/search/{name}", ctx -> {
+            ctx.json(ResidentMapper.mapResidentSearchDTOList(database.searchResidents(ctx.pathParam("name")))); 
         });
 
         app.get("/lots/all", ctx -> {
-            ctx.json(LotMapper.mapLotList(database.getAllLots())); 
-        });
-
-        app.get("/owners/all", ctx -> {
-            ctx.json(OwnerMapper.mapOwnerList(database.getAllOwners())); 
+            ctx.json(LotMapper.mapLotDTOList(database.getAllLots())); 
         });
 
         app.get("/sections/all", ctx -> {
-            ctx.json(SectionMapper.mapSectionList(database.getAllSections())); 
+            ctx.json(SectionMapper.mapSectionDTOList(database.getAllSections())); 
         });
-
-
-
-
 
 
         /**

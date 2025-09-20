@@ -2,20 +2,24 @@ package moravians.niskyhill.server.mappers;
 
 import moravians.niskyhill.server.dtos.LotDTO;
 import moravians.niskyhill.server.models.Lot;
+
 import java.util.List;
 
 public class LotMapper {
     
-    public static LotDTO mapLot(Lot lot){
+    public static LotDTO mapLotDTO(Lot lot){
         return new LotDTO(
+            lot.lid(),
             lot.number(), 
             lot.descriptor(), 
-            lot.sectionName()
+            lot.owner(),
+            SectionMapper.mapSectionDTO(lot.section())
         );
     }
 
-    public static List<LotDTO> mapLotList(List<Lot> lots){
-        return lots.stream().map(lot -> mapLot(lot)).toList();
+    public static List<LotDTO> mapLotDTOList(List<Lot> lots){
+        return lots.stream().map(lot -> mapLotDTO(lot)).toList();
     }
     
 }
+
