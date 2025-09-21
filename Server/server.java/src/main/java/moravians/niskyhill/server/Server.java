@@ -58,12 +58,14 @@ public class Server {
             ctx.json(ResidentMapper.mapResidentDTOList(database.getAllResidents())); 
         });
 
-        app.get("/residents/{rid}", ctx -> {
-            ctx.json(ResidentMapper.mapResidentDTO(database.getResident(ctx.pathParam("rid")))); 
+        app.get("/residents/search", ctx -> {
+            String name = ctx.queryParam("name");
+            System.out.println(name);
+            ctx.json(ResidentMapper.mapResidentSearchDTOList(database.searchResidents(name))); // name is in the param (since it could have whitespace)
         });
 
-        app.get("/residents/search/{name}", ctx -> {
-            ctx.json(ResidentMapper.mapResidentSearchDTOList(database.searchResidents(ctx.pathParam("name")))); 
+        app.get("/residents/find/{rid}", ctx -> {
+            ctx.json(ResidentMapper.mapResidentDTO(database.getResident(ctx.pathParam("rid")))); 
         });
 
         app.get("/lots/all", ctx -> {

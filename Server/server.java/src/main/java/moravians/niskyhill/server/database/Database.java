@@ -19,8 +19,7 @@ public class Database {
      * The Database constructor is private: we only create Database objects
      * through one or more static getDatabase() methods.
      */
-    private Database() {
-    }
+    private Database() {   }
 
     public static Database getDatabase() {
         String uri = "jdbc:postgresql://c9mq4861d16jlm.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d1ijfopuv9r3fp?user=u6ajr7ir792ed7&password=p92316742813f4af72de2caaf466079cc416236769dabffbeb33a64c36685bd83";
@@ -98,7 +97,7 @@ public class Database {
                 );
                 residents.add(resident);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
         }
@@ -151,7 +150,7 @@ public class Database {
         } catch (NumberFormatException e) {
             System.err.printf("Rid must be a numeric value: %s\n", e.getMessage());
             throw new HttpStatusException(400, "rid must be numeric", e);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
         }
@@ -160,56 +159,78 @@ public class Database {
     public List<Resident> searchResidents(String name) throws HttpStatusException {
         final String q = """
             SELECT *
-            FROM resident
-                JOIN lot ON resident.lot = lot.lid
-                JOIN section ON lot.section = section.sid
-            WHERE LOWER(resident.firstname) LIKE LOWER(?)
-                OR LOWER(resident.middlename) LIKE LOWER(?)
-                OR LOWER(resident.lastname) LIKE LOWER(?);
+            FROM resident r
+                JOIN lot l ON r.lot = l.lid
+                JOIN section s ON l.section = s.sid
+            WHERE to_tsvector(
+                'english',
+                COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
+                )
+                @@ to_tsquery('english', ?)
+            ORDER BY ts_rank(
+                to_tsvector(
+                    'english',
+                    COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
+                ),
+                to_tsquery('english', ?)
+            ) DESC;
         """;
-        
+
+        if (name == null || name.trim().isEmpty()) {
+            throw new HttpStatusException(400, "Name parameter cannot be null or empty");
+        }
+
         List<Resident> residents = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(q)) {
-            String pattern = "%" + name.trim() + "%";
+            String trimmed = name.trim();
+            int lastSpace = trimmed.lastIndexOf(' ');
 
-            ps.setString(1, pattern);
-            ps.setString(2, pattern);
-            ps.setString(3, pattern);
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Resident resident = new Resident(
-                    rs.getLong("rid"),
-                    rs.getString("firstname"),
-                    rs.getString("middlename"),
-                    rs.getString("lastname"),
-                    rs.getString("birth_date"),
-                    rs.getString("burial_date"),
-                    rs.getString("death_date"),
-                    rs.getString("capsule"),
-                    rs.getBoolean("marker"),
-                    rs.getBoolean("foundation"),
-                    rs.getBoolean("viewable"),
-                    new Lot(
-                        rs.getLong("lid"),
-                        rs.getString("number"),
-                        rs.getString("descriptor"),
-                        rs.getString("owner"),
-                        new Section(
-                            rs.getLong("sid"),
-                            rs.getString("name"),
-                            rs.getString("map")
-                        )
-                    )
-                );
-                residents.add(resident);
+            String queryString;
+            if (lastSpace == -1) { // only one word
+                queryString = trimmed + ":*";
+            } else { // separate all words except last, use & between them, last word gets :* for prefix
+                String beforeLast = trimmed.substring(0, lastSpace).replace(" ", " & ");
+                String lastWord = trimmed.substring(lastSpace + 1);
+                queryString = beforeLast + " & " + lastWord + ":*";
             }
-        } catch (Exception e) {
-            System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
-        }
 
+            ps.setString(1, queryString);
+            ps.setString(2, queryString);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Resident resident = new Resident(
+                        rs.getLong("rid"),
+                        rs.getString("firstname"),
+                        rs.getString("middlename"),
+                        rs.getString("lastname"),
+                        rs.getString("birth_date"),
+                        rs.getString("burial_date"),
+                        rs.getString("death_date"),
+                        rs.getString("capsule"),
+                        rs.getBoolean("marker"),
+                        rs.getBoolean("foundation"),
+                        rs.getBoolean("viewable"),
+                        new Lot(
+                            rs.getLong("lid"),
+                            rs.getString("number"),
+                            rs.getString("descriptor"),
+                            rs.getString("owner"),
+                            new Section(
+                                rs.getLong("sid"),
+                                rs.getString("name"),
+                                rs.getString("map")
+                            )
+                        )
+                    );
+                    residents.add(resident);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.printf("Error executing query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to retrieve residents", e);
+        }
         return residents;
     }
 
@@ -237,7 +258,7 @@ public class Database {
 
                 lots.add(lot);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(500, "Failed to Retrieve Lots", e);
         }
@@ -265,7 +286,7 @@ public class Database {
 
                 sections.add(section);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(500, "Failed to Retrieve Sections", e);
         }
