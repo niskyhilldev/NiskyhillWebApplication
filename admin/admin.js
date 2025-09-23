@@ -675,31 +675,6 @@ function toggleFileForm() {
 
 
 
-
-document.getElementById('newSectionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const section = document.getElementById('addSectionId').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    sections[newId] = {
-        section: section,
-        internmentRecord: record,
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newSectionForm').reset();
-
-    toggleSectionForm(); // Hide the form after submission
-});
 document.getElementById('newFileForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
