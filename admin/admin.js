@@ -658,47 +658,10 @@ function handleFileUpload(event) {
 }
 
 
-function toggleResForm() {
-    const form = document.getElementById('addResidentForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleSectionForm() {
-    const form = document.getElementById('addSectionForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleFileForm() {
-    const form = document.getElementById('addFileForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
 
 
 
 
-
-document.getElementById('newFileForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // // Generate a new unique ID based on the highest existing key in data
-    // const newId = Object.keys(plotsData).length > 0 
-    //     ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-    //     : 0;
-
-    // // Get all the values from the form
-    // const section = document.getElementById('addSectionId').value;
-    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // // Add new entry to the data object
-    // sections[newId] = {
-    //     section: section,
-    //     internmentRecord: record,
-    // };
-
-    
-    // Clear the form fields
-    document.getElementById('newFileForm').reset();
-
-    toggleFileForm(); // Hide the form after submission
-});
 
 
 

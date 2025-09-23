@@ -16,3 +16,13 @@ document.getElementById('newSectionForm').addEventListener('submit', function(ev
     // Clear the form fields
     document.getElementById('newSectionForm').reset();
 });
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = URL.createObjectURL(file);
+        downloadLink.textContent = file.name;
+        downloadLink.style.display = "block";
+    }
+}
