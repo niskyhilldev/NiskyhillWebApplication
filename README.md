@@ -1,6 +1,9 @@
 # BAM_Niskey_Hill
 Codebase for the Lehigh 2025 Capstone team for Bethlehem Area Moravians - Niskey Hills Cemetery Project 
 
+
+
+
 Some GPT Notes
 
 Short answer: these look plausible and internally pretty consistent. I don’t think #2 is wildly off.
