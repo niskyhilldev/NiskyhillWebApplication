@@ -6,23 +6,18 @@
     <title>Lot Search</title>
     <link rel="stylesheet" href="admin.css" />
     <script type="text/javascript" src="navbar.js" defer></script>
-    <script type="text/javascript" src="admin.js" defer></script>
+    <script type="text/javascript" src="search_lot.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
-    <script>
-        function submitForm() {
-            document.getElementById("addFileForm").reset();
-        }
-    </script>
 </head>
 <body>
     <custom-navbar></custom-navbar>
     <h1 style="text-align:center;">Search for a Lot</h1>
     <div class="search-container">
-        <label for="searchSectionPlots">Section:</label>
-        <input type="text" id="searchSectionPlots" placeholder="Search section">
+        <label for="searchSection">Section:</label>
+        <input type="text" id="searchSection" placeholder="Search section">
         <label for="searchLotPlots">Lot:</label>
-        <input type="text" id="searchLotPlots" placeholder="Search lot">
-        <button onclick="performPlotSearch()">Search</button>
+        <input type="text" id="searchLot" placeholder="Search lot">
+        <button onclick="performLotSearch()">Search</button>
     </div>
     
     <table>
@@ -34,7 +29,7 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="plotTableBody">
+        <tbody id="lotTableBody">
             <!-- Table content will be dynamically populated -->
         </tbody>
     </table>
