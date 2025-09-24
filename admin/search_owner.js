@@ -56,7 +56,7 @@ function createPopup(details, rowId){
 
 function performOwnerSearch() {
     let lastName = document.getElementById("searchName").value.trim().toLowerCase();
-
+    const data = [];
     let results = Object.values(data).filter(entry => {
         fetch('http://localhost:8080/owners/all',
             {
