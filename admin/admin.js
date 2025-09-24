@@ -131,33 +131,8 @@ function performPlotSearch() {
         });
 }
 function populateTable(filteredData, type) {
-    if(type === 'owners'){
-        const tableBody = document.getElementById("ownerTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.middleName || ""}</td>
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.lastName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'owners')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    else if(type === 'residents'){
+    
+    if(type === 'residents'){
         const tableBody = document.getElementById("residentTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
@@ -311,29 +286,7 @@ function createPopup(details, rowId, type) {
         </div>
     `;
     }
-    else if (type === 'owners'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('owners')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
+    
     else if (type === 'plots') {
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
@@ -446,31 +399,6 @@ function saveChanges(type) {
         }
         console.log(document.getElementById("public").checked);
         populateTable(residentResults, 'residents'); 
-    }
-    else if (type === 'lots'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (lotResults[rowId]){
-            lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            lotResults[rowId].lotId = document.getElementById("lotPortion").value;
-            lotResults[rowId].section = document.getElementById("section").value;
-            lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            lotResults[rowId].suffix = document.getElementById("suffix").value;
-            if(document.getElementById("dob")){ //resident
-                lotResults[rowId].dob = document.getElementById("dob").value;
-                lotResults[rowId].dod = document.getElementById("dod").value;
-                lotResults[rowId].vessel = document.getElementById("vessel").value;
-            }
-            lotResults[rowId].organization = document.getElementById("org").value;
-            if(document.getElementById("owns")){
-                lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
-                lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
-                lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
-            }
-        }
-        populateTable(lotResults, 'lots'); 
     }
     else if (type === 'burial'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);

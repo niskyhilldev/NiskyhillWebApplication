@@ -24,6 +24,7 @@ function performLotSearch() {
 }
 
 function createPopup(details){
+    let popupHTML = '';
     if(details.owns && !details.dod){ //owner
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
@@ -110,6 +111,10 @@ function createPopup(details){
         </div>
         `;
     }
+    const popupContainer = document.createElement("div");
+    popupContainer.id = "popupContainer";
+    popupContainer.innerHTML = popupHTML;
+    document.body.appendChild(popupContainer);
 }
 
 function closePopup() {
@@ -172,4 +177,33 @@ function populateTable(filteredData){
         `;
         tableBody.appendChild(row);
     });
+}
+
+function saveChanges(){
+    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+    const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
+    if (lotResults[rowId]){
+        lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
+        lotResults[rowId].lotId = document.getElementById("lotPortion").value;
+        lotResults[rowId].section = document.getElementById("section").value;
+        lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
+        lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
+        lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
+        lotResults[rowId].suffix = document.getElementById("suffix").value;
+        if(document.getElementById("dob")){ //resident
+            lotResults[rowId].dob = document.getElementById("dob").value;
+            lotResults[rowId].dod = document.getElementById("dod").value;
+            lotResults[rowId].vessel = document.getElementById("vessel").value;
+        }
+        lotResults[rowId].organization = document.getElementById("org").value;
+        if(document.getElementById("owns")){
+            lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
+            lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
+            lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
+        }
+    }
+    populateTable(lotResults, 'lots'); 
+}
+function enableEditing() {
+    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
