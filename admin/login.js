@@ -1,3 +1,17 @@
+function setCookie(name,value,minutes) {
+    let expires = "";
+    if (minutes) {
+          console.log(minutes)
+
+        let date = new Date();
+        date.setTime(date.getTime() + (minutes*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    console.log(document.cookie)
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    console.log(document.cookie)
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
   const username = document.getElementById("username");
@@ -21,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (username.value === "admin" && password.value === "password123") {
       errorMessage.style.color = "green";
       errorMessage.textContent = "✅ Login successful!";
+      setCookie('loginCookie', "testval", 30);
 
       setTimeout(() => {
         window.location.href = "dashboard.html"; 
