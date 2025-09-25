@@ -6,14 +6,9 @@
     <title>Add an Owner</title>
     <link rel="stylesheet" href="admin.css" />
     <link rel="stylesheet" href="form.css" />
-    <script type="text/javascript" src="admin.js" defer></script>
+    <script type="text/javascript" src="add_owner.js" defer></script>
     <script type="text/javascript" src="navbar.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
-    <script>
-        function submitForm() {
-            document.getElementById("newOwnerForm").reset();
-        }
-    </script>
 </head>
 <body>
     <custom-navbar></custom-navbar>
@@ -44,7 +39,7 @@
             <label for="cemSection">Section*:</label>
             <input type="text" id="cemSection" required>
             
-            <button type="submit" onclick="submitForm()">Add Entry</button>
+            <button type="submit">Add Entry</button>
         </form>
     </div>
 </body>

@@ -8,6 +8,10 @@
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
 </head>
 <body>
+    <div class="logout-container">
+        <button class="logout-button" id="logoutBtn">Logout</button>
+    </div>
+
     <div class="container">
         <h2>Administration Dashboard</h2>
         <a class="button" href="add_owner.html">Add an Owner</a>
@@ -23,4 +27,11 @@
         <a class="button" href="view_files_lot.html">View Files Associated with a Lot</a>
     </div>
 </body>
+
+<script>
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      // Redirect to login page
+      window.location.href = "login.html";
+    });
+  </script>
 </html>

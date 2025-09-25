@@ -7,13 +7,8 @@
     <link rel="stylesheet" href="admin.css" />
     <script type="text/javascript" src="navbar.js" defer></script>
     <link rel="stylesheet" href="form.css" />
-    <script type="text/javascript" src="admin.js" defer></script>
+    <script type="text/javascript" src="add_section.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
-    <script>
-        function submitForm() {
-            document.getElementById("newSectionForm").reset();
-        }
-    </script>
 </head>
 <body>
     <custom-navbar></custom-navbar>
@@ -26,7 +21,7 @@
             <label for="internmentRecord">Section Map:</label>
             <input type="file" id="internmentRecord" onchange="handleFileUpload(event)">
             
-            <button type="submit" onclick="submitForm()">Add Entry</button>
+            <button type="submit">Add Entry</button>
         </form>
     </div>
 </body>

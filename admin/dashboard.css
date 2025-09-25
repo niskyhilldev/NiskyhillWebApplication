@@ -74,3 +74,21 @@ body {
 .button:hover {
     background-color: #0056b3;
 }
+.logout-container {
+      display: flex;
+      justify-content: flex-end;
+      margin: 1rem;
+    }
+    .logout-button {
+      background: #dc3545;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .logout-button:hover {
+      background: #a71d2a;
+    }

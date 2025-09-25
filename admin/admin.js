@@ -17,32 +17,26 @@ const sections = [
     { name: "B", file: null },
     { name: "C", file: null }
 ];
+
+
 let currentRow;
 let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
 function performOwnerSearch() {
-    let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
+    let lastName = document.getElementById("searchName").value.trim().toLowerCase();
 
     let results = Object.values(data).filter(entry => {
-        fetch('http://localhost:8080/owners/all')
+        fetch('http://localhost:8080/owners/all',
+            {
+                method: 'GET',
+                body: JSON.stringify(data)
+            }
+        )
         .then(response => response.json())
         .then(serverData => {
             let results = Object.values(serverData).filter(entry => {
                 
-                if(lastName && organization){
-                    if(entry.lastName && entry.lastName.toLowerCase() === lastName  && entry.organization && entry.organization.toLowerCase() === organization){
-                        return true;
-                    }
-                    return false;
-                }
-                if (lastName && entry.lastName && entry.lastName.toLowerCase() === lastName) {
-                    return true;
-                }
-                if (organization && entry.organization && entry.organization.toLowerCase() === organization) {
-                    return true;
-                }
-                return false;
+                return true;
             });
 
             if (results.length > 0) {
@@ -90,46 +84,8 @@ function performBurialSearch() {
     burialResults = results;
     populateTable(results, 'burial');
 }
-function performResidentSearch() {
-    let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
 
-    let results = Object.values(data).filter(entry => {
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
-            return true;
-        }
-        return false;
-    });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    residentResults = results;
-    populateTable(results, 'residents');
-}
-function performLotSearch() {
-    let section = document.getElementById("searchSection").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLot").value.trim().toLowerCase();
-
-    let results = Object.values(data).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        if (section && lot && entry.sectionOwn && entry.sectionOwn.toLowerCase() === section && entry.lotOwnNumber && entry.lotOwnNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    lotResults = results;
-    populateTable(results, 'lots');
-}
 function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
@@ -158,82 +114,9 @@ function performPlotSearch() {
         });
 }
 function populateTable(filteredData, type) {
-    if(type === 'owners'){
-        const tableBody = document.getElementById("ownerTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
+    
 
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
 
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.middleName || ""}</td>
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.lastName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'owners')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    else if(type === 'residents'){
-        const tableBody = document.getElementById("residentTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    else if(type === 'lots'){
-        const tableBody = document.getElementById("lotTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
     if(type === 'burial'){
         const tableBody = document.getElementById("burialTableBody");
         tableBody.innerHTML = ""; // Clear previous content
@@ -335,145 +218,8 @@ function createPopup(details, rowId, type) {
     //Remove existing popup if it exists
     closePopup();
     let popupHTML;
-    if(type === 'resident'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-            <label>Vessel: 
-                <select id="vessel" disabled>
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                </select>
-            </label>
-            <label>Public: <input type="checkbox" id="public" disabled ${details.valid ? 'checked' : ''}></label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('residents')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-    `;
-    }
-    else if (type === 'owners'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('owners')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
-    else if (type === 'lots'){
-        if(details.owns && !details.dod){ //owner
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else if (details.owns){ //owner and resident
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>Owned Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Owned Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Owned Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else{
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-    }
-    else if (type === 'plots') {
+    
+    if (type === 'plots') {
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}">
@@ -586,31 +332,6 @@ function saveChanges(type) {
         console.log(document.getElementById("public").checked);
         populateTable(residentResults, 'residents'); 
     }
-    else if (type === 'lots'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (lotResults[rowId]){
-            lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            lotResults[rowId].lotId = document.getElementById("lotPortion").value;
-            lotResults[rowId].section = document.getElementById("section").value;
-            lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            lotResults[rowId].suffix = document.getElementById("suffix").value;
-            if(document.getElementById("dob")){ //resident
-                lotResults[rowId].dob = document.getElementById("dob").value;
-                lotResults[rowId].dod = document.getElementById("dod").value;
-                lotResults[rowId].vessel = document.getElementById("vessel").value;
-            }
-            lotResults[rowId].organization = document.getElementById("org").value;
-            if(document.getElementById("owns")){
-                lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
-                lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
-                lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
-            }
-        }
-        populateTable(lotResults, 'lots'); 
-    }
     else if (type === 'burial'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
@@ -663,189 +384,13 @@ function handleFileUpload(event) {
     }
 }
 
-function toggleForm() {
-    const form = document.getElementById('addOwnerForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleResForm() {
-    const form = document.getElementById('addResidentForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleLotForm() {
-    const form = document.getElementById('addLotForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleSectionForm() {
-    const form = document.getElementById('addSectionForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleFileForm() {
-    const form = document.getElementById('addFileForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
 
-document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
 
-    // Get all the values from the form
-    const firstName = document.getElementById('firstName').value;
-    const middleName = document.getElementById('middleName').value;
-    const lastName = document.getElementById('lastName').value;
-    const lotNumber = document.getElementById('lotNum').value;
-    const lotPortion = document.getElementById('portion').value;
-    const section = document.getElementById('cemSection').value;
-    const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('organization').value;
-    
-    // Add new entry to the data object
-    data[newId] = {
-        lotOwnNumber: lotNumber,
-        lotOwnId: lotPortion,
-        sectionOwn: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        owns: true,
-        notes: notes,
-        organization: organization
-    };
 
-    
-    // Clear the form fields
-    document.getElementById('newOwnerForm').reset();
 
-    toggleForm(); // Hide the form after submission
-});
-document.getElementById('newResidentForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
 
-    // Get all the values from the form
-    const firstName = document.getElementById('fName').value;
-    const middleName = document.getElementById('mName').value;
-    const lastName = document.getElementById('lName').value;
-    const lotNumber = document.getElementById('resLotNum').value;
-    const lotPortion = document.getElementById('resPortion').value;
-    const section = document.getElementById('resCemSection').value;
-    // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('resOrganization').value;
-    const dob = document.getElementById('dofb').value;
-    const dod = document.getElementById('dofd').value;
-    const vessel = document.getElementById('vesselType').value;
-    const valid = document.getElementById('valid').checked;
-    
-    // Add new entry to the data object
-    data[newId] = {
-        lotNumber: lotNumber,
-        lotId: lotPortion,
-        section: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        dob: dob,
-        dod: dod,
-        vessel: vessel,
-        valid: valid,
-        owns: false,
-        // notes: notes,
-        organization: organization
-    };
 
-    
-    // Clear the form fields
-    document.getElementById('newResidentForm').reset();
 
-    toggleResForm(); // Hide the form after submission
-});
-document.getElementById('newLotForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const lotNumber = document.getElementById('addLotNumber').value;
-    const lotPortion = document.getElementById('addLotPortion').value;
-    const section = document.getElementById('sectionId').value;
-    const ownerFirst = document.getElementById('ownerFirst').value;
-    const ownerMiddle = document.getElementById('ownerMiddle').value;
-    const ownerLast = document.getElementById('ownerLast').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    plotsData[newId] = {
-        lotNumber: lotNumber,
-        lotPartition: lotPortion,
-        section: section,
-        owner: `${ownerFirst || ""} ${ownerMiddle || ""} ${ownerLast || ""}`,
-        internmentRecord: record,
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newLotForm').reset();
-
-    toggleLotForm(); // Hide the form after submission
-});
-document.getElementById('newSectionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const section = document.getElementById('addSectionId').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    sections[newId] = {
-        section: section,
-        internmentRecord: record,
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newSectionForm').reset();
-
-    toggleSectionForm(); // Hide the form after submission
-});
-document.getElementById('newFileForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // // Generate a new unique ID based on the highest existing key in data
-    // const newId = Object.keys(plotsData).length > 0 
-    //     ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-    //     : 0;
-
-    // // Get all the values from the form
-    // const section = document.getElementById('addSectionId').value;
-    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // // Add new entry to the data object
-    // sections[newId] = {
-    //     section: section,
-    //     internmentRecord: record,
-    // };
-
-    
-    // Clear the form fields
-    document.getElementById('newFileForm').reset();
-
-    toggleFileForm(); // Hide the form after submission
-});
 
 function deleteEntry(id, type) {
     if(type === 'residents'){

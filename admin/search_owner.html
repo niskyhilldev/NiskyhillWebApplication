@@ -6,7 +6,7 @@
     <title>Owner Search</title>
     <link rel="stylesheet" href="admin.css" />
     <script type="text/javascript" src="navbar.js" defer></script>
-    <script type="text/javascript" src="admin.js" defer></script>
+    <script type="text/javascript" src="search_owner.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
     <script>
         function submitForm() {
@@ -18,10 +18,8 @@
     <custom-navbar></custom-navbar>
     <h1 style="text-align:center;">Search for an Owner</h1>
     <div class="search-container">
-        <label for="searchLast">Last Name:</label>
-        <input type="text" id="searchLast" placeholder="Search last name">
-        <label for="searchOrg">Organization:</label>
-        <input type="text" id="searchOrg" placeholder="Search organization">
+        <label for="searchLast">Name:</label>
+        <input type="text" id="searchName" placeholder="Search last name">
         <button onclick="performOwnerSearch()">Search</button>
     </div>
 
