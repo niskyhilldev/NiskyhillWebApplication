@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div><strong>Death Date:</strong> ${formatDate(resident.burialDate)}</div>
                         <div><strong>Section:</strong> ${resident.sectionName || ''}</div>
-                        <div><strong>Lot:</strong> ${resident.lotNumber || ''}</div>
                         <div><strong>Resident ID:</strong> ${resident.rid || ''}</div>
+                        <div><strong>Lot:</strong> ${resident.lotNumber || ''}</div>
                     </div>
                 </div>
             `;
