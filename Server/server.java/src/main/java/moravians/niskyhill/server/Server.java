@@ -54,35 +54,53 @@ public class Server {
 
         
         /* HTTP Routes */
+
+        // get all residents (and their lot + sections)
         app.get("/residents/all", ctx -> {
             ctx.json(ResidentMapper.mapResidentDTOList(database.getAllResidents())); 
         });
-
+        
+        // search for a resident by any combination of their first, middle, or last name 
         app.get("/residents/search", ctx -> {
             String name = ctx.queryParam("name");
             System.out.println(name);
             ctx.json(ResidentMapper.mapResidentSearchDTOList(database.searchResidents(name))); // name is in the param (since it could have whitespace)
         });
 
+        // get a resident by their id
         app.get("/residents/find/{rid}", ctx -> {
             ctx.json(ResidentMapper.mapResidentDTO(database.getResident(ctx.pathParam("rid")))); 
         });
 
+        // get all lots
         app.get("/lots/all", ctx -> {
             ctx.json(LotMapper.mapLotDTOList(database.getAllLots())); 
         });
 
+        // get a lot by its id
         app.get("/lots/find/{lid}", ctx -> {
             ctx.json(LotMapper.mapLotDTO(database.getLot(ctx.pathParam("lid")))); 
         });
 
+        // get all sections 
         app.get("/sections/all", ctx -> {
             ctx.json(SectionMapper.mapSectionDTOList(database.getAllSections())); 
         });
 
+        // get a section by its id 
         app.get("/sections/find/{sid}", ctx -> {
             ctx.json(SectionMapper.mapSectionDTO(database.getSection(ctx.pathParam("sid")))); 
         });
+
+        // search for a lot (given any combination of lot_number, lot_descriptor, and section_name) and return a lot and all of the residents it contains 
+
+        // add a new resident 
+
+        // update a resident 
+
+        // add a new lot 
+
+        // update a lot 
 
 
         /**
