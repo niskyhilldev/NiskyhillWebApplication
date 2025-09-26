@@ -13,6 +13,8 @@ public class LotMapper {
             lot.number(), 
             lot.descriptor(), 
             lot.owner(),
+            lot.mapXCord(),
+            lot.mapYCord(),
             SectionMapper.mapSectionDTO(lot.section())
         );
     }

@@ -72,8 +72,16 @@ public class Server {
             ctx.json(LotMapper.mapLotDTOList(database.getAllLots())); 
         });
 
+        app.get("/lots/find/{lid}", ctx -> {
+            ctx.json(LotMapper.mapLotDTO(database.getLot(ctx.pathParam("lid")))); 
+        });
+
         app.get("/sections/all", ctx -> {
             ctx.json(SectionMapper.mapSectionDTOList(database.getAllSections())); 
+        });
+
+        app.get("/sections/find/{sid}", ctx -> {
+            ctx.json(SectionMapper.mapSectionDTO(database.getSection(ctx.pathParam("sid")))); 
         });
 
 

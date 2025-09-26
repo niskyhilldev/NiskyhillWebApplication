@@ -88,6 +88,8 @@ public class Database {
                         rs.getString("number"),
                         rs.getString("descriptor"),
                         rs.getString("owner"),
+                        rs.getLong("x_pixel_cord"),
+                        rs.getLong("y_pixel_cord"),
                         new Section(
                             rs.getLong("sid"),
                             rs.getString("name"),
@@ -137,6 +139,8 @@ public class Database {
                         rs.getString("number"),
                         rs.getString("descriptor"),
                         rs.getString("owner"),
+                        rs.getLong("x_pixel_cord"),
+                        rs.getLong("y_pixel_cord"),
                         new Section(
                             rs.getLong("sid"),
                             rs.getString("name"),
@@ -217,6 +221,8 @@ public class Database {
                             rs.getString("number"),
                             rs.getString("descriptor"),
                             rs.getString("owner"),
+                            rs.getLong("x_pixel_cord"),
+                            rs.getLong("y_pixel_cord"),
                             new Section(
                                 rs.getLong("sid"),
                                 rs.getString("name"),
@@ -249,6 +255,8 @@ public class Database {
                     rs.getString("number"),
                     rs.getString("descriptor"),
                     rs.getString("owner"),
+                    rs.getLong("x_pixel_cord"),
+                    rs.getLong("y_pixel_cord"),
                     new Section(
                         rs.getLong("sid"),
                         rs.getString("name"),
@@ -292,6 +300,82 @@ public class Database {
         }
 
         return sections;
+    }
+
+
+    public Lot getLot(String lid) throws HttpStatusException {
+        final String q = """
+                        SELECT *
+                        FROM lot JOIN section ON lot.section = section.sid
+                        WHERE lot.lid = ?
+                """;
+
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setLong(1, Long.parseLong(lid));
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Lot lot = new Lot(
+                    rs.getLong("lid"),
+                    rs.getString("number"),
+                    rs.getString("descriptor"),
+                    rs.getString("owner"),
+                    rs.getLong("x_pixel_cord"),
+                    rs.getLong("y_pixel_cord"),
+                    new Section(
+                        rs.getLong("sid"),
+                        rs.getString("name"),
+                        rs.getString("map")
+                    )
+                );
+
+                return lot;
+            }else {
+                throw new HttpStatusException(404, "No Lot Found with Id " + lid);
+            }
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to Retrieve Lot", e);
+        } catch (NumberFormatException e) {
+            System.err.printf("Lid must be a numeric value: %s\n", e.getMessage());
+            throw new HttpStatusException(400, "lid must be numeric", e);
+        }
+
+    }
+
+    public Section getSection(String sid) throws HttpStatusException {
+        final String q = """
+                    SELECT *
+                    FROM section
+                    WHERE sid = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q); 
+            ps.setLong(1, Long.parseLong(sid));
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Section section = new Section(
+                    rs.getLong("sid"),
+                    rs.getString("name"),
+                    rs.getString("map")
+                );
+                
+
+                return section;
+            }else {
+                throw new HttpStatusException(404, "Could not find Section with id: " + sid);
+            }
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(500, "Failed to Retrieve Sections", e);
+        } catch (NumberFormatException e) {
+            System.err.printf("Sid must be a numeric value: %s\n", e.getMessage());
+            throw new HttpStatusException(400, "sid must be numeric", e);
+        }
     }
 
 }

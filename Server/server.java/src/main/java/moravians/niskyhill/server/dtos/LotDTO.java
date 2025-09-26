@@ -6,5 +6,7 @@ public record LotDTO(
     String number,
     String descriptor,
     String owner,
+    Long mapXCord,
+    Long mapYCord,
     SectionDTO section 
 ) {   }

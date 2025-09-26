@@ -5,5 +5,7 @@ public record Lot(
     String number,
     String descriptor,
     String owner,
+    Long mapXCord,
+    Long mapYCord,
     Section section 
 ) {   }
