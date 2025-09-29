@@ -32,14 +32,30 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResident(resident){
 
         const name = (resident.firstName || '') + ' ' + (resident.middleName || '') + ' ' + (resident.lastName || '')
+        const formattedDate = formatDate(resident.burialDate)
 
         document.getElementById("name").innerHTML = name
-        document.getElementById("burialDate").innerHTML = (resident.burialDate || 'Not available')
+        document.getElementById("burialDate").innerHTML = (formattedDate || 'Not available')
         document.getElementById("section").innerHTML = (resident.lot.section.name || 'Not available')
         document.getElementById("lot").innerHTML = (resident.lot.number || 'Not available')
         document.getElementById("lotOwner").innerHTML = (resident.lot.owner || 'Not available')
         document.getElementById("lotDescriptor").innerHTML = (resident.lot.descriptor || 'Not available')
         document.getElementById("residentID").innerHTML = (resident.rid || 'Not available')
+    }
+    
+        // Helper function to format dates
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        } catch {
+            return dateStr;
+        }
     }
 
 

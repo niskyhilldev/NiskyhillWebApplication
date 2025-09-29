@@ -12,6 +12,7 @@
         <script type="text/javascript" src="search.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
         <title>Nisky Hill Cemetery - Search For Residents - Bethlehem, Pennsylvania</title>
@@ -58,11 +59,11 @@
     <h1 class="aboutInfo">Find a Grave</h1>
     
     <div>
-        <div class="search-form" style="margin-bottom: 30px;">
-            <div style="margin: 1rem;">
-                <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">Enter Name:</label>
-                <input type="text" id="name" placeholder="Enter first name" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;">
-            </div>
+            <label for="name" class='input-title' style="display: inline-block; width: 80%; margin-left: 10%; padding: 0.6rem; font-weight: bold; font-size: 1.5rem; font-family: 'Lexend', sans-serif;">Enter Resident Name</label>        <div class="search" style="margin-bottom: 30px;">
+            <label style="display: flex; align-items: center; padding-left: var(--padding); cursor: pointer;">
+                <span class="search-icon material-symbols-outlined">search</span>
+                <input type="text" id="name" placeholder="Search residents..." class="search-input">
+            </label>
         </div>
         
         <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
