@@ -55,46 +55,54 @@
     <body>    
         
         <a class = 'returnLink' href="javascript:history.back()"><< RETURN TO SEARCH</a>
-
-        <div class="main">
-            <h2><span class='name' id="name"></span></h2>
-            <div class="card">
-                <div class="card-body">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Burial Date</td>
-                                <td></td>
-                                <td><span id='burialDate'></span></td>
-                            </tr>
-                            <tr>
-                                <td>Section</td>
-                                <td></td>
-                                <td><span id='section'></span></td>
-                            </tr>
-                            <tr>
-                                <td>Lot</td>
-                                <td></td>
-                                <td><span id='lot'></span></td>
-                            </tr>
-                            <tr>
-                                <td>Lot Owner</td>
-                                <td></td>
-                                <td><span id='lotOwner'></span></td>
-                            </tr>
-                            <tr>
-                                <td>Lot Descriptor</td>
-                                <td></td>
-                                <td><span id='lotDescriptor'></span></td>
-                            </tr>
-                            <tr>
-                                <td>Resident ID</td>
-                                <td></td>
-                                <td><span id='residentID'></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div style="display: flex; flex-direction: column;">
+            <div class="main">
+                <h2><span class='name' id="name"></span></h2>
+                <div class="card">
+                    <div>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Burial Date</td>
+                                    <td></td>
+                                    <td><span id='burialDate'></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Section</td>
+                                    <td></td>
+                                    <td><span id='section'></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Lot</td>
+                                    <td></td>
+                                    <td><span id='lot'></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Lot Owner</td>
+                                    <td></td>
+                                    <td><span id='lotOwner'></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Lot Descriptor</td>
+                                    <td></td>
+                                    <td><span id='lotDescriptor'></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Resident ID</td>
+                                    <td></td>
+                                    <td><span id='residentID'></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+
+            <div class="lot-example">
+                <h4>Lot Descriptor Examples:</h4>
+                <p>N.H. - Northern Half</p>
+                <p>W.E.S.H. - Western End of Southern Half</p>
+                <p>C.P.S.H. - Central Part of Southern Half</p>
             </div>
         </div>
     </body>

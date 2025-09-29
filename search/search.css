@@ -383,7 +383,7 @@ a {
     -webkit-overflow-scrolling: touch;
   }
 
-  @media (max-width: 600px){
+  @media (max-width: 500px){
     .input-title{
       text-align: center;
     }
