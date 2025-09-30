@@ -78,13 +78,20 @@
 }
 
 html, body {
-    margin: 0;
     padding: 0;
     width: 100%; /* Ensures body does not exceed viewport */ 
     overflow-x: hidden;
+    margin: 0;
 }
 
-.menuOption {
+body{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuOption {position: static;
+  bottom:0;
   color: white; 
   font-size: 1rem; 
   font-family: Instrument Sans; 
@@ -196,6 +203,12 @@ a {
   padding: 20px; 
   height: 90px;
   align-items: center;
+  bottom:0;
+  margin-top: auto
+}
+
+.content {
+  flex: 1; /* pushes footer down */
 }
 
 .footerColumns {
@@ -355,6 +368,21 @@ a {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.page-btn {
+  background-color: #0d2543;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.page-btn:hover {
+  background-color: #4e6078;
+}
 
 @media (max-width: 900px){
   .navOption, .findAGraveButton{

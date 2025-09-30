@@ -1,92 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name');
-        
-    nameInput.addEventListener('input', () => {
-        debouncedSearch(nameInput.value);
-    });
-    // Base URL for your API
+    const resultsDiv = document.getElementById('searchResults');
+    const statusDiv = document.getElementById('searchStatus');
     const API_BASE_URL = 'http://localhost:8080/residents';
 
-    //debounce function so constant calls aren't made
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+    let currentPage = 1;
+    const pageSize = 10; //show 10 per page
+    let allResidents = [];
+    let lastQuery = '';
 
-    
-    //function to search for residents by name (later replace with api call)
+    nameInput.addEventListener('input', () => {
+        currentPage = 1; //reset the page on each new search
+        debouncedSearch(nameInput.value);
+    });
+
     async function searchResidents(name) {
-        const statusDiv = document.getElementById('searchStatus');
-        const resultsDiv = document.getElementById('searchResults');
-        
-        //nothing is in text box
         if (!name.trim()) {
             statusDiv.innerHTML = '';
             resultsDiv.innerHTML = '';
+            allResidents = [];
             return;
         }
-        
+
         statusDiv.innerHTML = 'Searching...';
         resultsDiv.innerHTML = '';
-        
-        try {
-            const response = await fetch(`${API_BASE_URL}/search?name=${name}`)
-            if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error(`Resident with ID ${rid} not found`);
-                    } else if (response.status === 400) {
-                        throw new Error('Invalid Resident ID format');
-                    } else if (response.status === 500) {
-                        throw new Error('Server error occurred');
-                    } else {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-            }
 
-            const residents = await response.json();
+        try {
+            const response = await fetch(`${API_BASE_URL}/search?name=${(name)}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+            allResidents = await response.json(); //store ALL results
+            lastQuery = name;
             statusDiv.innerHTML = '';
-            //send call to display results with filtered data and name entered
-            displaySearchResults(residents, name);
-            
-            //network error
+            displaySearchResults(); //display first page
+
         } catch (error) {
             statusDiv.innerHTML = `Error searching: ${error.message}`;
-            resultsDiv.innerHTML = '';
             console.error('Search error:', error);
         }
     }
 
-    //function to display search results
-    function displaySearchResults(residents, name) {
-        const resultsDiv = document.getElementById('searchResults');
-        
-        //case where there is no data or no matching results
-        if (!residents || residents.length === 0) {
+    function displaySearchResults() {
+        if (!allResidents || allResidents.length === 0) {
             resultsDiv.innerHTML = `
                 <div style="text-align: center; color: #666; padding: 20px;">
-                    <p>No residents found${name ? ` for "${name}"` : ''}.</p>
-                    <p>Try adjusting your search terms or check the spelling.</p>
+                    <p>No residents found${lastQuery ? ` for "${lastQuery}"` : ''}.</p>
                 </div>
             `;
             return;
         }
-        
-        //add in a new block for each new resident that has a matching name
-        let html = `<h2 style='margin: 0 20px 10px 20px;'>Search Results (${residents.length} found)</h2>`;
-        
+
+        const total = allResidents.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const residents = allResidents.slice(start, end);
+
+        let html = `<h2 style='margin: 0 20px 10px 20px;'>Search Results (${total} found)</h2>`;
+
         residents.forEach((resident) => {
             html += `
-                <div class='resident-card' onclick="location.href='./profile/profile.html?id=${resident.rid}';" style="border: 1px solid #ddd; padding: 15px; margin: 0 20px 10px 20px; border-radius: 5px; background-color: #f9f9f9; cursor: pointer; border-color: black;">
-                    
-                    <h3 style="margin: 0 0 8px 0; color: #333; font-size: 1.2em;">${formatName(resident)}</h3>              
-
+                <div class='resident-card' onclick="location.href='./profile/profile.html?id=${resident.rid}';"
+                     style="border: 1px solid #ddd; padding: 15px; margin: 0 20px 10px 20px; border-radius: 5px; background-color: #f9f9f9; cursor: pointer; border-color: black;">
+                    <h3>${formatName(resident)}</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div><strong>Death Date:</strong> ${formatDate(resident.burialDate)}</div>
                         <div><strong>Section:</strong> ${resident.sectionName || ''}</div>
@@ -96,38 +72,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         });
-        
+
+        //pagination controls
+        html += `<div style="text-align:center; margin:20px;">`;
+        if (currentPage > 1) { //return to previous page
+            html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">Prev</button>`;
+        }
+        html += ` Page ${currentPage} of ${totalPages} `; //page counter
+        if (currentPage < totalPages) { //go to next page
+            html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Next</button>`;
+        }
+        html += `</div>`;
+
         resultsDiv.innerHTML = html;
     }
 
-
-    // Helper function to format resident name
-    function formatName(resident) {
-        const parts = [];
-        if (resident.firstName) parts.push(resident.firstName);
-        if (resident.middleName) parts.push(resident.middleName);
-        if (resident.lastName) parts.push(resident.lastName);
-        return parts.join(' ');
+    //global for inline button onclick
+    window.changePage = function(page) {
+        currentPage = page;
+        displaySearchResults();
     }
 
-    // Helper function to format dates
+    function formatName(resident) {
+        return [resident.firstName, resident.middleName, resident.lastName].filter(Boolean).join(' ');
+    }
+
     function formatDate(dateStr) {
         if (!dateStr) return '';
         try {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
+            return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         } catch {
             return dateStr;
         }
     }
 
-    //debounced search function that searches for names once input has changed
     const debouncedSearch = debounce((name) => {
         searchResidents(name);
     }, 300);
 
-})
+    function debounce(func, wait) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    }
+});
