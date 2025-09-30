@@ -99,9 +99,13 @@ public class Server {
 
         // update a resident 
 
+        // delete a resident
+
         // add a new lot 
 
         // update a lot 
+
+        // delete a lot
 
 
         /**

@@ -14,11 +14,11 @@ public class SectionMapper {
         return new SectionDTO(
             section.sid(),
             section.name() 
-            // no map() becuase we dont want to keep transfering that big file all the time
+            // Note: no map() becuase we dont want to keep transfering that big file all the time
         );
     }
 
-    
+
     public static List<SectionDTO> mapSectionDTOList(List<Section> sections){
         if (sections == null){
             return null;
