@@ -22,6 +22,8 @@ const sections = [
 let currentRow;
 let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
 
+API_BASE_URL = 'http://localhost:8080';
+
 function performOwnerSearch() {
     let lastName = document.getElementById("searchName").value.trim().toLowerCase();
 
@@ -85,11 +87,10 @@ function performBurialSearch() {
     populateTable(results, 'burial');
 }
 async function performResidentSearch() {
-    API_BASE_URL = 'http://localhost:8080/residents';
     let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
 
     try {
-        const response = await fetch(`${API_BASE_URL}/search?name=${name}`)
+        const response = await fetch(`${API_BASE_URL}/residents/search?name=${name}`)
         if (!response.ok) {
                 if (response.status === 404) {
                     throw new Error(`Resident with ID ${rid} not found`);
@@ -212,7 +213,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.lastName || ""}</td>
                 <td>${entry.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${index}', 'resident')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${index}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
@@ -286,7 +287,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.lot.number || ""}</td>
                 <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'plots')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${index}', 'plots')">View More</button>
                     <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
                 </td>
             `;
@@ -295,11 +296,40 @@ function populateTable(filteredData, type) {
     }
 }
 
-function viewMore(firstname, middleName, lastName, suffix, row, type) {
+async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
     if(type === 'resident'){
         details = residentResults[rowId];
+        try {
+            console.log(residentResults[rowId].rid)
+            const response = await fetch(`${API_BASE_URL}/residents/find/${residentResults[rowId].rid}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const residents = await response.json();
+            // statusDiv.innerHTML = '';
+            //send call to display results with filtered data and name entered
+            // displaySearchResults(residents, name);
+            console.log(residents)
+            // residentResults = residents;
+            details = residents;
+            
+            //network error
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
+        }
     }
     else if(type == 'owners') {
         console.log(ownerResults)
@@ -344,28 +374,30 @@ function closePopup() {
 function createPopup(details, rowId, type) {
     //Remove existing popup if it exists
     closePopup();
+    console.log(details)
     let popupHTML;
     if(type === 'resident'){
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lot.number || ''}"></label>
+            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lot.descriptor || ''}"></label>
+            <label>Section: <input type="text" id="section" disabled value="${details.lot.section.name || ''}"></label>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.birthDate || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.burialDate || ''}"></label>
             <label>Vessel: 
                 <select id="vessel" disabled>
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                    <option value="urn" ${details.capsule === 'urn' ? 'selected' : ''}>Urn</option>
+                    <option value="casket" ${details.capsule === 'casket' ? 'selected' : ''}>Casket</option>
+                    <option value="Unknown" ${details.capsule !== 'casket' && details.capsule !== 'urn' ? 'selected' : ''}>Unknown</option>
                 </select>
             </label>
-            <label>Public: <input type="checkbox" id="public" disabled ${details.valid ? 'checked' : ''}></label>
+            <label>Public: <input type="checkbox" id="public" disabled ${details.publicViewable ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
