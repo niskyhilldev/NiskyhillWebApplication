@@ -84,23 +84,38 @@ function performBurialSearch() {
     burialResults = results;
     populateTable(results, 'burial');
 }
-function performResidentSearch() {
-    let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
+async function performResidentSearch() {
+    API_BASE_URL = 'http://localhost:8080/residents';
+    let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
 
-    let results = Object.values(data).filter(entry => {
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
-            return true;
+    try {
+        const response = await fetch(`${API_BASE_URL}/search?name=${name}`)
+        if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error(`Resident with ID ${rid} not found`);
+                } else if (response.status === 400) {
+                    throw new Error('Invalid Resident ID format');
+                } else if (response.status === 500) {
+                    throw new Error('Server error occurred');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
         }
-        return false;
-    });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    residentResults = results;
-    populateTable(results, 'residents');
+        const residents = await response.json();
+        // statusDiv.innerHTML = '';
+        //send call to display results with filtered data and name entered
+        // displaySearchResults(residents, name);
+        console.log(residents)
+        residentResults = residents;
+        populateTable(residents, 'residents');
+            
+            //network error
+        } catch (error) {
+            statusDiv.innerHTML = `Error searching: ${error.message}`;
+            resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
+        }
 }
 function performLotSearch() {
     let section = document.getElementById("searchSection").value.trim().toLowerCase();
@@ -188,15 +203,16 @@ function populateTable(filteredData, type) {
         }
 
         filteredData.forEach((entry, index) => {
+            console.log(entry['firstName'])
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
+                <td>${entry.firstName || ""}</td>
+                <td>${entry.middleName || ""}</td>
+                <td>${entry.lastName || ""}</td>
+                <td>${entry.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${index}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
