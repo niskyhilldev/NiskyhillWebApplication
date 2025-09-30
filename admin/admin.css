@@ -14,7 +14,11 @@ th { background-color: #af8c30; color: black; }
     z-index: 1000;
     color: black;
 }
-.popup label { display: block; margin-top: 10px; }
+.popup label { 
+    display: block; 
+    margin-top: 10px; 
+    margin-right: 10px;
+}
 .popup input, .popup select { width: 100%; padding: 5px; margin-top: 5px; }
 .popup input[disabled] {
     background-color: lightgray;

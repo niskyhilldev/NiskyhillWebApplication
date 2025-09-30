@@ -11,11 +11,12 @@ form {
     color: white;
 }
 
-label {
+form label {
     text-align: left;
     font-weight: bold;
     margin-top: 10px;
     color: #fef5bc;
+    /* color: black; */
 }
 
 input[type="text"], input[type="file"] {

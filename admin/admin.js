@@ -374,7 +374,6 @@ function closePopup() {
 function createPopup(details, rowId, type) {
     //Remove existing popup if it exists
     closePopup();
-    console.log(details)
     let popupHTML;
     if(type === 'resident'){
         popupHTML = `
@@ -389,7 +388,7 @@ function createPopup(details, rowId, type) {
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
             <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.birthDate || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.burialDate || ''}"></label>
+            <label>Burial Date: <input type="date" id="dod" disabled value="${details.burialDate || ''}"></label>
             <label>Vessel: 
                 <select id="vessel" disabled>
                     <option value="urn" ${details.capsule === 'urn' ? 'selected' : ''}>Urn</option>
