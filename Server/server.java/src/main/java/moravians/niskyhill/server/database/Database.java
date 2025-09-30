@@ -1,8 +1,10 @@
 package moravians.niskyhill.server.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -463,4 +465,96 @@ public class Database {
         }
 
     }
+
+    public boolean updateResident(Long rid,String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
+                            String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
+        String q = """
+            UPDATE resident
+            SET 
+                firstname = ?,
+                middlename = ?,
+                lastname = ?,
+                birth_date = ?,
+                burial_date = ?,
+                death_date = ?,
+                capsule = ?,
+                marker = ?,
+                foundation = ?,
+                viewable = ?,
+                lot = ?
+            WHERE rid = ?
+        """;
+
+        try{
+            PreparedStatement ps = connection.prepareStatement(q);
+
+        
+            ps.setString(1, firstName); // set first name 
+
+            if (middleName != null && !middleName.isBlank()) { // set middle name (nullable)
+                ps.setString(2, middleName);
+            } else {
+                ps.setNull(2, Types.VARCHAR);
+            }
+            ps.setString(3, lastName); // set last Name 
+
+            if (birthDate != null && !birthDate.isBlank()) { // set birth date (nullable)
+                ps.setDate(4, Date.valueOf(birthDate));
+            } else {
+                ps.setNull(4, Types.DATE);
+            }
+
+            if (burialDate != null && !burialDate.isBlank()) { // set burrial date (nullable)
+                ps.setDate(5, Date.valueOf(burialDate));
+            } else {
+                ps.setNull(5, Types.DATE);
+            }
+
+            if (deathDate != null && !deathDate.isBlank()) { // set death date (nullable)
+                ps.setDate(6, Date.valueOf(deathDate));
+            } else {
+                ps.setNull(6, Types.DATE);
+            }
+
+            if (capsule != null && !capsule.isBlank()) { // set capsule (nullable)
+                ps.setString(7, capsule.trim().toLowerCase());
+            } else {
+                ps.setNull(7, Types.VARCHAR);
+            }
+
+            if (marker != null) {// set marker (nullable)
+                ps.setBoolean(8, marker);
+            } else {
+                ps.setNull(8, Types.BOOLEAN);
+            }
+
+    
+            if (foundation != null) { // set foundation (nullable)
+                ps.setBoolean(9, foundation);
+            } else {
+                ps.setNull(9, Types.BOOLEAN);
+            }
+
+    
+            if (publicViewable != null) { // set viewable (nullable)
+                ps.setBoolean(10, publicViewable);
+            } else {
+                ps.setNull(10, Types.BOOLEAN);
+            }
+
+            ps.setLong(11, lid); // set lot
+            ps.setLong(12, rid); // set resident id
+            
+            if (ps.executeUpdate() < 1){
+               return false;
+            }
+            return true;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Update Resident with id " + rid, e);
+        }
+    }
+
+
 }

@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.database.Database;
+import moravians.niskyhill.server.dtos.UpdateResidentDTO;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.LotService;
 import moravians.niskyhill.server.services.ResidentService;
@@ -17,6 +18,7 @@ public class Server {
     
     public static void main(String[] args) {
 
+        /* we only want to istanciante the database once, so we will create it here and pass it to the static service layers */
         Database database = Database.getDatabase(); 
 
         /*
@@ -53,14 +55,14 @@ public class Server {
         });
 
         
-        /* HTTP Routes */
+        /* HTTP ROUTES */
 
         // get all residents (and their lot + sections)
         app.get("/residents/all", ctx -> {
             ctx.json(ResidentService.getAllResidents(database));
         });
         
-        // search for a resident by any combination of their first, middle, or last name 
+        // search for a resident by any combination of their first, middle, and last name 
         app.get("/residents/search", ctx -> {
             ctx.json(ResidentService.searchResidents(ctx.queryParam("name"), database)); // name is in the param (since it could have whitespace)
         });
@@ -90,14 +92,20 @@ public class Server {
             ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
         });
 
-        // search for a lot (given any combination of lot_number, and section_name) and return a lot and all of the residents it contains 
+        // search for a lot (given lot_number and section_name, either which could be null, but they both cant be null) and return a lot and all of the residents it contains 
         app.get("/lots/residents/search", ctx -> {
             ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
         });
 
-        // add a new resident 
+        // update a resident
+        app.put("/residents/update", ctx -> {
+            UpdateResidentDTO updateResidentDTO = ctx.bodyAsClass(UpdateResidentDTO.class);
+            if (ResidentService.updateResident(updateResidentDTO, database)){
+                ctx.status(200).result("Resident updated");
+            }
+        }); 
 
-        // update a resident 
+        // add a new resident 
 
         // delete a resident
 
