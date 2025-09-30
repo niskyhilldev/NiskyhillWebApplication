@@ -7,6 +7,10 @@ import java.util.List;
 public class SectionMapper {
 
     public static SectionDTO mapSectionDTO(Section section){
+        if (section == null){
+            return null;
+        }
+
         return new SectionDTO(
             section.sid(),
             section.name() 
@@ -14,7 +18,12 @@ public class SectionMapper {
         );
     }
 
+    
     public static List<SectionDTO> mapSectionDTOList(List<Section> sections){
+        if (sections == null){
+            return null;
+        }
+
         return sections.stream().map(section -> mapSectionDTO(section)).toList();
     }
     

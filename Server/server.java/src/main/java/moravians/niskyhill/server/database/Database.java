@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
@@ -101,13 +103,13 @@ public class Database {
             }
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Residents", e);
         }
 
         return residents;
     }
 
-    public Resident getResident(String rid) throws HttpStatusException {
+    public Resident getResident(Long rid) throws HttpStatusException {
         
         final String q = """
             SELECT * 
@@ -118,7 +120,7 @@ public class Database {
         """;
 
         try (PreparedStatement ps = connection.prepareStatement(q)) {
-            ps.setLong(1, Long.parseLong(rid));
+            ps.setLong(1, rid);
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -149,14 +151,11 @@ public class Database {
                     )
                 );
             }else{
-                throw new HttpStatusException(404, "Could not find Resident with id " + rid);
+                return null;
             }
-        } catch (NumberFormatException e) {
-            System.err.printf("Rid must be a numeric value: %s\n", e.getMessage());
-            throw new HttpStatusException(400, "rid must be numeric", e);
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Residents", e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Residents", e);
         }
     }
 
@@ -179,10 +178,6 @@ public class Database {
                 to_tsquery('english', ?)
             ) DESC;
         """;
-
-        if (name == null || name.trim().isEmpty()) {
-            throw new HttpStatusException(400, "Name parameter cannot be null or empty");
-        }
 
         List<Resident> residents = new ArrayList<>();
 
@@ -235,7 +230,7 @@ public class Database {
             }
         } catch (SQLException e) {
             System.err.printf("Error executing query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to retrieve residents", e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to retrieve residents", e);
         }
         return residents;
     }
@@ -296,14 +291,14 @@ public class Database {
             }
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Sections", e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Sections", e);
         }
 
         return sections;
     }
 
 
-    public Lot getLot(String lid) throws HttpStatusException {
+    public Lot getLot(Long lid) throws HttpStatusException {
         final String q = """
                         SELECT *
                         FROM lot JOIN section ON lot.section = section.sid
@@ -313,7 +308,7 @@ public class Database {
 
         try {
             PreparedStatement ps = connection.prepareStatement(q);
-            ps.setLong(1, Long.parseLong(lid));
+            ps.setLong(1, lid);
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -333,19 +328,16 @@ public class Database {
 
                 return lot;
             }else {
-                throw new HttpStatusException(404, "No Lot Found with Id " + lid);
+                return null;
             }
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Lot", e);
-        } catch (NumberFormatException e) {
-            System.err.printf("Lid must be a numeric value: %s\n", e.getMessage());
-            throw new HttpStatusException(400, "lid must be numeric", e);
-        }
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Lot", e);
+        } 
 
     }
 
-    public Section getSection(String sid) throws HttpStatusException {
+    public Section getSection(Long sid) throws HttpStatusException {
         final String q = """
                     SELECT *
                     FROM section
@@ -354,7 +346,7 @@ public class Database {
 
         try {
             PreparedStatement ps = connection.prepareStatement(q); 
-            ps.setLong(1, Long.parseLong(sid));
+            ps.setLong(1, sid);
             
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -367,15 +359,108 @@ public class Database {
 
                 return section;
             }else {
-                throw new HttpStatusException(404, "Could not find Section with id: " + sid);
+                return null;
             }
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
-            throw new HttpStatusException(500, "Failed to Retrieve Sections", e);
-        } catch (NumberFormatException e) {
-            System.err.printf("Sid must be a numeric value: %s\n", e.getMessage());
-            throw new HttpStatusException(400, "sid must be numeric", e);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Sections", e);
         }
     }
 
+
+    public List<Lot> getLotDetails(String lotNumber, String sectionName) throws HttpStatusException {
+        String q = """
+                    SELECT *
+                    FROM lot JOIN section ON lot.section = section.sid
+                    WHERE
+                """;
+
+        List<Lot> list = new ArrayList<>();
+
+        if (lotNumber == null && sectionName != null){ // get all lots in a section
+            q += " section.name = ?";
+        }else if (lotNumber != null && sectionName == null){ // get all lots that share a number
+            q += " lot.number = ?";
+        } else { // get all lots with the number in the section 
+            q += " lot.number = ? AND section.name = ?";
+        }
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+
+            if (lotNumber == null && sectionName != null){
+                ps.setString(1, sectionName);
+            } else if(lotNumber != null && sectionName == null){
+                ps.setString(1, lotNumber);
+            }else {
+                ps.setString(1, lotNumber);
+                ps.setString(2, sectionName);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Lot lot = new Lot(
+                    rs.getLong("lid"),
+                    rs.getString("number"),
+                    rs.getString("descriptor"),
+                    rs.getString("owner"),
+                    rs.getLong("x_pixel_cord"),
+                    rs.getLong("y_pixel_cord"),
+                    new Section(
+                        rs.getLong("sid"),
+                        rs.getString("name"),
+                        rs.getString("map")
+                    )
+                );
+                list.add(lot);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Lots", e);
+        }
+    }
+
+    public List<Resident> getLotResidents(Long lid) throws HttpStatusException {
+        final String q = """
+            SELECT * 
+            FROM 
+                resident JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid
+            WHERE lot.lid = ?
+        """;
+
+        List<Resident> list = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setLong(1, lid);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Resident resident = new Resident(
+                    rs.getLong("rid"),
+                    rs.getString("firstname"),
+                    rs.getString("middlename"),
+                    rs.getString("lastname"),
+                    rs.getString("birth_date"),
+                    rs.getString("burial_date"),
+                    rs.getString("death_date"),
+                    rs.getString("capsule"),
+                    rs.getBoolean("marker"),
+                    rs.getBoolean("foundation"),
+                    rs.getBoolean("viewable"),
+                    null // dont need the Lot and Section...ect
+                    );
+                list.add(resident);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Residents in Lot " + lid, e);
+        }
+
+    }
 }

@@ -5,9 +5,9 @@ import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
-import moravians.niskyhill.server.mappers.LotMapper;
-import moravians.niskyhill.server.mappers.ResidentMapper;
-import moravians.niskyhill.server.mappers.SectionMapper;
+import moravians.niskyhill.server.services.LotService;
+import moravians.niskyhill.server.services.ResidentService;
+import moravians.niskyhill.server.services.SectionService;
 
 
 /**
@@ -57,42 +57,43 @@ public class Server {
 
         // get all residents (and their lot + sections)
         app.get("/residents/all", ctx -> {
-            ctx.json(ResidentMapper.mapResidentDTOList(database.getAllResidents())); 
+            ctx.json(ResidentService.getAllResidents(database));
         });
         
         // search for a resident by any combination of their first, middle, or last name 
         app.get("/residents/search", ctx -> {
-            String name = ctx.queryParam("name");
-            System.out.println(name);
-            ctx.json(ResidentMapper.mapResidentSearchDTOList(database.searchResidents(name))); // name is in the param (since it could have whitespace)
+            ctx.json(ResidentService.searchResidents(ctx.queryParam("name"), database)); // name is in the param (since it could have whitespace)
         });
 
         // get a resident by their id
         app.get("/residents/find/{rid}", ctx -> {
-            ctx.json(ResidentMapper.mapResidentDTO(database.getResident(ctx.pathParam("rid")))); 
+            ctx.json(ResidentService.getResident(ctx.pathParam("rid"), database)); 
         });
 
         // get all lots
         app.get("/lots/all", ctx -> {
-            ctx.json(LotMapper.mapLotDTOList(database.getAllLots())); 
+            ctx.json(LotService.getAllLots(database)); 
         });
 
         // get a lot by its id
         app.get("/lots/find/{lid}", ctx -> {
-            ctx.json(LotMapper.mapLotDTO(database.getLot(ctx.pathParam("lid")))); 
+            ctx.json(LotService.getLot(ctx.pathParam("lid"), database)); 
         });
 
         // get all sections 
         app.get("/sections/all", ctx -> {
-            ctx.json(SectionMapper.mapSectionDTOList(database.getAllSections())); 
+            ctx.json(SectionService.getAllSections(database)); 
         });
 
         // get a section by its id 
         app.get("/sections/find/{sid}", ctx -> {
-            ctx.json(SectionMapper.mapSectionDTO(database.getSection(ctx.pathParam("sid")))); 
+            ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
         });
 
-        // search for a lot (given any combination of lot_number, lot_descriptor, and section_name) and return a lot and all of the residents it contains 
+        // search for a lot (given any combination of lot_number, and section_name) and return a lot and all of the residents it contains 
+        app.get("/lots/residents/search", ctx -> {
+            ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
+        });
 
         // add a new resident 
 

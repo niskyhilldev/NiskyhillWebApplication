@@ -8,6 +8,9 @@ import moravians.niskyhill.server.models.Resident;
 public class ResidentMapper {
 
     public static ResidentDTO mapResidentDTO(Resident resident) {
+        if (resident == null){
+            return null;
+        }
         return new ResidentDTO(
                 resident.rid(),
                 resident.firstName(),
@@ -23,11 +26,19 @@ public class ResidentMapper {
                 LotMapper.mapLotDTO(resident.lot()));
     }
 
+
     public static List<ResidentDTO> mapResidentDTOList(List<Resident> residents){
+        if (residents == null){
+            return null;
+        }
         return residents.stream().map(resident -> mapResidentDTO(resident)).toList();
     }
 
+
     public static ResidentSearchDTO mapResidentSearchDTO(Resident resident){
+        if (resident == null){
+            return null;
+        }
         return new ResidentSearchDTO(
             resident.rid(),
             resident.firstName(),
@@ -39,7 +50,11 @@ public class ResidentMapper {
         );
     }
 
+
     public static List<ResidentSearchDTO> mapResidentSearchDTOList(List<Resident> residents){
+        if(residents == null){
+            return null;
+        }
         return residents.stream().map(resident -> mapResidentSearchDTO(resident)).toList();
     }
 }

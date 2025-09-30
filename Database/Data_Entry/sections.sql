@@ -1,0 +1,21 @@
+-- all sections in the cemetary, run this script manually before the large data entry one
+INSERT INTO section (name) VALUES ('A-1');
+INSERT INTO section (name) VALUES ('A-2');
+INSERT INTO section (name) VALUES ('A-3');
+INSERT INTO section (name) VALUES ('A-4');
+INSERT INTO section (name) VALUES ('A-5');
+INSERT INTO section (name) VALUES ('A-6');
+INSERT INTO section (name) VALUES ('EG');
+INSERT INTO section (name) VALUES ('A');
+INSERT INTO section (name) VALUES ('B');
+INSERT INTO section (name) VALUES ('C');
+INSERT INTO section (name) VALUES ('D');
+INSERT INTO section (name) VALUES ('E');
+INSERT INTO section (name) VALUES ('F');
+INSERT INTO section (name) VALUES ('G');
+INSERT INTO section (name) VALUES ('I');
+INSERT INTO section (name) VALUES ('K');
+INSERT INTO section (name) VALUES ('L');
+INSERT INTO section (name) VALUES ('O');
+INSERT INTO section (name) VALUES ('#1');
+INSERT INTO section (name) VALUES ('#4');
