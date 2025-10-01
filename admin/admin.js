@@ -727,43 +727,6 @@ function toggleFileForm() {
 
 
 
-document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const firstName = document.getElementById('firstName').value;
-    const middleName = document.getElementById('middleName').value;
-    const lastName = document.getElementById('lastName').value;
-    const lotNumber = document.getElementById('lotNum').value;
-    const lotPortion = document.getElementById('portion').value;
-    const section = document.getElementById('cemSection').value;
-    const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('organization').value;
-    
-    // Add new entry to the data object
-    data[newId] = {
-        lotOwnNumber: lotNumber,
-        lotOwnId: lotPortion,
-        sectionOwn: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        owns: true,
-        notes: notes,
-        organization: organization
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newOwnerForm').reset();
-
-    toggleForm(); // Hide the form after submission
-});
 document.getElementById('newResidentForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
@@ -824,7 +787,7 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
     const ownerFirst = document.getElementById('ownerFirst').value;
     const ownerMiddle = document.getElementById('ownerMiddle').value;
     const ownerLast = document.getElementById('ownerLast').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
+    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
     
     // Add new entry to the data object
     plotsData[newId] = {
@@ -832,38 +795,15 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
         lotPartition: lotPortion,
         section: section,
         owner: `${ownerFirst || ""} ${ownerMiddle || ""} ${ownerLast || ""}`,
-        internmentRecord: record,
+        // internmentRecord: record,
     };
 
     
     // Clear the form fields
     document.getElementById('newLotForm').reset();
 
-    toggleLotForm(); // Hide the form after submission
-});
-document.getElementById('newSectionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const section = document.getElementById('addSectionId').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    sections[newId] = {
-        section: section,
-        internmentRecord: record,
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newSectionForm').reset();
-
-    toggleSectionForm(); // Hide the form after submission
+    document.getElementById("addLotForm").style.display = "none";   // hide form
+    document.getElementById("showLotFormBtn").style.display = "block";    // show +
 });
 document.getElementById('newFileForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -890,6 +830,10 @@ document.getElementById('newFileForm').addEventListener('submit', function(event
     toggleFileForm(); // Hide the form after submission
 });
 
+document.getElementById("showLotFormBtn").addEventListener("click", () => {
+    document.getElementById("addLotForm").style.display = "block";   // show form
+    document.getElementById("showLotFormBtn").style.display = "none";    // hide +
+});
 
 
 function deleteEntry(id, type) {
