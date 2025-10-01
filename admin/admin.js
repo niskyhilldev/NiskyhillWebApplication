@@ -743,7 +743,7 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     const lotPortion = document.getElementById('resPortion').value;
     const section = document.getElementById('resCemSection').value;
     // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('resOrganization').value;
+    // const organization = document.getElementById('resOrganization').value;
     const dob = document.getElementById('dofb').value;
     const dod = document.getElementById('dofd').value;
     const vessel = document.getElementById('vesselType').value;
@@ -770,7 +770,8 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     // Clear the form fields
     document.getElementById('newResidentForm').reset();
 
-    toggleResForm(); // Hide the form after submission
+    document.getElementById("addResidentForm").style.display = "none";   // hide form
+    document.getElementById("showResidentFormBtn").style.display = "block";    // show +
 });
 document.getElementById('newLotForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -833,6 +834,10 @@ document.getElementById('newFileForm').addEventListener('submit', function(event
 document.getElementById("showLotFormBtn").addEventListener("click", () => {
     document.getElementById("addLotForm").style.display = "block";   // show form
     document.getElementById("showLotFormBtn").style.display = "none";    // hide +
+});
+document.getElementById("showResidentFormBtn").addEventListener("click", () => {
+    document.getElementById("addResidentForm").style.display = "block";   // show form
+    document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
 });
 
 
