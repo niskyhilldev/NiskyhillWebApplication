@@ -828,7 +828,8 @@ document.getElementById('newFileForm').addEventListener('submit', function(event
     // Clear the form fields
     document.getElementById('newFileForm').reset();
 
-    toggleFileForm(); // Hide the form after submission
+    document.getElementById("addFileForm").style.display = "none";   // hide form
+    document.getElementById("showFileFormBtn").style.display = "block";  //show +
 });
 
 document.getElementById("showLotFormBtn").addEventListener("click", () => {
@@ -838,6 +839,10 @@ document.getElementById("showLotFormBtn").addEventListener("click", () => {
 document.getElementById("showResidentFormBtn").addEventListener("click", () => {
     document.getElementById("addResidentForm").style.display = "block";   // show form
     document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
+});
+document.getElementById("showFileFormBtn").addEventListener("click", () => {
+    document.getElementById("addFileForm").style.display = "block";   // show form
+    document.getElementById("showFileFormBtn").style.display = "none";    // hide +
 });
 
 
