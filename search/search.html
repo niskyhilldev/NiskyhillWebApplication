@@ -54,38 +54,39 @@
             </ul>
         </nav>
 
-<!-- Search Form Section -->
-<div style="position: relative;">
-    <h1 class="aboutInfo">Find a Grave</h1>
-    
-    <div>
-            <label for="name" class='input-title' style="display: inline-block; width: 80%; margin-left: 10%; padding: 0.6rem; font-weight: bold; font-size: 1.5rem; font-family: 'Instrument Sans', sans-serif;">Enter Resident Name</label>        <div class="search" style="margin-bottom: 30px;">
-            <label style="display: flex; align-items: center; padding-left: var(--padding); cursor: pointer;">
-                <span class="search-icon material-symbols-outlined">search</span>
-                <input type="text" id="name" placeholder="Search residents..." class="search-input">
-            </label>
+    <main class="content">
+        <!-- Search Form Section -->
+        <div style="position: relative;">
+            <h1 class="aboutInfo">Find a Grave</h1>
+            <div>
+                    <label for="name" class='input-title' style="display: inline-block; width: 80%; margin-left: 10%; padding: 0.6rem; font-weight: bold; font-size: 1.5rem; font-family: 'Instrument Sans', sans-serif;">Enter Resident Name</label>        <div class="search" style="margin-bottom: 30px;">
+                    <label style="display: flex; align-items: center; padding-left: var(--padding); cursor: pointer;">
+                        <span class="search-icon material-symbols-outlined">search</span>
+                        <input type="text" id="name" placeholder="Search residents..." class="search-input">
+                    </label>
+                </div>
+                
+                <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
+                <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 1rem;"></div>
+            </div>
         </div>
-        
-        <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
-        <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 20rem;"></div>
-    </div>
-</div>
+    </main>
 
-<footer class='footer'>
-    <div class="navLogoFooter">
-        <span class="topText">Nisky Hill</span>
-        <span class="bottomText">Cemetery</span>
-    </div>
-    <div class="footerColumns">
-        <p class = "footerTopTitle">Open Dawn til Dusk</p>
-        <span class="footerTop">254 E Church St,</span>
-        <span class="footerBottom">Bethlehem, PA 18018</span>
-    </div>
-    <div class="footerColumns">
-        <p class = "footerTopTitle">Questions?</p>
-        <a class = 'footerTop' href="../contact/contact.html">Contact</a>
-    </div>
-</footer>
+        <footer class='footer'>
+            <div class="navLogoFooter">
+                <span class="topText">Nisky Hill</span>
+                <span class="bottomText">Cemetery</span>
+            </div>
+            <div class="footerColumns">
+                <p class = "footerTopTitle">Open Dawn til Dusk</p>
+                <span class="footerTop">254 E Church St,</span>
+                <span class="footerBottom">Bethlehem, PA 18018</span>
+            </div>
+            <div class="footerColumns">
+                <p class = "footerTopTitle">Questions?</p>
+                <a class = 'footerTop' href="../contact/contact.html">Contact</a>
+            </div>
+        </footer>
 
 <script>
     function myFunction(event) {
