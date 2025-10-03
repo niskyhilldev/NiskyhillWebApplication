@@ -1,147 +1,152 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Historic Nisky Hill Cemetery in Bethlehem, Pennsylvania. Established in 1849, serving families with burial services, memorials, and genealogy resources in the Lehigh Valley.">
-        <meta property="og:title" content="Nisky Hill Cemetery - Historic Cemetery in Bethlehem, PA">
-        <meta property="og:description" content="Historic cemetery serving Bethlehem, Pennsylvania since 1849. Burial services, memorials, and genealogy resources.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://nisyhill.org">
-        <link rel="stylesheet" href="profile.css" />
-        <script type="text/javascript" src="profile.js"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
-        <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
-        <title>Nisky Hill Cemetery - Resident Profile - Bethlehem, Pennsylvania</title>
-    </head>
-    <body>
-        <nav class='navBar'>
-            <div class="navLogo">
-                <span class="topText"><a href="../../index.html">Nisky Hill</a></span>
-                <span class="bottomText"><a href="../../index.html">Cemetery</a></span>
-            </div>
-            <div class="dropdown">
-                <button onclick="myFunction(event)" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
-                <span class="flex items-center justify-center">
-                <span class="flex">
-                    <svg rpl="" fill="currentColor" height="30" width="30" icon-name="menu-outline" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18.25 4.7H1.75A.772.772 0 0 1 1 3.95c0-.399.352-.75.75-.75h16.5c.398 0 .75.351.75.75 0 .397-.352.75-.75.75ZM19 9.996a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Zm0 6.047a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Z"></path>
-                    </svg>
-                </span>
-                </span>
-                </button>
-                <div id="myDropdown" class="dropdown-content">
-                    <a class = 'menuOption' href="../../index.html">Home</a>
-                    <a class = 'menuOption' href="../../history/history.html">History</a>
-                    <a class = 'menuOption' href="../../notableResidents/notableResidents.html">Notable Residents</a>
-                    <a class = 'menuOption' href="../../contact/contact.html">Contact</a>
-                    <a class = 'menuOption' href="../../faq/faq.html">FAQs</a>
-                    <a class = 'menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
-                    <a class = 'menuOption' href="../search.html">Find a Grave</a>
-                </div>
-            </div>
-            <ul class="navItems">
-                <li class="navOption"> <a href="../../index.html">HOME</a></li>
-                <li class="navOption"> <a href="../../history/history.html">HISTORY</a></li>
-                <li class="navOption"> <a href="../../notableResidents/notableResidents.html">NOTABLE RESIDENTS</a></li>
-                <li class="navOption"> <a href="../../contact/contact.html">CONTACT</a></li>
-                <li class="navOption"> <a href="../../faq/faq.html">FAQs</a></li>
-                <li class="navOption"> <a href= "https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target = "_blank">VISIT</a></li>
-                <li><button onclick="location.href='../search.html';" class="findAGraveButton">FIND A GRAVE</button></li>
-            </ul>
-        </nav>
-    <body>    
-        
-        <a class = 'returnLink' href="javascript:history.back()"><< RETURN TO SEARCH</a>
-        <div style="display: flex; flex-direction: column;">
-            <div class="main">
-                <h2><span class='name' id="name"></span></h2>
-                <div class="card">
-                    <div>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>Burial Date</td>
-                                    <td></td>
-                                    <td><span id='burialDate'></span></td>
-                                </tr>
-                                <tr>
-                                    <td>Section</td>
-                                    <td></td>
-                                    <td><span id='section'></span></td>
-                                </tr>
-                                <tr>
-                                    <td>Lot</td>
-                                    <td></td>
-                                    <td><span id='lot'></span></td>
-                                </tr>
-                                <tr>
-                                    <td>Lot Owner</td>
-                                    <td></td>
-                                    <td><span id='lotOwner'></span></td>
-                                </tr>
-                                <tr>
-                                    <td>Lot Descriptor</td>
-                                    <td></td>
-                                    <td><span id='lotDescriptor'></span></td>
-                                </tr>
-                                <tr>
-                                    <td>Resident ID</td>
-                                    <td></td>
-                                    <td><span id='residentID'></span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Historic Nisky Hill Cemetery in Bethlehem, Pennsylvania. Established in 1849, serving families with burial services, memorials, and genealogy resources in the Lehigh Valley.">
+  <meta property="og:title" content="Nisky Hill Cemetery - Historic Cemetery in Bethlehem, PA">
+  <meta property="og:description" content="Historic cemetery serving Bethlehem, Pennsylvania since 1849. Burial services, memorials, and genealogy resources.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nisyhill.org">
 
-            <div class="lot-example">
-                <h4>Lot Descriptor Examples:</h4>
-                <p>N.H. - Northern Half</p>
-                <p>W.E.S.H. - Western End of Southern Half</p>
-                <p>C.P.S.H. - Central Part of Southern Half</p>
-            </div>
-        </div>
-    </body>
+  <link rel="stylesheet" href="profile.css" />
 
-    <footer class='footer'>
-        <div class="navLogoFooter">
-            <span class="topText">Nisky Hill</span>
-            <span class="bottomText">Cemetery</span>
-        </div>
-        <div class="footerColumns">
-            <p class = "footerTopTitle">Open Dawn til Dusk</p>
-            <span class="footerTop">254 E Church St,</span>
-            <span class="footerBottom">Bethlehem, PA 18018</span>
-        </div>
-        <div class="footerColumns">
-            <p class = "footerTopTitle">Questions?</p>
-            <a class = 'footerTop' href="../../contact/contact.html">Contact</a>
-        </div>
-    </footer>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
 
-    <script>
-        function myFunction(event) {
-            document.getElementById("myDropdown").classList.toggle("show");
-            event.stopPropagation();
-        }
+  <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
+  <title>Nisky Hill Cemetery - Resident Profile - Bethlehem, Pennsylvania</title>
 
-        // Close the dropdown menu if the user clicks outside of it
-        window.onclick = function(event) {
-            // Check if the clicked element or any parent is the dropdown button
-            if (!event.target.closest('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root { --nav-h: 120px; --footer-h: 90px; }
+    .profile-map-wrap { margin: 16px; }
+    #profile-map{
+      height: 380px;
+      min-height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    </script>
+    @media (max-width: 900px){
+      #profile-map{ height: 320px; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class='navBar'>
+    <div class="navLogo">
+      <span class="topText"><a href="../../index.html">Nisky Hill</a></span>
+      <span class="bottomText"><a href="../../index.html">Cemetery</a></span>
+    </div>
+    <div class="dropdown">
+      <button onclick="myFunction(event)" class="dropbtn" type="button" style="padding: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+        <span class="flex items-center justify-center">
+          <span class="flex">
+            <svg rpl="" fill="currentColor" height="30" width="30" icon-name="menu-outline" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18.25 4.7H1.75A.772.772 0 0 1 1 3.95c0-.399.352-.75.75-.75h16.5c.398 0 .75.351.75.75 0 .397-.352.75-.75.75ZM19 9.996a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Zm0 6.047a.772.772 0 0 0-.75-.75H1.75a.772.772 0 0 0-.75.75c0 .398.352.75.75.75h16.5c.398 0 .75-.352.75-.75Z"></path>
+            </svg>
+          </span>
+        </span>
+      </button>
+      <div id="myDropdown" class="dropdown-content">
+        <a class='menuOption' href="../../index.html">Home</a>
+        <a class='menuOption' href="../../history/history.html">History</a>
+        <a class='menuOption' href="../../notableResidents/notableResidents.html">Notable Residents</a>
+        <a class='menuOption' href="../../contact/contact.html">Contact</a>
+        <a class='menuOption' href="../../faq/faq.html">FAQs</a>
+        <a class='menuOption' href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">Visit</a>
+        <a class='menuOption' href="../search.html">Find a Grave</a>
+      </div>
+    </div>
+    <ul class="navItems">
+      <li class="navOption"><a href="../../index.html">HOME</a></li>
+      <li class="navOption"><a href="../../history/history.html">HISTORY</a></li>
+      <li class="navOption"><a href="../../notableResidents/notableResidents.html">NOTABLE RESIDENTS</a></li>
+      <li class="navOption"><a href="../../contact/contact.html">CONTACT</a></li>
+      <li class="navOption"><a href="../../faq/faq.html">FAQs</a></li>
+      <li class="navOption"><a href="https://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/" target="_blank">VISIT</a></li>
+      <li><button onclick="location.href='../search.html';" class="findAGraveButton">FIND A GRAVE</button></li>
+    </ul>
+  </nav>
+
+  <a class='returnLink' href="javascript:history.back()">&laquo; RETURN TO SEARCH</a>
+
+  <!-- Map above profile -->
+  <div class="profile-map-wrap">
+    <div id="profile-map"></div>
+  </div>
+
+  <div style="display: flex; flex-direction: column;">
+    <div class="main">
+      <h2><span class='name' id="name"></span></h2>
+      <div class="card">
+        <div>
+          <table>
+            <tbody>
+              <tr><td>Burial Date</td><td></td><td><span id='burialDate'></span></td></tr>
+              <tr><td>Section</td><td></td><td><span id='section'></span></td></tr>
+              <tr><td>Lot</td><td></td><td><span id='lot'></span></td></tr>
+              <tr><td>Lot Owner</td><td></td><td><span id='lotOwner'></span></td></tr>
+              <tr><td>Lot Descriptor</td><td></td><td><span id='lotDescriptor'></span></td></tr>
+              <tr><td>Resident ID</td><td></td><td><span id='residentID'></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="lot-example">
+      <h4>Lot Descriptor Examples:</h4>
+      <p>N.H. - Northern Half</p>
+      <p>W.E.S.H. - Western End of Southern Half</p>
+      <p>C.P.S.H. - Central Part of Southern Half</p>
+    </div>
+  </div>
+
+  <footer class='footer'>
+    <div class="navLogoFooter">
+      <span class="topText">Nisky Hill</span>
+      <span class="bottomText">Cemetery</span>
+    </div>
+    <div class="footerColumns">
+      <p class="footerTopTitle">Open Dawn til Dusk</p>
+      <span class="footerTop">254 E Church St,</span>
+      <span class="footerBottom">Bethlehem, PA 18018</span>
+    </div>
+    <div class="footerColumns">
+      <p class="footerTopTitle">Questions?</p>
+      <a class='footerTop' href="../../contact/contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <!-- Dropdown JS (kept) -->
+  <script>
+    function myFunction(event) {
+      document.getElementById("myDropdown").classList.toggle("show");
+      event.stopPropagation();
+    }
+    window.onclick = function(event) {
+      if (!event.target.closest('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Leaflet JS first, then your map/profile logic -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Optional shared dataset: defines window.graveLocations -->
+  <!-- <script src="../map/grave-data.js"></script> -->
+  <!-- Your profile logic (includes the map init and focus) -->
+  <script src="profile.js"></script>
+</body>
 </html>
