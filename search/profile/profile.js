@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keep these in sync with your map layout
     const bounds = [[0, 0], [1000, 2000]];
     // TODO: adjust overlay path relative to profile.html location
-    L.imageOverlay('../map/map-1.png', bounds).addTo(map);
+    L.imageOverlay('map-1.png', bounds).addTo(map); 
     map.fitBounds(bounds);
     map.setView([300, 1000], map.getZoom() + 2);
 
