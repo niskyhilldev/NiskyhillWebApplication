@@ -4,6 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.database.Database;
+import moravians.niskyhill.server.dtos.NewLotDTO;
+import moravians.niskyhill.server.dtos.NewResidentDTO;
+import moravians.niskyhill.server.dtos.UpdateLotDTO;
 import moravians.niskyhill.server.dtos.UpdateResidentDTO;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.LotService;
@@ -106,14 +109,44 @@ public class Server {
         }); 
 
         // add a new resident 
+        app.post("/residents/add", ctx -> {
+            NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
+            if (ResidentService.addResident(newResidentDTO, database)){
+                ctx.status(200).result("New Resident Created");
+            }
+        });
 
         // delete a resident
+        app.delete("/residents/delete/{rid}", ctx -> {
+            if (ResidentService.deleteResident(ctx.pathParam("rid"),database)) {
+                ctx.status(200).result("Resident Deleted Successfully");
+            }
+        });
 
         // add a new lot 
+        app.post("/lots/add", ctx -> {
+            NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
+            if (LotService.addLot(newLotDTO, database)){
+                ctx.status(200).result("New Lot Created");
+            }
+        });
 
         // update a lot 
+        app.put("/lots/update", ctx -> {
+            UpdateLotDTO updateLotDTO = ctx.bodyAsClass(UpdateLotDTO.class);
+            if (LotService.updateLot(updateLotDTO, database)){
+                ctx.status(200).result("Lot updated");
+            }
+        }); 
 
         // delete a lot
+        app.delete("/lot/delete/{lid}", ctx -> {
+            if (LotService.deleteLot(ctx.pathParam("lid"),database)) {
+                ctx.status(200).result("Lot Deleted Successfully");
+            }
+        });
+
+
 
 
         /**
@@ -122,7 +155,6 @@ public class Server {
         app.exception(HttpStatusException.class, (HttpStatusException e, Context ctx) -> {
             ctx.status(e.getHttpStatus()).json(e.getMessage()); // (status, reason)
         });
-
 
         /**
          * Get port from environment (Heroku) or default to 8080 (for local deployment)

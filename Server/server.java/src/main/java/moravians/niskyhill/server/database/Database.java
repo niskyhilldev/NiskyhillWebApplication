@@ -557,4 +557,152 @@ public class Database {
     }
 
 
+    public boolean addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
+                            String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
+        String q = """
+            INSERT INTO resident (firstname, middlename, lastname, birth_date, burial_date, death_date, capsule, marker, foundation, viewable, lot)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+
+        try {
+
+            PreparedStatement ps = connection.prepareStatement(q);
+
+            ps.setString(1, firstName); // set first name 
+
+            if (middleName != null && !middleName.isBlank()) { // set middle name (nullable)
+                ps.setString(2, middleName);
+            } else {
+                ps.setNull(2, Types.VARCHAR);
+            }
+            ps.setString(3, lastName); // set last Name 
+
+            if (birthDate != null && !birthDate.isBlank()) { // set birth date (nullable)
+                ps.setDate(4, Date.valueOf(birthDate));
+            } else {
+                ps.setNull(4, Types.DATE);
+            }
+
+            if (burialDate != null && !burialDate.isBlank()) { // set burrial date (nullable)
+                ps.setDate(5, Date.valueOf(burialDate));
+            } else {
+                ps.setNull(5, Types.DATE);
+            }
+
+            if (deathDate != null && !deathDate.isBlank()) { // set death date (nullable)
+                ps.setDate(6, Date.valueOf(deathDate));
+            } else {
+                ps.setNull(6, Types.DATE);
+            }
+
+            if (capsule != null && !capsule.isBlank()) { // set capsule (nullable)
+                ps.setString(7, capsule.trim().toLowerCase());
+            } else {
+                ps.setNull(7, Types.VARCHAR);
+            }
+
+            if (marker != null) {// set marker (nullable)
+                ps.setBoolean(8, marker);
+            } else {
+                ps.setNull(8, Types.BOOLEAN);
+            }
+
+    
+            if (foundation != null) { // set foundation (nullable)
+                ps.setBoolean(9, foundation);
+            } else {
+                ps.setNull(9, Types.BOOLEAN);
+            }
+
+    
+            if (publicViewable != null) { // set viewable (nullable)
+                ps.setBoolean(10, publicViewable);
+            } else {
+                ps.setNull(10, Types.BOOLEAN);
+            }
+
+            ps.setLong(11, lid); // set lot
+            
+            if (ps.executeUpdate() < 1){
+               return false;
+            }
+            return true;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create New Resident", e);
+        }
+    }
+
+
+    public boolean deleteResident(Long rid) throws HttpStatusException {
+        String q = """
+                DELETE FROM resident 
+                WHERE rid = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setLong(1, rid);
+
+            if (ps.executeUpdate() < 1) {
+                throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Failed to Delete Resident");
+            }
+
+            return true;
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Resident with  rid " + rid, e);
+        }
+    }
+
+
+    public boolean createNewLot(String number,String descriptor, String owner, Long mapXCord, Long mapYCord, Long sid ) throws HttpStatusException {
+        String q = """
+                INSERT INTO lot (number, descriptor, owner, x_pixel_cord, y_pixel_cord, section)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+
+            ps.setString(1, number); // set number
+            if (descriptor == null || descriptor.isBlank()){ // set descriptor (nullable)
+                ps.setString(2, "entire");
+            } else {
+                ps.setString(2, descriptor);
+            }
+            if (owner == null || owner.isBlank()){ // set owner (nullable)
+                ps.setNull(3, Types.VARCHAR);
+            }else {
+                ps.setString(3, owner);
+            }
+            if (mapXCord == null){ // set Xcord (nullable)
+                ps.setNull(4, Types.INTEGER);
+            } else{
+                ps.setLong(4, mapXCord);
+            }
+            if (mapYCord == null) { // set yCord (nullable)
+                ps.setNull(5, Types.INTEGER);
+            } else {
+                ps.setLong(5, mapYCord);
+            }
+            ps.setLong(6, sid);
+
+            if (ps.executeUpdate() < 1){
+                throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot Criteria");
+            }
+            return true;
+
+        } catch (SQLException e) {
+            String message = e.getMessage().toLowerCase(); 
+
+            if (message.contains("unique") || message.contains("duplicate")) {
+                throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Already Exists");
+            }
+
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create Lot", e);
+        }
+    }
 }

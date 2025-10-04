@@ -5,7 +5,9 @@ import java.util.List;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.dtos.LotDTO;
 import moravians.niskyhill.server.dtos.LotResidentsDTO;
+import moravians.niskyhill.server.dtos.NewLotDTO;
 import moravians.niskyhill.server.dtos.ResidentDTO;
+import moravians.niskyhill.server.dtos.UpdateLotDTO;
 import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.mappers.LotMapper;
@@ -64,4 +66,30 @@ public class LotService {
 
         return lotResidentsList;
     }
+
+
+    public static boolean addLot(NewLotDTO newLotDTO, Database database) throws HttpStatusException {
+        if (newLotDTO == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
+        }
+
+        if (newLotDTO.number() == null || newLotDTO.number().isBlank() || newLotDTO.sid() == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
+        }
+
+        if (!(database.createNewLot(newLotDTO.number(), newLotDTO.descriptor(), newLotDTO.owner(), newLotDTO.mapXCord(), newLotDTO.mapYCord(), newLotDTO.sid()))){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot");
+        }
+        return true;
+
+    }
+
+    public static boolean updateLot(UpdateLotDTO updateLotDTO, Database database) throws HttpStatusException {
+        return true;
+    }
+
+    public static boolean deleteLot(String rid, Database database) throws HttpStatusException{
+        return true;
+    }
 }
+

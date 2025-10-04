@@ -2,6 +2,7 @@ package moravians.niskyhill.server.services;
 
 import java.util.List;
 import moravians.niskyhill.server.database.Database;
+import moravians.niskyhill.server.dtos.NewResidentDTO;
 import moravians.niskyhill.server.dtos.ResidentDTO;
 import moravians.niskyhill.server.dtos.ResidentSearchDTO;
 import moravians.niskyhill.server.dtos.UpdateResidentDTO;
@@ -91,5 +92,62 @@ public class ResidentService {
         }
 
         return true;
+    }
+
+
+    public static boolean addResident(NewResidentDTO newResidentDTO, Database database) throws HttpStatusException{
+        if (newResidentDTO == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Request Must Contain all resident information");
+        }
+
+        if(newResidentDTO.firstName() == null || newResidentDTO.firstName().isBlank() || newResidentDTO.lastName() == null || newResidentDTO.lastName().isBlank() ||newResidentDTO.lid() == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "New Resident Request Missing Required Criteria");
+        }
+
+        if (database.getLot(newResidentDTO.lid()) == null){
+            throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Lot not found with id " + newResidentDTO.lid()); 
+        }
+
+        boolean result =  database.addNewResident(
+            newResidentDTO.firstName(),
+            newResidentDTO.middleName(),
+            newResidentDTO.lastName(),
+            newResidentDTO.birthDate(),
+            newResidentDTO.burialDate(),
+            newResidentDTO.deathDate(),
+            newResidentDTO.capsule(),
+            newResidentDTO.marker(),
+            newResidentDTO.foundation(),
+            newResidentDTO.publicViewable(),
+            newResidentDTO.lid()
+        );
+
+        if (result == false){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Bad Criteria for New Resident");
+        }
+
+        return true;
+    }
+
+
+    public static boolean deleteResident(String rid, Database database) throws HttpStatusException{
+        if (rid == null || rid.isBlank()){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "rid cannot be null");
+        }
+
+        if (database.getResident(Long.parseLong(rid)) == null){
+            throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Resident not Found with rid " + rid);
+        }
+        
+        try {
+            if (!(database.deleteResident(Long.parseLong(rid)))) {
+                throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Resident with rid " + rid);
+            }
+            return true;
+
+        } catch (NumberFormatException e){
+            System.err.printf("Rid must be a numeric value: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "rid must be numeric", e);
+        }
     }
 }
