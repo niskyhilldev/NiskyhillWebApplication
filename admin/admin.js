@@ -154,7 +154,23 @@ async function performLotSearch() {
 
     } catch (error) {
         // statusDiv.innerHTML = `Error searching: ${error.message}`;
-        resultsDiv.innerHTML = '';
+        const tableBody = document.getElementById("resLotTableBody");
+
+        // Clear any previous rows
+        tableBody.innerHTML = "";
+
+        // Create a row
+        const row = document.createElement("tr");
+
+        // Create a single cell that spans all columns
+        const cell = document.createElement("td");
+        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
+        cell.textContent = "No results found";
+        cell.style.textAlign = "center"; // optional: center the text
+
+        // Append the cell to the row, and row to the table body
+        row.appendChild(cell);
+        tableBody.appendChild(row);
         console.error('Search error:', error);
     }
 }
