@@ -113,33 +113,52 @@ async function performResidentSearch() {
             
             //network error
         } catch (error) {
-            statusDiv.innerHTML = `Error searching: ${error.message}`;
-            resultsDiv.innerHTML = '';
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
             console.error('Search error:', error);
         }
 }
-function performLotSearch() {
-    let section = document.getElementById("searchSection").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLot").value.trim().toLowerCase();
+async function performLotSearch() {
+    const section = document.getElementById("searchSectionRes").value.trim();
+    const lot = document.getElementById("searchLotRes").value.trim();
 
-    let results = Object.values(data).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        if (section && lot && entry.sectionOwn && entry.sectionOwn.toLowerCase() === section && entry.lotOwnNumber && entry.lotOwnNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
+        console.log(section)
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        console.log(lots);
+
+        // Example: store results and display them
+        lotResults = lots;
+        populateTable(lots, 'lots');
+
+    } catch (error) {
+        // statusDiv.innerHTML = `Error searching: ${error.message}`;
+        resultsDiv.innerHTML = '';
+        console.error('Search error:', error);
     }
-    lotResults = results;
-    populateTable(results, 'lots');
 }
+
 function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
@@ -213,7 +232,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.lastName || ""}</td>
                 <td>${entry.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${index}', 'resident')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${entry.rid}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
@@ -221,29 +240,43 @@ function populateTable(filteredData, type) {
         });
     }
     else if(type === 'lots'){
-        const tableBody = document.getElementById("lotTableBody");
+        const tableBody = document.getElementById("resLotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
-        if (filteredData.length === 0) {
+        // Flatten the data: one entry per resident
+        const flattenedResidents = [];
+        filteredData.forEach(entry => {
+            const lot = entry.lot; // if you need lot info later
+            entry.residents.forEach(resident => {
+                flattenedResidents.push({
+                    ...resident,
+                    lotInfo: lot // optional, store lot if needed
+                });
+            });
+        });
+
+        if (flattenedResidents.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
-        filteredData.forEach((entry, index) => {
+        // Populate table
+        flattenedResidents.forEach((resident, index) => {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
+                <td>${resident.firstName || ""}</td>
+                <td>${resident.middleName || ""}</td>
+                <td>${resident.lastName || ""}</td>
+                <td>${resident.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
+                    <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate || ""}', '${resident.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
+
     }
     if(type === 'burial'){
         const tableBody = document.getElementById("burialTableBody");
@@ -300,10 +333,10 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
     if(type === 'resident'){
-        details = residentResults[rowId];
+        // details = residentResults[rowId];
         try {
-            console.log(residentResults[rowId].rid)
-            const response = await fetch(`${API_BASE_URL}/residents/find/${residentResults[rowId].rid}`)
+            console.log(row)
+            const response = await fetch(`${API_BASE_URL}/residents/find/${row}`)
             if (!response.ok) {
                     if (response.status === 404) {
                         throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
