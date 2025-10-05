@@ -278,6 +278,7 @@ function populateTable(filteredData, type) {
 
         // Populate table
         flattenedResidents.forEach((resident, index) => {
+            console.log(resident)
             const row = document.createElement("tr");
 
             row.innerHTML = `
@@ -285,6 +286,9 @@ function populateTable(filteredData, type) {
                 <td>${resident.middleName || ""}</td>
                 <td>${resident.lastName || ""}</td>
                 <td>${resident.burialDate || ""}</td>
+                <td>${resident.lotInfo.section.name || ""}</td>
+                <td>${resident.lotInfo.number || ""}</td>
+                <td>${resident.lotInfo.descriptor || ""}</td>
                 <td>
                     <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate || ""}', '${resident.rid}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
