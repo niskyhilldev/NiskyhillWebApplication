@@ -85,11 +85,49 @@ public class LotService {
     }
 
     public static boolean updateLot(UpdateLotDTO updateLotDTO, Database database) throws HttpStatusException {
+        if (updateLotDTO == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
+        }
+
+        if (updateLotDTO.number() == null || updateLotDTO.number().isBlank() || updateLotDTO.sid() == null){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
+        }
+
+        if (database.getLot(updateLotDTO.lid()) == null){
+            throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Lot not Found with id " + updateLotDTO.lid());
+        }
+
+        if (database.getSection(updateLotDTO.sid()) == null){
+            throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Section not Found with id " + updateLotDTO.sid()); 
+        }
+
+        if (!(database.updateLot(updateLotDTO.lid(), updateLotDTO.number(), updateLotDTO.descriptor(), updateLotDTO.owner(), updateLotDTO.mapXCord(), updateLotDTO.mapYCord(), updateLotDTO.sid()))){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot Criteria");
+        }
         return true;
     }
 
-    public static boolean deleteLot(String rid, Database database) throws HttpStatusException{
-        return true;
+
+    public static boolean deleteLot(String lid, Database database) throws HttpStatusException{
+        if (lid == null || lid.isBlank()){
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot id cannot be null");
+        }
+
+        try {
+            
+            if (database.getLot(Long.parseLong(lid)) == null) {
+                throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Could not find lot with id " + lid);
+
+            }
+
+            if (!(database.deleteLot(Long.parseLong(lid)))) {
+                throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Failed to delete Lot");
+            }
+            return true;
+
+        } catch (NumberFormatException e){
+            System.err.printf("lid must be a numeric value: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "lid must be numeric", e);
+        }
     }
 }
-

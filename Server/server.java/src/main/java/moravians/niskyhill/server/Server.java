@@ -104,7 +104,7 @@ public class Server {
         app.put("/residents/update", ctx -> {
             UpdateResidentDTO updateResidentDTO = ctx.bodyAsClass(UpdateResidentDTO.class);
             if (ResidentService.updateResident(updateResidentDTO, database)){
-                ctx.status(200).result("Resident updated");
+                ctx.status(200).result("Resident updated Successfully");
             }
         }); 
 
@@ -112,7 +112,7 @@ public class Server {
         app.post("/residents/add", ctx -> {
             NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
             if (ResidentService.addResident(newResidentDTO, database)){
-                ctx.status(200).result("New Resident Created");
+                ctx.status(200).result("New Resident Created Successfully");
             }
         });
 
@@ -127,7 +127,7 @@ public class Server {
         app.post("/lots/add", ctx -> {
             NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
             if (LotService.addLot(newLotDTO, database)){
-                ctx.status(200).result("New Lot Created");
+                ctx.status(200).result("New Lot Created Successfully");
             }
         });
 
@@ -135,12 +135,12 @@ public class Server {
         app.put("/lots/update", ctx -> {
             UpdateLotDTO updateLotDTO = ctx.bodyAsClass(UpdateLotDTO.class);
             if (LotService.updateLot(updateLotDTO, database)){
-                ctx.status(200).result("Lot updated");
+                ctx.status(200).result("Lot updated Successfully");
             }
         }); 
 
         // delete a lot
-        app.delete("/lot/delete/{lid}", ctx -> {
+        app.delete("/lots/delete/{lid}", ctx -> {
             if (LotService.deleteLot(ctx.pathParam("lid"),database)) {
                 ctx.status(200).result("Lot Deleted Successfully");
             }

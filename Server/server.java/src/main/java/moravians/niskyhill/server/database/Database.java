@@ -646,10 +646,10 @@ public class Database {
             ps.setLong(1, rid);
 
             if (ps.executeUpdate() < 1) {
-                throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Failed to Delete Resident");
+                return false;
             }
-
             return true;
+
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Resident with  rid " + rid, e);
@@ -690,7 +690,7 @@ public class Database {
             ps.setLong(6, sid);
 
             if (ps.executeUpdate() < 1){
-                throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot Criteria");
+                return false;
             }
             return true;
 
@@ -703,6 +703,80 @@ public class Database {
 
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create Lot", e);
+        }
+    }
+
+
+    public boolean updateLot(Long lid, String number, String descriptor, String owner, Long mapXCord, Long mapYCord, Long sid ) throws HttpStatusException {
+        String q = """
+                UPDATE lot
+                SET 
+                    number = ?,
+                    descriptor = ?,
+                    owner = ?,
+                    x_pixel_cord = ?, 
+                    y_pixel_cord = ?, 
+                    section = ?
+                WHERE lid = ?
+                """;
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+
+            ps.setString(1, number); // set number
+            if (descriptor == null || descriptor.isBlank()){ // set descriptor (nullable)
+                ps.setString(2, "entire");
+            } else {
+                ps.setString(2, descriptor);
+            }
+            if (owner == null || owner.isBlank()){ // set owner (nullable)
+                ps.setNull(3, Types.VARCHAR);
+            }else {
+                ps.setString(3, owner);
+            }
+            if (mapXCord == null){ // set Xcord (nullable)
+                ps.setNull(4, Types.INTEGER);
+            } else{
+                ps.setLong(4, mapXCord);
+            }
+            if (mapYCord == null) { // set yCord (nullable)
+                ps.setNull(5, Types.INTEGER);
+            } else {
+                ps.setLong(5, mapYCord);
+            }
+            ps.setLong(6, sid);
+            ps.setLong(7, lid);
+
+            if (ps.executeUpdate() < 1){
+                return false;
+            }
+            return true;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create Lot", e);
+        }
+    }
+
+
+     public boolean deleteLot(Long lid) throws HttpStatusException {
+        String q = """
+                DELETE FROM lot 
+                WHERE lid = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setLong(1, lid);
+
+            if (ps.executeUpdate() < 1) {
+                return false;
+            }
+            return true;
+            
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Lot with id " + lid, e);
         }
     }
 }

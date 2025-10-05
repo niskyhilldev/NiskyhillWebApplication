@@ -134,12 +134,13 @@ public class ResidentService {
         if (rid == null || rid.isBlank()){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "rid cannot be null");
         }
-
-        if (database.getResident(Long.parseLong(rid)) == null){
-            throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Resident not Found with rid " + rid);
-        }
         
         try {
+
+            if (database.getResident(Long.parseLong(rid)) == null){
+                throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Resident not Found with rid " + rid);
+            }  
+             
             if (!(database.deleteResident(Long.parseLong(rid)))) {
                 throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Resident with rid " + rid);
             }
