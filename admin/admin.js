@@ -981,3 +981,88 @@ function performFileSearch() {
         fileTableBody.appendChild(row);
     });
 }
+
+
+//Get sections and update dropdowns
+fetch(API_BASE_URL + "/sections/all")
+  .then(response => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  })
+  .then(data => {
+    selectEl = document.getElementById("resCemSection");
+    selectEl.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.id;
+      option.textContent = section.name;
+      selectEl.appendChild(option);
+    });
+  })
+  .catch(error => {
+    console.error("Error fetching sections:", error);
+    selectEl.innerHTML = '<option value="">Error loading sections</option>';
+  });
+
+  // --- When Section Changes, Load Lots --
+const sectionSelect = document.getElementById("resCemSection");
+const lotSelect = document.getElementById("resLotNum");
+const portionSelect = document.getElementById("resPortion");
+sectionSelect.addEventListener("change", () => {
+  const sectionId = sectionSelect.value;
+  lotSelect.innerHTML = '<option value="">Loading lots...</option>';
+  lotSelect.disabled = true;
+  portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+  portionSelect.disabled = true;
+
+  if (!sectionId) {
+    lotSelect.innerHTML = '<option value="">Select a section first</option>';
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/lots/all`)
+    .then(res => res.json())
+    .then(data => {
+      lotSelect.innerHTML = '<option value="">Select a lot</option>';
+      data.forEach(lot => {
+        const opt = document.createElement("option");
+        opt.value = lot.id;
+        opt.textContent = lot.number;
+        lotSelect.appendChild(opt);
+      });
+      lotSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      lotSelect.innerHTML = '<option value="">Error loading lots</option>';
+    });
+});
+
+// --- When Lot Changes, Load Portions ---
+lotSelect.addEventListener("change", () => {
+  const lotId = lotSelect.value;
+  portionSelect.innerHTML = '<option value="">Loading portions...</option>';
+  portionSelect.disabled = true;
+
+  if (!lotId) {
+    portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+    return;
+  }
+
+  fetch(`${BASE_URL}/lots/${lotId}/portions`)
+    .then(res => res.json())
+    .then(data => {
+      portionSelect.innerHTML = '<option value="">Select a portion</option>';
+      data.forEach(portion => {
+        const opt = document.createElement("option");
+        opt.value = portion.id;
+        opt.textContent = portion.name;
+        portionSelect.appendChild(opt);
+      });
+      portionSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      portionSelect.innerHTML = '<option value="">Error loading portions</option>';
+    });
+});

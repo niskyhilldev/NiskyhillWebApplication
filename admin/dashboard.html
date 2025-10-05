@@ -128,15 +128,21 @@
 
             <label for="suffix">Suffix:</label>
             <input type="text" id="suffix">
+
+            <label for="resCemSection">Section*:</label>
+            <select id="resCemSection" required>
+                <option value="">Loading...</option>
+            </select>
             
             <label for="resLotNum">Lot Number*:</label>
-            <input type="text" id="resLotNum" required>
-            
+            <select id="resLotNum" required disabled>
+                <option value="">Select a section first</option>
+            </select>
+
             <label for="resPortion">Lot Portion*:</label>
-            <input type="text" id="resPortion" required>
-            
-            <label for="resCemSection">Section*:</label>
-            <input type="text" id="resCemSection" required>
+            <select id="resPortion" required disabled>
+                <option value="">Select a lot first</option>
+            </select>
 
             <label for="dofb">Date of Birth:</label>
             <input type="date" id="dofb">
