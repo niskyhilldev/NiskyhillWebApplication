@@ -241,6 +241,7 @@ function populateTable(filteredData, type) {
         filteredData.forEach((entry, index) => {
             console.log(entry['firstName'])
             const row = document.createElement("tr");
+            row.dataset.rid = entry.rid; // preferred modern way
 
             row.innerHTML = `
                 <td>${entry.firstName || ""}</td>
@@ -352,6 +353,7 @@ function populateTable(filteredData, type) {
 async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
+    id = 0;
     if(type === 'resident'){
         // details = residentResults[rowId];
         try {
@@ -376,6 +378,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             console.log(residents)
             // residentResults = residents;
             details = residents;
+            id = residents.rid;
             
             //network error
         } catch (error) {
@@ -415,7 +418,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
         return;
     }
     currentRow = document.getElementById(rowId);
-    createPopup(details, rowId, type);
+    createPopup(details, rowId, type, id);
 }
 
 function closePopup() {
@@ -424,14 +427,52 @@ function closePopup() {
         popupContainer.remove();
     }
 }
-function createPopup(details, rowId, type) {
+async function getLotInfo(section, lot, partition){
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+        console.log(section)
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        console.log(lots);
+        console.log("test")
+        for(let i = 0; i < lots.length; i++){
+            if (lots[i]['lot'].descriptor === partition){
+                console.log(lots[i]['lot'])
+                return(lots[i]['lot']);
+            }
+        }
+
+    } catch (error) {
+        console.error('Search error:', error);
+    }
+}
+function createPopup(details, rowId, type, id) {
     //Remove existing popup if it exists
     closePopup();
     let popupHTML;
     if(type === 'resident'){
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
+        <div class="popup" id="popup" data-row-id="${rowId}" data-rid="${id}">
             <h3>Details</h3>
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lot.number || ''}"></label>
             <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lot.descriptor || ''}"></label>
@@ -439,9 +480,9 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.birthDate || ''}"></label>
-            <label>Burial Date: <input type="date" id="dod" disabled value="${details.burialDate || ''}"></label>
+            <label>Burial Date: <input type="date" id="burialDate" disabled value="${details.burialDate || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.deathDate || ''}"></label>
             <label>Vessel: 
                 <select id="vessel" disabled>
                     <option value="urn" ${details.capsule === 'urn' ? 'selected' : ''}>Urn</option>
@@ -449,6 +490,8 @@ function createPopup(details, rowId, type) {
                     <option value="Unknown" ${details.capsule !== 'casket' && details.capsule !== 'urn' ? 'selected' : ''}>Unknown</option>
                 </select>
             </label>
+            <label>Marker: <input type="checkbox" id="marker" disabled ${details.marker ? 'checked' : ''}></label>
+            <label>Foundation: <input type="checkbox" id="foundation" disabled ${details.foundation ? 'checked' : ''}></label>
             <label>Public: <input type="checkbox" id="public" disabled ${details.publicViewable ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
@@ -644,7 +687,7 @@ function createPopup(details, rowId, type) {
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
-function saveChanges(type) {
+async function saveChanges(type) {
     if(type === 'owners'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
@@ -663,22 +706,35 @@ function saveChanges(type) {
     else if (type === 'residents'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (residentResults[rowId]){
-            residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            residentResults[rowId].lotId = document.getElementById("lotPortion").value;
-            residentResults[rowId].section = document.getElementById("section").value;
-            residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            residentResults[rowId].suffix = document.getElementById("suffix").value;
-            residentResults[rowId].dob = document.getElementById("dob").value;
-            residentResults[rowId].dod = document.getElementById("dod").value;
-            residentResults[rowId].vessel = document.getElementById("vessel").value;
-            residentResults[rowId].organization = document.getElementById("org").value;
-            residentResults[rowId].valid = document.getElementById("public").checked;
+        const rid = popup.getAttribute("data-rid");
+        resident = {
+            'rid': parseInt(rid),
+            "firstName": document.getElementById("buriedFirst").value,
+            "middleName": document.getElementById("buriedMiddle").value,
+            "lastName": document.getElementById("buriedLast").value,
+            "birthDate": document.getElementById("dob").value,
+            "burialDate": document.getElementById("dod").value,
+            "deathDate": document.getElementById("burialDate").value,
+            "capsule": document.getElementById("vessel").value,
+            "marker": false,
+            "foundation": false,
+            "publicViewable": document.getElementById("public").checked,
+            "lot": await getLotInfo(document.getElementById("section").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value)
         }
-        console.log(document.getElementById("public").checked);
-        populateTable(residentResults, 'residents'); 
+        const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
+        console.log(element)
+        element.innerHTML = `
+            <td>${resident.firstName || ""}</td>
+            <td>${resident.middleName || ""}</td>
+            <td>${resident.lastName || ""}</td>
+            <td>${resident.burialDate || ""}</td>
+            <td>
+                <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate}', '${resident.rid}', 'resident')">View More</button>
+                <button onclick="deleteEntry('${rid}', 'residents')">Delete</button>
+            </td>
+        `;
+        //     console.log(element)
+        // populateTable(residentResults, 'residents'); 
     }
     else if (type === 'lots'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
