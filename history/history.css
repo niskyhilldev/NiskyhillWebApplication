@@ -1,4 +1,227 @@
 /* ===== YOUR ORIGINAL STYLES (kept) ===== */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.headerTitle {
+  color: white;
+  font-weight: 700; 
+  font-size: 50px;
+  height: 59vh;
+  background-repeat: no-repeat; 
+  background-position: bottom center;
+  background-size: cover; 
+  background-image: url('img/niskyHomepage.JPG');
+  width: 100%; 
+  margin: 0 auto; 
+  padding: 100px; 
+  opacity: 0.8; 
+  font-family: Instrument Sans; 
+  font-weight: bold; 
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.headerSmallText {
+  font-size: 30px;
+  font-weight: 400; 
+  margin-top: 175px;
+}
+
+.headerLargeText {
+  font-size: 60px;
+  font-weight: 700;
+}
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.featuresBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 170px;
+  align-items: center;
+}
+
+.featureContainer {
+  display: inline-block; 
+  text-align: center; 
+  margin: 10px;
+}
+
+.imageWrapper {
+  display: inline-block; 
+  margin: 0 auto; 
+}
+
+.featureText {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.featureTextBottom {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.learnMoreButtonAltColor {
+  width: 154px; 
+  height: 40px; 
+  background: #0d2543; 
+  background: #0d2543; 
+  border-radius: 19px;
+  border-style: solid;
+  border-color: #0d2543;
+  color: white;
+  font-weight: 700; 
+  font-family: Instrument Sans;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.learnMoreButtonAltColor2 {
+  width: 200px; 
+  height: 40px; 
+  background: #0d2543; 
+  background: #0d2543; 
+  border-radius: 19px;
+  border-style: solid;
+  border-color: #0d2543;
+  color: white;
+  font-weight: 700; 
+  font-family: Instrument Sans;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor2:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+  .googleMap{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+@media (max-width: 600px){
+  .featuresBar{
+    display: none;
+  }
+}
+
+@media (max-width: 900px){
+  .featuresBar{
+    height: 200px;
+  }
+    .googleMap{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+  .featureContainer{
+    margin-right: 30px;
+  }
+  .headerTitle {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  html, body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .navBar {
   display: flex;
   flex-direction: row;
@@ -178,27 +401,55 @@ a { text-decoration: none; }
 }
 
 
-.footer {
-  display: flex; 
-  flex-direction: row; 
-  justify-content: space-around;
-  background-color: #af8c30; 
-  width: 100%; 
-  margin: 0; 
-  padding: 20px; 
-  min-height: 90px;
-  height: auto;
-  align-items: center;
-  box-sizing: content-box;
-}
+  .footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: #af8c30;
+    width: 100%;
+    margin: 0;  
+    padding: 20px; 
+    height: 90px;
+    align-items: center;
+    box-sizing: content-box;
+  }
+
+
 .footerColumns { display: flex; flex-direction: column; }
 
-.footerTop, .footerBottom, .footerTopTitle {
-  color: white; font-family: Inria Serif; word-wrap: break-word; text-align: center; margin-left: 40px;
-}
-.footerTop { font-size: 20px; font-weight: 500; }
-.footerBottom { font-size: 20px; line-height: 15.86px; font-weight: 500; }
-.footerTopTitle { font-size: 30px; font-weight: 500; margin-bottom: 10px; }
+  .footerTop {
+    color: white;
+    font-size: 20px;
+    font-family: Inria Serif;
+    font-weight: 500;
+    word-wrap: break-word;
+    margin-left: 40px;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .footerTopTitle {
+    color: white;
+    font-size: 30px;
+    font-family: Inria Serif;
+    font-weight: 500;
+    word-wrap: break-word;
+    margin-left: 40px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .footerBottom {
+    color: white;
+    font-size: 20px;
+    font-family: Inria Serif;
+    line-height: 15.86px;
+    font-weight: 500;
+    word-wrap: break-word;
+    text-align: center;
+    margin-left: 40px;
+    text-align: center;
+  }
 
 .historyHeader {
   color: black; font-size: 3.125rem; font-family: Instrument Sans; font-weight: 600; margin-top: 1.775rem; text-align: center;
@@ -240,7 +491,7 @@ a { text-decoration: none; }
   .navLogo { width: 50%; }
   .navLogoFooter{ display: none; }
   .footerColumns { width: 50%; }
-  .footerTop, .footerBottom, .footerTopTitle{ font-size: 1.5rem; }
+  .footerTop, .footerBottom, .footerTopTitle{ font-size: 1.2rem; }
 }
 
 /* ===== NEW EASTON-STYLE BLOCK LAYOUT (Moravian colors) ===== */

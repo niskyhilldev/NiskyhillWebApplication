@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./img/logo.jpg">
-    <title>Nisky Hill Cemetery - Home Page - Bethlehem, Pennsylvania</title>
+    <title>Nisky Hill Cemetery - Home - Bethlehem, Pennsylvania</title>
   </head>
   <body>
     <nav class='navBar'>
@@ -54,7 +54,7 @@
     <h1 class="headerTitle" alt="Image of Nisky Hill" title="Image of Nisky Hill">
         <span class="headerSmallText">Welcome to</span>
         <span class="headerLargeText">Nisky Hill Cemetery</span>
-        <span><button onclick="location.href='../history/history.html';" class="learnMoreButton">LEARN MORE</button></span>
+        <span><button onclick="location.href='../history/history.html';" class="learnMoreButton1">LEARN MORE</button></span>
     </h1>
     <nav class="featuresBar">
         <!-- below is the picture for 'Interactive Map' -->
@@ -119,43 +119,53 @@
             </div>
     </nav>
 
-    <div class="aboutSectionSpacing">
-        <div class = "aboutSection">
-            <h2 class="aboutHeader">About Nisky Hill Cemetery</h2>
-            <p class="aboutInfo">Nestled in the heart of Bethlehem, PA, Nisky Hill Cemetery stands as a testament to the rich history and enduring legacies of those who have shaped our community. With its peaceful landscape and centuries-old headstones, the cemetery is more than a final resting place—it is a space for remembrance, reflection, and historical discovery.</p>
+
+      <section class="block image-right bg-white">
+        <div class="content">
+          <h2 class="aboutHeader">About Nisky Hill Cemetery</h2>
+          <p class="aboutInfo">Nestled in the heart of Bethlehem, PA, Nisky Hill Cemetery stands as a testament to the rich history and enduring legacies of those who have shaped our community. With its peaceful landscape and centuries-old headstones, the cemetery is more than a final resting place—it is a space for remembrance, reflection, and historical discovery.</p>
+          <div class="wrapper">
             <button onclick="location.href='../history/history.html';" class="learnMoreButtonAltColor">LEARN MORE</button>
+          </div>
         </div>
-        <div class="niskyLogo">
-            <img style="width: 350.02px; height: 350.57px;" src="img/logo.jpg" />
-        </div>
-    </div>
-    <div class="aboutSectionSpacing">
-        <div class = 'niskyPath'>
-            <img style="width: 460px; height: 323px; margin-left: 40px;"  src="img/niskyPath.JPG" />
-        </div>
-        <div class = "aboutSection">
-            <h2 class="aboutHeader">Locate a Loved One or Notable Resident</h2>
-            <p class="aboutInfo">Nisky Hill Cemetery and Bethlehem Area Historical records are accessible online via our interactive map.</p>
-            <ul class="aboutList">Click the link below to:
+        <figure class="media">
+          <img src="img/logo.jpg" alt="Nisky Hill Cemetery Logo" style="width: 55%; height: auto; margin: 0 auto;">
+        </figure>
+      </section>
+
+
+      <section class="block image-left bg-blue">
+        <figure class="media">
+          <img src="img/niskyPath.JPG" alt="Pathway in Nisky Hill Cemetery">
+        </figure>
+        <div class="content">
+          <h2 class="aboutHeader">Locate A Loved One or Notable Resident</h2>
+          <p class="aboutInfo">Nisky Hill Cemetery and Bethlehem Area Historical records are accessible online via our interactive map.</p>
+          <ul class="aboutInfo">Click the link below to:
                 <li>Locate a Loved One</li>
                 <li>Find Historical Records</li>
                 <li>Explore our Notable Residents</li>
                 <li>Identify Vacant Plots</li>
             </ul>
             <p class="aboutInfo">Our interactive map is still in production. It is expected to be completed by Q4 2025.</p>
-            <!-- <button class="learnMoreButtonAltColor2">GO TO INTERACTIVE MAP</button> -->
         </div>
-    </div>
-    <div class="aboutSectionSpacing2">
-        <div class = "aboutSection">
-            <h2 class="aboutHeader">Plan A Visit</h2>
-            <p class="aboutInfo">Located at the corner of Church and Market Streets, Nisky Hill Cemetery was founded in 1849. Owned by the Bethlehem Area Moravians, Nisky Hill is the final home for thousands of Bethlehemites of various faiths and origins. </p>
-            <p class="aboutInfo">In this tour, you will explore the burials and histories of dozens of war heroes, artists, and businessmen, and visit a few of the more unusual monuments found within the cemetery grounds. </p>
-            <button onclick="window.open('http://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/', '_blank');" class="learnMoreButtonAltColor">MORE INFO</button>        </div>
-        <div class="googleMap">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6057.120787380136!2d-75.37230672436543!3d40.61752184339477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c43e4f31980ec3%3A0xba14c89a2e3fb5f8!2sNisky%20Hill%20Cemetery!5e0!3m2!1sen!2sus!4v1740793017164!5m2!1sen!2sus" width="420px" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </div>
+      </section>
+
+
+        <section class="block image-left bg-white">
+            <div class="content">
+                <h2 class="aboutHeader">Plan A Visit</h2>
+                <p class="aboutInfo">Located at the corner of Church and Market Streets, Nisky Hill Cemetery was founded in 1849. Owned by the Bethlehem Area Moravians, Nisky Hill is the final home for thousands of Bethlehemites of various faiths and origins. </p>
+                <p class="aboutInfo">In this tour, you will explore the burials and histories of dozens of war heroes, artists, and businessmen, and visit a few of the more unusual monuments found within the cemetery grounds. </p>    
+                <div class="wrapper">
+                    <button onclick="window.open('http://www.historicbethlehem.org/visit-us/experience/nisky-hill-cemetery-tour/', '_blank');" class="learnMoreButtonAltColor">MORE INFO</button>        </div>
+                </div>
+            </div>
+            <div class="googleMap">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6057.120787380136!2d-75.37230672436543!3d40.61752184339477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c43e4f31980ec3%3A0xba14c89a2e3fb5f8!2sNisky%20Hill%20Cemetery!5e0!3m2!1sen!2sus!4v1740793017164!5m2!1sen!2sus" width="420px" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+      </section>
+
     <footer class='footer'>
         <div class="navLogoFooter">
             <span class="topText">Nisky Hill</span>
