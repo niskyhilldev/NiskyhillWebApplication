@@ -141,12 +141,12 @@
       }
     };
   </script>
+<!-- Leaflet JS first -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- NEW: section layers -->
+<script src="sections.js"></script>
+<!-- Your profile logic (map init + API fetch + highlight) -->
+<script src="profile.js"></script>
 
-  <!-- Leaflet JS first, then your map/profile logic -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Optional shared dataset: defines window.graveLocations -->
-  <!-- <script src="../map/grave-data.js"></script> -->
-  <!-- Your profile logic (includes the map init and focus) -->
-  <script src="profile.js"></script>
 </body>
 </html>
