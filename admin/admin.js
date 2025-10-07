@@ -434,8 +434,6 @@ async function getLotInfo(section, lot, partition){
         if (section) queryParams.append("section", section);
         if (lot) queryParams.append("lot", lot);
 
-        console.log(section)
-
 
         const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
 
@@ -452,11 +450,8 @@ async function getLotInfo(section, lot, partition){
         }
 
         const lots = await response.json();
-        console.log(lots);
-        console.log("test")
         for(let i = 0; i < lots.length; i++){
             if (lots[i]['lot'].descriptor === partition){
-                console.log(lots[i]['lot'])
                 return(lots[i]['lot']);
             }
         }
@@ -707,8 +702,9 @@ async function saveChanges(type) {
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         const rid = popup.getAttribute("data-rid");
+        const lotInfo = await getLotInfo(document.getElementById("section").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value) 
         resident = {
-            'rid': parseInt(rid),
+            'rid': rid,
             "firstName": document.getElementById("buriedFirst").value,
             "middleName": document.getElementById("buriedMiddle").value,
             "lastName": document.getElementById("buriedLast").value,
@@ -719,22 +715,48 @@ async function saveChanges(type) {
             "marker": false,
             "foundation": false,
             "publicViewable": document.getElementById("public").checked,
-            "lot": await getLotInfo(document.getElementById("section").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value)
+            "lid": lotInfo.lid
         }
-        const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
-        console.log(element)
-        element.innerHTML = `
-            <td>${resident.firstName || ""}</td>
-            <td>${resident.middleName || ""}</td>
-            <td>${resident.lastName || ""}</td>
-            <td>${resident.burialDate || ""}</td>
-            <td>
-                <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate}', '${resident.rid}', 'resident')">View More</button>
-                <button onclick="deleteEntry('${rid}', 'residents')">Delete</button>
-            </td>
-        `;
-        //     console.log(element)
-        // populateTable(residentResults, 'residents'); 
+        const data = JSON.stringify(resident);
+        console.log(data);
+        try {
+            const response = await fetch(`${API_BASE_URL}/residents/update`,  {
+                method:'PUT',
+                headers: {
+                    'Content-Type': 'application/json', // Indicate that the request body contains JSON data
+                },
+                body: data,
+            })
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
+            console.log(element)
+            element.innerHTML = `
+                <td>${resident.firstName || ""}</td>
+                <td>${resident.middleName || ""}</td>
+                <td>${resident.lastName || ""}</td>
+                <td>${resident.burialDate || ""}</td>
+                <td>
+                    <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate}', '${resident.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${rid}', 'residents')">Delete</button>
+                </td>
+            `;
+            const responseData = await response.text();
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Put error:', error);
+        }
     }
     else if (type === 'lots'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
