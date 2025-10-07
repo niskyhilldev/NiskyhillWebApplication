@@ -113,33 +113,68 @@ async function performResidentSearch() {
             
             //network error
         } catch (error) {
-            statusDiv.innerHTML = `Error searching: ${error.message}`;
-            resultsDiv.innerHTML = '';
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
             console.error('Search error:', error);
         }
 }
-function performLotSearch() {
-    let section = document.getElementById("searchSection").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLot").value.trim().toLowerCase();
+async function performLotSearch() {
+    const section = document.getElementById("searchSectionRes").value.trim();
+    const lot = document.getElementById("searchLotRes").value.trim();
 
-    let results = Object.values(data).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        if (section && lot && entry.sectionOwn && entry.sectionOwn.toLowerCase() === section && entry.lotOwnNumber && entry.lotOwnNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
+        console.log(section)
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        console.log(lots);
+
+        // Example: store results and display them
+        lotResults = lots;
+        populateTable(lots, 'lots');
+
+    } catch (error) {
+        // statusDiv.innerHTML = `Error searching: ${error.message}`;
+        const tableBody = document.getElementById("resLotTableBody");
+
+        // Clear any previous rows
+        tableBody.innerHTML = "";
+
+        // Create a row
+        const row = document.createElement("tr");
+
+        // Create a single cell that spans all columns
+        const cell = document.createElement("td");
+        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
+        cell.textContent = "No results found";
+        cell.style.textAlign = "center"; // optional: center the text
+
+        // Append the cell to the row, and row to the table body
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        console.error('Search error:', error);
     }
-    lotResults = results;
-    populateTable(results, 'lots');
 }
+
 function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
@@ -206,6 +241,7 @@ function populateTable(filteredData, type) {
         filteredData.forEach((entry, index) => {
             console.log(entry['firstName'])
             const row = document.createElement("tr");
+            row.dataset.rid = entry.rid; // preferred modern way
 
             row.innerHTML = `
                 <td>${entry.firstName || ""}</td>
@@ -213,7 +249,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.lastName || ""}</td>
                 <td>${entry.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${index}', 'resident')">View More</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${entry.rid}', 'resident')">View More</button>
                     <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
@@ -221,29 +257,47 @@ function populateTable(filteredData, type) {
         });
     }
     else if(type === 'lots'){
-        const tableBody = document.getElementById("lotTableBody");
+        const tableBody = document.getElementById("resLotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
-        if (filteredData.length === 0) {
+        // Flatten the data: one entry per resident
+        const flattenedResidents = [];
+        filteredData.forEach(entry => {
+            const lot = entry.lot; // if you need lot info later
+            entry.residents.forEach(resident => {
+                flattenedResidents.push({
+                    ...resident,
+                    lotInfo: lot // optional, store lot if needed
+                });
+            });
+        });
+
+        if (flattenedResidents.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
-        filteredData.forEach((entry, index) => {
+        // Populate table
+        flattenedResidents.forEach((resident, index) => {
+            console.log(resident)
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
+                <td>${resident.firstName || ""}</td>
+                <td>${resident.middleName || ""}</td>
+                <td>${resident.lastName || ""}</td>
+                <td>${resident.burialDate || ""}</td>
+                <td>${resident.lotInfo.section.name || ""}</td>
+                <td>${resident.lotInfo.number || ""}</td>
+                <td>${resident.lotInfo.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
+                    <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate || ""}', '${resident.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
+
     }
     if(type === 'burial'){
         const tableBody = document.getElementById("burialTableBody");
@@ -299,11 +353,12 @@ function populateTable(filteredData, type) {
 async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
+    id = 0;
     if(type === 'resident'){
-        details = residentResults[rowId];
+        // details = residentResults[rowId];
         try {
-            console.log(residentResults[rowId].rid)
-            const response = await fetch(`${API_BASE_URL}/residents/find/${residentResults[rowId].rid}`)
+            console.log(row)
+            const response = await fetch(`${API_BASE_URL}/residents/find/${row}`)
             if (!response.ok) {
                     if (response.status === 404) {
                         throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
@@ -323,6 +378,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             console.log(residents)
             // residentResults = residents;
             details = residents;
+            id = residents.rid;
             
             //network error
         } catch (error) {
@@ -362,7 +418,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
         return;
     }
     currentRow = document.getElementById(rowId);
-    createPopup(details, rowId, type);
+    createPopup(details, rowId, type, id);
 }
 
 function closePopup() {
@@ -371,14 +427,52 @@ function closePopup() {
         popupContainer.remove();
     }
 }
-function createPopup(details, rowId, type) {
+async function getLotInfo(section, lot, partition){
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+        console.log(section)
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        console.log(lots);
+        console.log("test")
+        for(let i = 0; i < lots.length; i++){
+            if (lots[i]['lot'].descriptor === partition){
+                console.log(lots[i]['lot'])
+                return(lots[i]['lot']);
+            }
+        }
+
+    } catch (error) {
+        console.error('Search error:', error);
+    }
+}
+function createPopup(details, rowId, type, id) {
     //Remove existing popup if it exists
     closePopup();
     let popupHTML;
     if(type === 'resident'){
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
+        <div class="popup" id="popup" data-row-id="${rowId}" data-rid="${id}">
             <h3>Details</h3>
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lot.number || ''}"></label>
             <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lot.descriptor || ''}"></label>
@@ -386,9 +480,9 @@ function createPopup(details, rowId, type) {
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
             <label>Date of Birth: <input type="date" id="dob" disabled value="${details.birthDate || ''}"></label>
-            <label>Burial Date: <input type="date" id="dod" disabled value="${details.burialDate || ''}"></label>
+            <label>Burial Date: <input type="date" id="burialDate" disabled value="${details.burialDate || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.deathDate || ''}"></label>
             <label>Vessel: 
                 <select id="vessel" disabled>
                     <option value="urn" ${details.capsule === 'urn' ? 'selected' : ''}>Urn</option>
@@ -396,6 +490,8 @@ function createPopup(details, rowId, type) {
                     <option value="Unknown" ${details.capsule !== 'casket' && details.capsule !== 'urn' ? 'selected' : ''}>Unknown</option>
                 </select>
             </label>
+            <label>Marker: <input type="checkbox" id="marker" disabled ${details.marker ? 'checked' : ''}></label>
+            <label>Foundation: <input type="checkbox" id="foundation" disabled ${details.foundation ? 'checked' : ''}></label>
             <label>Public: <input type="checkbox" id="public" disabled ${details.publicViewable ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
@@ -591,7 +687,7 @@ function createPopup(details, rowId, type) {
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
-function saveChanges(type) {
+async function saveChanges(type) {
     if(type === 'owners'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
@@ -610,22 +706,35 @@ function saveChanges(type) {
     else if (type === 'residents'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (residentResults[rowId]){
-            residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            residentResults[rowId].lotId = document.getElementById("lotPortion").value;
-            residentResults[rowId].section = document.getElementById("section").value;
-            residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            residentResults[rowId].suffix = document.getElementById("suffix").value;
-            residentResults[rowId].dob = document.getElementById("dob").value;
-            residentResults[rowId].dod = document.getElementById("dod").value;
-            residentResults[rowId].vessel = document.getElementById("vessel").value;
-            residentResults[rowId].organization = document.getElementById("org").value;
-            residentResults[rowId].valid = document.getElementById("public").checked;
+        const rid = popup.getAttribute("data-rid");
+        resident = {
+            'rid': parseInt(rid),
+            "firstName": document.getElementById("buriedFirst").value,
+            "middleName": document.getElementById("buriedMiddle").value,
+            "lastName": document.getElementById("buriedLast").value,
+            "birthDate": document.getElementById("dob").value,
+            "burialDate": document.getElementById("dod").value,
+            "deathDate": document.getElementById("burialDate").value,
+            "capsule": document.getElementById("vessel").value,
+            "marker": false,
+            "foundation": false,
+            "publicViewable": document.getElementById("public").checked,
+            "lot": await getLotInfo(document.getElementById("section").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value)
         }
-        console.log(document.getElementById("public").checked);
-        populateTable(residentResults, 'residents'); 
+        const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
+        console.log(element)
+        element.innerHTML = `
+            <td>${resident.firstName || ""}</td>
+            <td>${resident.middleName || ""}</td>
+            <td>${resident.lastName || ""}</td>
+            <td>${resident.burialDate || ""}</td>
+            <td>
+                <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate}', '${resident.rid}', 'resident')">View More</button>
+                <button onclick="deleteEntry('${rid}', 'residents')">Delete</button>
+            </td>
+        `;
+        //     console.log(element)
+        // populateTable(residentResults, 'residents'); 
     }
     else if (type === 'lots'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
@@ -981,3 +1090,88 @@ function performFileSearch() {
         fileTableBody.appendChild(row);
     });
 }
+
+
+//Get sections and update dropdowns
+fetch(API_BASE_URL + "/sections/all")
+  .then(response => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  })
+  .then(data => {
+    selectEl = document.getElementById("resCemSection");
+    selectEl.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.id;
+      option.textContent = section.name;
+      selectEl.appendChild(option);
+    });
+  })
+  .catch(error => {
+    console.error("Error fetching sections:", error);
+    selectEl.innerHTML = '<option value="">Error loading sections</option>';
+  });
+
+  // --- When Section Changes, Load Lots --
+const sectionSelect = document.getElementById("resCemSection");
+const lotSelect = document.getElementById("resLotNum");
+const portionSelect = document.getElementById("resPortion");
+sectionSelect.addEventListener("change", () => {
+  const sectionId = sectionSelect.value;
+  lotSelect.innerHTML = '<option value="">Loading lots...</option>';
+  lotSelect.disabled = true;
+  portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+  portionSelect.disabled = true;
+
+  if (!sectionId) {
+    lotSelect.innerHTML = '<option value="">Select a section first</option>';
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/lots/all`)
+    .then(res => res.json())
+    .then(data => {
+      lotSelect.innerHTML = '<option value="">Select a lot</option>';
+      data.forEach(lot => {
+        const opt = document.createElement("option");
+        opt.value = lot.id;
+        opt.textContent = lot.number;
+        lotSelect.appendChild(opt);
+      });
+      lotSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      lotSelect.innerHTML = '<option value="">Error loading lots</option>';
+    });
+});
+
+// --- When Lot Changes, Load Portions ---
+lotSelect.addEventListener("change", () => {
+  const lotId = lotSelect.value;
+  portionSelect.innerHTML = '<option value="">Loading portions...</option>';
+  portionSelect.disabled = true;
+
+  if (!lotId) {
+    portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+    return;
+  }
+
+  fetch(`${BASE_URL}/lots/${lotId}/portions`)
+    .then(res => res.json())
+    .then(data => {
+      portionSelect.innerHTML = '<option value="">Select a portion</option>';
+      data.forEach(portion => {
+        const opt = document.createElement("option");
+        opt.value = portion.id;
+        opt.textContent = portion.name;
+        portionSelect.appendChild(opt);
+      });
+      portionSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      portionSelect.innerHTML = '<option value="">Error loading portions</option>';
+    });
+});

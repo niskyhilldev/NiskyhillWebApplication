@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add a Lot</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="admin.css" />
     <link rel="stylesheet" href="form.css" />
     <script type="text/javascript" src="admin.js" defer></script>
-    <script type="text/javascript" src="navbar.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
 </head>
 <body>
@@ -91,10 +90,10 @@
     </table>
 
     <div class="search-container">
-        <label for="searchSection">Section:</label>
-        <input type="text" id="searchSection" placeholder="Search section">
-        <label for="searchLot">Lot:</label>
-        <input type="text" id="searchLot" placeholder="Search lot">
+        <label for="searchSectionRes">Section:</label>
+        <input type="text" id="searchSectionRes" placeholder="Search section">
+        <label for="searchLotRes">Lot:</label>
+        <input type="text" id="searchLotRes" placeholder="Search lot">
         <button onclick="performLotSearch()">Search</button>
     </div>
     
@@ -104,11 +103,14 @@
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
-                <th>Suffix</th>
+                <th>Burial Date</th>
+                <th>Section</th>
+                <th>Lot</th>
+                <th>Descriptor</th>
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="lotTableBody">
+        <tbody id="resLotTableBody">
             <!-- Table content will be dynamically populated -->
         </tbody>
     </table>
@@ -128,15 +130,21 @@
 
             <label for="suffix">Suffix:</label>
             <input type="text" id="suffix">
+
+            <label for="resCemSection">Section*:</label>
+            <select id="resCemSection" required>
+                <option value="">Loading...</option>
+            </select>
             
             <label for="resLotNum">Lot Number*:</label>
-            <input type="text" id="resLotNum" required>
-            
+            <select id="resLotNum" required disabled>
+                <option value="">Select a section first</option>
+            </select>
+
             <label for="resPortion">Lot Portion*:</label>
-            <input type="text" id="resPortion" required>
-            
-            <label for="resCemSection">Section*:</label>
-            <input type="text" id="resCemSection" required>
+            <select id="resPortion" required disabled>
+                <option value="">Select a lot first</option>
+            </select>
 
             <label for="dofb">Date of Birth:</label>
             <input type="date" id="dofb">
