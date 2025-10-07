@@ -616,3 +616,11 @@ a {
     font-size: 1.25rem; 
   }
 }
+/* fix for modal/overlay clash with banner */
+#overlay {
+  z-index: 999;
+}
+
+.modal {
+  z-index: 1000;
+}

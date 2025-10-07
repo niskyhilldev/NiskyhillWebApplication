@@ -1,169 +1,136 @@
-.navBar {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: #0d2543;
-  width: 100%;
-  margin: 0;  
-  height: 120px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-
-.topText {
-  color: white;
-  font-size: 40px;
-  font-family: Inria Serif;
-  font-weight: 500;
-  word-wrap: break-word;
-  margin-left: 20px;
-}
-
-.bottomText {
-  color: white;
-  font-size: 22px;
-  font-family: Inria Serif;
-  line-height: 15.86px;
-  letter-spacing: 3.72px;
-  font-weight: 600;
-  word-wrap: break-word;
-  text-align: center;
-  margin-left: 20px;
-  margin-top: 8px;
-}
-
-.topText a {
-  color: white;
-  text-decoration: none;
-}
-
-.bottomText a {
-  color: white;
-  text-decoration: none;
-}
-
-.navBar li {
-  list-style: none;
-}
-
-.navLogo {
-  display: flex;
-  flex-direction: column; /* Stack text vertically */
-  color: white;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  line-height: 1; /* Reduce spacing between lines */
-  text-align: center;
-}
-
-.navLogoFooter{
-  display: flex;
-  flex-direction: column; /* Stack text vertically */
-  color: white;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  line-height: 1; /* Reduce spacing between lines */
-  text-align: center;
-}
-
-.navItems {
-  display: flex;
-  flex-direction: row;
-  gap: 40px; /* Adds space between menu items */
-  list-style: none;
-  align-items: center;
-  text-align: center;
+/* ===== YOUR ORIGINAL STYLES (kept) ===== */
+* {
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
     margin: 0;
     padding: 0;
-    width: 100%; /* Ensures body does not exceed viewport */ 
+    width: 100%;
     overflow-x: hidden;
 }
 
-.menuOption {
-  color: white; 
-  font-size: 1rem; 
-  font-family: Instrument Sans; 
-  font-weight: 700; 
-  line-height: 14.64px; 
-  letter-spacing: 3.60px; 
-  list-style: none;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-}
-
-
-.navOption {
-  color: white; 
-  font-size: 14px; 
-  font-family: Instrument Sans; 
-  font-weight: 700; 
-  line-height: 14.64px; 
-  letter-spacing: 3.60px; 
-  list-style: none;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-}
-
-/* #4: https://prismic.io/blog/css-hover-effects */
-.navOption::after,
-.navOption::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, white, white);
-  bottom: -5px;
-  left: 0;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.4s ease-out;
-}
-
-.navOption::before {
-  top: -5px;
-  transform-origin: left;
-}
-
-.navOption:hover::after,
-.navOption:hover::before {
-  transform: scaleX(1);
-}
-
-.navOption a {
-  color: white;  /* white color for all links inside navOption */
-  text-decoration: none; /* Remove underline */
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.findAGraveButton {
-  width: 154px; 
-  height: 40px; 
-  background: #af8c30; 
-  border-radius: 19px;
-  border-style: solid;
-  border-color: #af8c30;
+.headerTitle {
   color: white;
   font-weight: 700; 
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.3s ease;
+  font-size: 50px;
+  height: 85vh;
+  background-repeat: no-repeat; 
+  background-position: bottom center;
+  background-size: cover; 
+  background-image: url('img/niskyHomepage.JPG');
+  width: 100%; 
+  margin: 0 auto; 
+  padding: 100px; 
+  opacity: 0.8; 
+  font-family: Instrument Sans; 
+  font-weight: bold; 
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.findAGraveButton:hover {
+.headerSmallText {
+  font-size: 30px;
+  font-weight: 400; 
+  margin-top: 175px;
+}
+
+.headerLargeText {
+  font-size: 60px;
+  font-weight: 700;
+}
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
   color: black;
   background: white;
   border-color: black;
 }
+
+.learnMoreButton1 {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton1:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.featuresBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 190px;
+  align-items: center;
+}
+
+.featureContainer {
+  display: inline-block; 
+  text-align: center; 
+  margin: 10px;
+}
+
+.imageWrapper {
+  display: inline-block; 
+  margin: 0 auto; 
+}
+
+.featureText {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.featureTextBottom {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  text-align: center;
+}
+
 
 .learnMoreButton {
     width: 154px; 
@@ -231,256 +198,22 @@ html, body {
   border-color: black;
 }
 
-
-
-* {
-  margin: 0;
-  padding: 0;
-}
-
-.headerTitle {
-  color: white;
-  font-weight: 700; 
-  font-size: 50px;
-  height: 59vh;
-  background-repeat: no-repeat; 
-  background-position: bottom center;
-  background-size: cover; 
-  background-image: url('img/niskyHomepage.JPG');
-  width: 100%; 
-  margin: 0 auto; 
-  padding: 100px; 
-  opacity: 0.8; 
-  font-family: Instrument Sans; 
-  font-weight: bold; 
-  word-wrap: break-word;
+.googleMap {
+  width: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.headerSmallText {
-  font-size: 30px;
-  font-weight: 400; 
-  margin-top: 175px;
-}
-
-.headerLargeText {
-  font-size: 60px;
-  font-weight: 700;
-}
-
-
-.featuresBar {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  background-color: #0d2543;
-  width: 100%;
-  margin: 0;  
-  padding: 20px; 
-  height: 170px;
   align-items: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
-.featureContainer {
-  display: inline-block; 
-  text-align: center; 
-  margin: 10px;
-}
-
-.imageWrapper {
-  display: inline-block; 
-  margin: 0 auto; 
-}
-
-.featureText {
-  color: white;
-  font-size: 20px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: 700;
-  line-height: 1.5;
-  word-wrap: break-word;
-  margin-top: 10px;  /* Space between the image and text */
-  text-align: center;
-}
-
-.featureTextBottom {
-  color: white;
-  font-size: 20px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: 700;
-  line-height: 1.5;
-  word-wrap: break-word;
-  text-align: center;
-}
-
-
-
-.aboutHeader {
-  color: black;
-  font-size: 32px;
-  font-family: Instrument Sans;
-  font-weight: 600;
-  margin-top: 47px;
-  margin-bottom: 10px;
-}
-
-.aboutInfo {
-  color: black;
-  font-size: 16px;
-  font-family: Instrument Sans;
-  font-weight: 400;
-  word-wrap: break-word;
-  margin-bottom: 10px;
-}
-
-.aboutList {
-  color: black;
-  font-size: 16px;
-  font-family: Instrument Sans;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
-
-.aboutSection{
-  width: 50%;
-}
-
-
-.aboutSectionSpacing {
-  margin-top: 45px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-bottom: 65px;
-}
-
-.aboutSectionSpacing2{
-  margin-top: 45px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-bottom: 65px;
-  margin-left: 20px;
-}
-
-
-.footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: #af8c30;
+.googleMap iframe {
   width: 100%;
-  margin: 0;  
-  padding: 20px; 
-  height: 90px;
-  align-items: center;
+  max-width: 420px;
+  height: 350px;
+  border: 0;
 }
-
-.footerColumns {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.footerTop {
-  color: white;
-  font-size: 20px;
-  font-family: Inria Serif;
-  font-weight: 500;
-  word-wrap: break-word;
-  margin-left: 40px;
-  text-align: center;
-  text-decoration: none;
-}
-
-.footerTopTitle {
-  color: white;
-  font-size: 30px;
-  font-family: Inria Serif;
-  font-weight: 500;
-  word-wrap: break-word;
-  margin-left: 40px;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.footerBottom {
-  color: white;
-  font-size: 20px;
-  font-family: Inria Serif;
-  line-height: 15.86px;
-  font-weight: 500;
-  word-wrap: break-word;
-  text-align: center;
-  margin-left: 40px;
-  text-align: center;
-}
-
-/* Dropdown Button */
-/* credit: https://www.w3schools.com/howto/howto_js_dropdown.asp */
-.dropbtn {
-  background-color: #0d2543;
-  color: white;
-  padding: 16px;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
-  display: none;
-  font-size: 20px; 
-  font-family: Inria Serif; 
-}
-
-
-/* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #0d2543;
-}
-
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  position: relative;
-  display: none;
-}
-
-.dropdown{
-  color: white; 
-  font-size: 18px; 
-  font-family: Inria Serif; 
-  font-weight: 700; 
-  line-height: 14.64px; 
-  letter-spacing: 3.60px; 
-  list-style: none;
-  text-align: center;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  color: #0d2543;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  color: #0d2543;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
-
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display:block;}
 
 @media (max-width: 600px){
   .featuresBar{
@@ -489,49 +222,11 @@ html, body {
 }
 
 @media (max-width: 900px){
-  .aboutSectionSpacing{
-    flex-direction: column;
-    margin-bottom: 0;
-    margin-top: 1rem;
-  }
-  .aboutSectionSpacing2{
-    flex-direction: column;
-    margin-bottom: 0;
-    margin-top: 1rem;
-    margin-left: 0;
-  }
-  .aboutSection {
-    width: 100%;
-    align-items: center;
-    text-align: center;
-  }
-  .niskyLogo {
-    width: auto;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-  .googleMap{
-    width: auto;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 15px;
-  }
   .featuresBar{
     height: 200px;
   }
   .featureContainer{
     margin-right: 30px;
-  }
-  .niskyPath {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   .headerTitle {
     width: auto;
@@ -541,31 +236,407 @@ html, body {
     align-items: center;
     text-align: center;
   }
-  .navOption, .findAGraveButton{
-    display: none;
-  }
-  .dropbtn{
-    display: block;
-  }
-  .dropdown{
-    display: inline-block;
-  }
-  .navLogo {
-    width: 50%;
-  }
-  .navLogoFooter{
-    display: none;
-  }
-  .footerColumns {
-    width: 50%;
-  }
-  .footerTop, .footerBottom, .footerTopTitle{
-    font-size: 1.2rem;
-  }
   html, body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 }
 
+.navBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  height: 120px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
+.topText {
+  color: white;
+  font-size: 40px;
+  font-family: Inria Serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  margin-left: 20px;
+}
+
+.bottomText {
+  color: white;
+  font-size: 22px;
+  font-family: Inria Serif;
+  line-height: 15.86px;
+  letter-spacing: 3.72px;
+  font-weight: 1000;
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+.topText a,
+.bottomText a { color: white; text-decoration: none; }
+
+.navBar li { list-style: none; }
+
+.aboutInfo li {
+  margin-left: 2rem;
+}
+
+.niskyLogo {
+    width: 50%;
+    height: 50%;
+}
+
+.navLogo, .navLogoFooter {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  text-align: center;
+}
+
+.navItems {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  list-style: none;
+  align-items: center;
+  text-align: center;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.menuOption {
+  color: white; 
+  font-size: 1rem; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.navOption {
+  color: white; 
+  font-size: 14px; 
+  font-family: Instrument Sans; 
+  font-weight: 700; 
+  line-height: 14.64px; 
+  letter-spacing: 3.60px; 
+  list-style: none;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+/* underline hover */
+.navOption::after,
+.navOption::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, white, white);
+  bottom: -5px;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease-out;
+}
+.navOption::before { top: -5px; transform-origin: left; }
+.navOption:hover::after,
+.navOption:hover::before { transform: scaleX(1); }
+
+a { text-decoration: none; }
+.navOption a { color: white; text-decoration: none; display: block; text-align: center; white-space: nowrap; }
+
+.findAGraveButton {
+  width: 154px; height: 40px; background: #af8c30; border-radius: 19px;
+  border-style: solid; border-color: #af8c30; color: white;
+  font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s ease;
+}
+.findAGraveButton:hover { color: black; background: white; border-color: black; }
+
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+}
+
+.aboutHeader {
+  color: black;
+  font-size: 32px;
+  font-family: Instrument Sans;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.aboutSection{ width: 50%; }
+
+.aboutSectionSpacing {
+  display: flex; flex-direction: row; justify-content: space-around; align-items: center; margin: 2.5rem;
+}
+
+/* Hero section with parallax background */
+.bg-hero {
+  position: relative;
+  background: url("img/nisky.JPG") center/cover no-repeat fixed; 
+  color: #fff;
+  min-height: 45vh;   /* adjust height (70% of viewport) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* dark overlay for readability */
+.bg-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* darker overlay for better text contrast */
+}
+
+/* content sits above overlay */
+.bg-hero .content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+
+/* tighter spacing for this hero */
+.bg-hero .historyHeader {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.bg-hero .historyInfo {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  color: #fff;
+}
+
+
+.footer {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-around;
+  background-color: #af8c30; 
+  width: 100%; 
+  margin: 0; 
+  padding: 20px; 
+  min-height: 90px;
+  height: auto;
+  align-items: center;
+  box-sizing: content-box;
+}
+.footerColumns { display: flex; flex-direction: column; }
+
+.footerTop, .footerBottom, .footerTopTitle {
+  color: white; font-family: Inria Serif; word-wrap: break-word; text-align: center; margin-left: 40px;
+}
+.footerTop { font-size: 20px; font-weight: 500; }
+.footerBottom { font-size: 20px; line-height: 15.86px; font-weight: 500; }
+.footerTopTitle { font-size: 30px; font-weight: 500; margin-bottom: 10px; }
+
+.historyHeader {
+  color: black; font-size: 3.125rem; font-family: Instrument Sans; font-weight: 600; margin-top: 1.775rem; text-align: center;
+}
+.historyInfo {
+  color: black; font-size: 30px; font-family: Inria Serif; font-weight: 400; word-wrap: break-word; margin-bottom: 20px; text-align: center;
+}
+.aboutInfo {
+  color: black; font-size: 16px; font-family: Instrument Sans; font-weight: 400; word-wrap: break-word; margin-bottom: 10px;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Dropdown */
+.dropbtn {
+  background-color: #0d2543; color: white; padding: 16px; font-size: 20px; border: none; cursor: pointer; display: none; font-family: Inria Serif; transition: 0.3s ease;
+}
+.dropbtn:hover, .dropbtn:focus { background-color: #0d2543; }
+.dropdown { position: relative; display: none; color: white; font-size: 18px; font-family: Inria Serif; font-weight: 700; line-height: 14.64px; letter-spacing: 3.60px; list-style: none; text-align: center; }
+.dropdown-content {
+  display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; left: 50%; transform: translateX(-50%);
+}
+.dropdown-content a { color: #0d2543; padding: 12px 16px; text-decoration: none; display: block; }
+.dropdown-content a:hover { background-color: #ddd; }
+.show { display: block; }
+
+/* mobile tweaks for your original layout */
+@media (max-width: 1000px){
+  .aboutSectionSpacing{ flex-direction: column; margin: 0.5rem; }
+  .aboutSection { width: 100%; align-items: center; text-align: center; }
+  .historyImages {
+    width: auto; height: auto; display: flex; flex-direction: column; align-items: center; margin-top: 60px; margin-bottom: 20px;
+  }
+  .navOption, .findAGraveButton{ display: none; }
+  .dropbtn{ display: block; }
+  .dropdown{ display: inline-block; }
+  .navLogo { width: 50%; }
+  .navLogoFooter{ display: none; }
+  .footerColumns { width: 50%; }
+  .footerTop, .footerBottom, .footerTopTitle{ font-size: 1.2rem; }
+}
+
+/* ===== NEW EASTON-STYLE BLOCK LAYOUT (Moravian colors) ===== */
+:root{
+  --nh-navy:#0d2543;
+  --nh-gold:#af8c30;
+  --nh-white:#ffffff;
+  --panel-pad: clamp(2.5rem, 4vw, 6rem);
+  --content-max: 1100px;
+}
+
+/* full-width panels - FIXED */
+.block{
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* Fixed with minmax */
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 2rem);
+  padding: var(--panel-pad) clamp(1rem, 4vw, 4rem);
+  width:100%;
+  max-width: 100%;
+  overflow:hidden;
+  box-sizing: border-box;
+}
+
+/* color variants (Moravian palette) */
+.bg-blue  { background: var(--nh-navy); color:#fff; }
+.bg-gold  { background: var(--nh-gold); color:#fff; }
+.bg-white { background: var(--nh-white); color: var(--nh-navy); }
+
+/* ensure type color flips nicely */
+.bg-blue .aboutHeader,
+.bg-blue .aboutInfo,
+.bg-blue .historyInfo,
+.bg-gold .aboutHeader,
+.bg-gold .aboutInfo,
+.bg-gold .historyInfo { color:#fff; }
+
+.bg-white .aboutHeader,
+.bg-white .aboutInfo,
+.bg-white .historyInfo { color: var(--nh-navy); }
+
+/* media + content - FIXED */
+.block .content{
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 1rem;
+  align-self: center;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.block .media{
+  position:relative;
+  min-height: 340px;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.block .media img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  border-radius: 8px;
+}
+
+/* direction control */
+.block.image-right .media{ order:2; }
+.block.image-right .content{ order:1; }
+
+/* centered panels */
+.block.center{ grid-template-columns: 1fr; text-align:center; }
+.block .narrow{ max-width: 800px; margin: 0 auto; }
+
+/* CTA button */
+.btn-outline{
+  display:inline-block;
+  margin-top: 1rem;
+  padding: .8rem 1.4rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  text-decoration:none;
+  font-weight:700;
+  letter-spacing:.08em;
+  transition: transform .08s ease, background .25s ease, color .25s ease, border-color .25s ease;
+}
+.btn-outline:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+
+/* refine headings in panels */
+.aboutHeader{
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  margin-bottom: .75rem;
+}
+.aboutInfo{
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.7;
+}
+.block .aboutInfo + .aboutInfo{ margin-top: .75rem; }
+
+/* make older wrappers inert on this page */
+.aboutSectionSpacing{ margin:0; }
+.aboutSection{ width:100%; }
+
+/* responsive stacking */
+@media (max-width: 1000px){
+  .block{
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: clamp(2rem, 5vw, 3rem) 1rem;
+  }
+  .block .media{ min-height: 240px; }
+  .block .media img{ border-radius: 6px; }
+  .block.image-right .media,
+  .block.image-right .content{ order: initial; }
+  .historyHeader{ font-size: 2.25rem; }
+  .historyInfo{ font-size: 1.25rem; }
+}
+
+@media (max-width: 600px){
+  .wrapper {
+      text-align: center;
+  }
+
+  .learnMoreButtonAltColor2 {
+      position: absolute;
+      top: 50%;
+  }
+  .learnMoreButton{
+      position: absolute;
+      top: 50%;
+  }
+}
+
+/* subtle separators when same color repeats */
+.bg-blue + .bg-blue,
+.bg-gold + .bg-gold,
+.bg-white + .bg-white{
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+/* optional entrance animation */
+@keyframes fadeUp { from{opacity:0; transform: translateY(12px);} to{opacity:1; transform:none;} }
+.block{ animation: fadeUp .5s ease both; }
