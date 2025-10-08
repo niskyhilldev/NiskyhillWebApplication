@@ -1,204 +1,126 @@
 document.addEventListener('DOMContentLoaded', () => {
   // ===== URL params / API base =====
   const searchParams = new URLSearchParams(window.location.search);
-  const userID  = searchParams.get("id");
-  const qParam  = searchParams.get("q");
-  const latParam = parseFloat(searchParams.get("lat"));
-  const lngParam = parseFloat(searchParams.get("lng"));
+  const userID = searchParams.get("id");
   const API_BASE_URL = 'http://localhost:8080/residents/find';
 
   // ===== Map state =====
   let map;
-  let graveMarkers = {};
-  let sectionLayers = null;
-  let pinLayer;
-  let currentStartMarker = null;
-  let currentPlotMarker  = null;
+  let currentPlotMarker = null;
 
-  // ===== Map init =====
+  // ===== Map Initialization =====
   function initMap() {
-    if (map) return;
+    if (map) return; // prevent reinitialization
 
     const mapEl = document.getElementById('profile-map');
-    if (!mapEl) return;
+    if (!mapEl) {
+      console.error("No #profile-map element found in HTML.");
+      return;
+    }
 
-    map = L.map('profile-map', { crs: L.CRS.Simple, minZoom: -2, zoomSnap: 0.5 });
+    // Leaflet setup with cemetery image overlay
+    map = L.map('profile-map', { 
+      crs: L.CRS.Simple, 
+      minZoom: -2, 
+      zoomSnap: 0.5 
+    });
 
-    const bounds = [[0, 0], [1000, 2000]];
+    const bounds = [[0, 0], [1000, 2000]]; // adjust if your map is different
     L.imageOverlay('map-1.png', bounds).addTo(map);
     map.fitBounds(bounds);
     map.setView([300, 1000], map.getZoom() + 2);
 
-    function fixMapSizeSoon(){ setTimeout(() => map.invalidateSize(), 200); }
-    map.whenReady(fixMapSizeSoon);
-    window.addEventListener('resize', fixMapSizeSoon);
-
-    pinLayer = L.layerGroup().addTo(map);
-
-    if (window.NiskySections) {
-      sectionLayers = window.NiskySections();
+    function fixMapSize() { 
+      setTimeout(() => map.invalidateSize(), 300); 
     }
-
-    window.graveLocations = window.graveLocations || {
-      "Section I Plot 12": { coords: [332, 846], name: "Section I Plot 12", dates: "Section I", section: "I" }
-    };
-
-    graveMarkers = {};
-    Object.keys(window.graveLocations).forEach(k => {
-      const d = window.graveLocations[k];
-      const marker = L.marker(d.coords).bindPopup(`<b>${d.name || k}</b>${d.dates ? `<br>${d.dates}` : ''}`);
-      graveMarkers[k] = marker;
-      if (d.name && d.name !== k) graveMarkers[d.name] = marker;
-    });
+    map.whenReady(fixMapSize);
+    window.addEventListener('resize', fixMapSize);
   }
 
-  // ===== Utils =====
-  function normalizeSection(raw) {
-    if (!raw) return '';
-    let s = String(raw).trim();
-    s = s.replace(/^section\s+/i, '');
-    s = s.replace(/[\s-]+/g, '');
-    return s.toUpperCase();
-  }
-
-  function clearAllSectionLayers() {
-    if (!map || !sectionLayers) return;
-    Object.values(sectionLayers).forEach(({route, outline}) => {
-      try { if (route) map.removeLayer(route); } catch(e){}
-      try { if (outline) map.removeLayer(outline); } catch(e){}
-    });
-  }
-
-  function showStartMarker(code) {
-    if (!pinLayer) return;
-    const entry = sectionLayers?.[code];
-    if (!entry) return;
-
-    const bounds = entry.outline?.getBounds?.();
-    if (!bounds) return;
-
-    const startLL = bounds.getNorthWest();
-    if (currentStartMarker) pinLayer.removeLayer(currentStartMarker);
-    currentStartMarker = L.marker([startLL.lat, startLL.lng]).bindPopup(`Start of Section ${code}`);
-    pinLayer.addLayer(currentStartMarker);
-  }
-
-  function showPlotMarker(coords, labelHtml) {
-    if (!pinLayer || !coords) return;
-    if (currentPlotMarker) pinLayer.removeLayer(currentPlotMarker);
-    currentPlotMarker = L.marker(coords).bindPopup(labelHtml || 'Plot');
-    pinLayer.addLayer(currentPlotMarker);
-    currentPlotMarker.openPopup();
-  }
-
-  function highlightSection(code) {
-    if (!map || !sectionLayers || !code) return;
-    clearAllSectionLayers();
-    const entry = sectionLayers[code];
-    if (!entry) return;
-
-    if (entry.route) entry.route.addTo(map);
-    if (entry.outline) entry.outline.addTo(map);
-    showStartMarker(code);
-  }
-
-  function focusTargetByKey(key) {
-    if (!map) return false;
-    const dict = window.graveLocations || {};
-    let d = dict[key];
-    if (!d) {
-      const matchKey = Object.keys(dict).find(k => k.toLowerCase() === key.toLowerCase());
-      if (matchKey) d = dict[matchKey];
-    }
-    if (!d) return false;
-
-    showPlotMarker(d.coords, `<b>${d.name || key}</b>`);
-    map.setView(d.coords, map.getZoom());
-    if (d.section) highlightSection(normalizeSection(d.section));
-    return true;
-  }
-
-  function focusFromContext() {
-    if (!map) return;
-    if (qParam && focusTargetByKey(qParam)) return;
-    if (!Number.isNaN(latParam) && !Number.isNaN(lngParam)) {
-      showPlotMarker([latParam, lngParam], 'Selected location');
-      map.setView([latParam, lngParam], map.getZoom());
-      return;
-    }
-
-    const sectionTxt = (document.getElementById('section')?.textContent || '').trim();
-    const lotTxt = (document.getElementById('lot')?.textContent || '').trim();
-    const norm = normalizeSection(sectionTxt);
-    if (norm) highlightSection(norm);
-    if (norm && lotTxt) {
-      const key = `Section ${norm} Plot ${lotTxt}`;
-      focusTargetByKey(key);
-    }
-  }
-
-  // ===== Data fetch and render =====
-  if (!userID) {
-    initMap();
-    setTimeout(focusFromContext, 150);
-  } else {
-    fetchResident();
-  }
-
+  // ===== Fetch Resident Info =====
   async function fetchResident() {
     try {
       const response = await fetch(`${API_BASE_URL}/${encodeURIComponent(userID)}`);
-      if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const resident = await response.json();
       displayResident(resident);
     } catch (err) {
-      console.error('Error fetching resident:', err);
-      initMap();
-      setTimeout(focusFromContext, 150);
+      console.error("Error fetching resident data:", err);
+      initMap(); // still show map even if fetch fails
     }
   }
 
+  // ===== Display Resident Info and Plot Marker =====
   function displayResident(resident) {
-    const name = [resident.firstName, resident.middleName, resident.lastName].filter(Boolean).join(' ');
+    const name = [resident.firstName, resident.middleName, resident.lastName]
+      .filter(Boolean)
+      .join(' ');
     const formattedDate = formatDate(resident.burialDate);
-    const lot = resident?.lot || {};
-    const sectionName = lot?.section?.name;
-    const lotNumber = lot?.number;
 
+    const lot = resident?.lot || {};
+    const sectionName = lot?.section?.name || "—";
+    const lotNumber = lot?.number || "—";
+    const lotOwner = lot?.owner || "—";
+    const lotDescriptor = lot?.descriptor || "—";
+    const residentID = resident?.rid || "—";
+
+    // Update text fields in the profile
+    document.getElementById("name").textContent = name || "Not available";
+    document.getElementById("burialDate").textContent = formattedDate || "Not available";
+    document.getElementById("section").textContent = sectionName;
+    document.getElementById("lot").textContent = lotNumber;
+    document.getElementById("lotOwner").textContent = lotOwner;
+    document.getElementById("lotDescriptor").textContent = lotDescriptor;
+    document.getElementById("residentID").textContent = residentID;
+
+    // Initialize map if needed
+    initMap();
+
+    // ===== Get coordinates from backend =====
     const x = lot?.mapXCord ?? null;
     const y = lot?.mapYCord ?? null;
-    const plotCoords = (x != null && y != null) ? [y, x] : null;
+    const coords = (x != null && y != null) ? [y, x] : null; // Leaflet expects [lat(y), lng(x)]
 
-    document.getElementById("name").textContent = name || 'Not available';
-    document.getElementById("burialDate").textContent = formattedDate || 'Not available';
-    document.getElementById("section").textContent = sectionName || 'Not available';
-    document.getElementById("lot").textContent = lotNumber ?? 'Not available';
-    document.getElementById("lotOwner").textContent = lot?.owner || 'Not available';
-    document.getElementById("lotDescriptor").textContent = lot?.descriptor || 'Not available';
-    document.getElementById("residentID").textContent = resident?.rid || 'Not available';
-
-    initMap();
-    setTimeout(() => {
-      if (sectionName) highlightSection(normalizeSection(sectionName));
-      if (plotCoords) {
-        showPlotMarker(plotCoords, `<b>${name}</b><br>Plot ${lotNumber}`);
-        map.setView(plotCoords, map.getZoom());
-      } else {
-        const key = `Section ${normalizeSection(sectionName)} Plot ${lotNumber}`;
-        focusTargetByKey(key);
-      }
-    }, 150);
+    // ===== Drop a marker if coords exist =====
+    if (coords) {
+      if (currentPlotMarker) map.removeLayer(currentPlotMarker);
+      currentPlotMarker = L.marker(coords)
+        .addTo(map)
+        .bindPopup(`
+          <b>${name}</b><br>
+          Section ${sectionName}, Plot ${lotNumber}<br>
+          Owner: ${lotOwner}
+        `)
+        .openPopup();
+      map.setView(coords, map.getZoom());
+    } else {
+      console.warn("No coordinates found for this resident.");
+      map.setView([300, 1000], map.getZoom());
+    }
   }
 
+  // ===== Helper: Format Burial Date =====
   function formatDate(dateStr) {
-    if (!dateStr) return '';
+    if (!dateStr) return "";
     try {
       const date = new Date(dateStr);
-      return isNaN(date.getTime()) ? dateStr : date.toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
+      return isNaN(date.getTime())
+        ? dateStr
+        : date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
     } catch {
       return dateStr;
     }
+  }
+
+  // ===== Start Execution =====
+  if (userID) {
+    fetchResident();
+  } else {
+    console.warn("No resident ID found in URL.");
+    initMap();
   }
 });
