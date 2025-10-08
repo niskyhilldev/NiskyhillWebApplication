@@ -10,15 +10,24 @@
     const section4Route = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[325,950],[321,1327],[326,1342],[333,1356],[340,1371],[356,1383],[367,1389],[369,1391]], { color: 'goldenrod', weight: 3 });
     const sectionFRoute = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[342,939],[332,944],[323,945],[320,944]], { color: 'purple', weight: 3 });
     const sectionIRoute = L.polyline([[477,882],[387,882],[387,877]], { color: 'orange', weight: 3 });
-    const sectionARoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[293,635],[300,616],[303,608],[301,598],[297,585],[293,570],[296,553],[300,539],[308,515],[313,492],[314,483],[312,356],[317,356]], { color: 'darkorange', weight: 3 });
+    const sectionARoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[293,635],[300,616],[303,608],[301,598],[297,585],[293,570],[296,553],[300,539],[308,515],[313,492],[314,483],[314,356],[317,356]], { color: 'darkorange', weight: 3 });
     const sectionA1Route = L.polyline([ ...sectionARoute.getLatLngs(), [374,356], [374,364] ], { color: 'royalblue', weight: 3 });
     const sectionA2Route = L.polyline([ ...sectionARoute.getLatLngs(), [374,356], [374,351] ], { color: 'mediumvioletred', weight: 3 });
     const sectionA3Route = L.polyline([ ...sectionARoute.getLatLngs(), [413,357], [411,361] ], { color: 'seagreen', weight: 3 });
     const sectionA4Route = L.polyline([ ...sectionARoute.getLatLngs(), [413,357], [413,353] ], { color: 'darkorange', weight: 3 });
     const sectionA5Route = L.polyline([ ...sectionARoute.getLatLngs(), [456,356], [460,361] ], { color: 'crimson', weight: 3 });
     const sectionA6Route = L.polyline([ ...sectionARoute.getLatLngs(), [456,356], [460,354] ], { color: 'blue', weight: 3 });
+    const sectionKRoute = L.polyline([[477,882],[465, 895]], { color: 'green', weight: 3 });
+    const sectionUnionRoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[328,697]], {color: 'red', weight: 3});
+    const sectionERoute = L.polyline([[477,882],[301, 882], [301, 878]], { color: 'brown', weight: 3 });
+    const sectionGRoute = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[323,950],[323, 1147],[319, 1147]], { color: 'navy', weight: 3 });
+    const section1Route = L.polyline([[477,882],[470,890],[471,1076],[466,1083],[460,1088],[448,1101],[440,1109],[435,1116]], { color: 'orange', weight: 3 });
+    const sectionCRoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[266,638],[264,634],[261,622],[257,613],[256,604],[256,483]], { color: 'slateblue', weight: 3 });
+    const sectionD6Route = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[325,950],[321,1327], [318, 1330]] , { color: 'darkred', weight: 3});
 
-    /* Outlines (unchanged) */
+
+
+/* Outlines (unchanged) */
     const sectionLOutline = L.polygon([[332,958],[334,956],[338,954],[344,954],[346,955],[350,958],[355,970],[364,988],[380,1009],[400,1027],[420,1046],[430,1060],[435,1075],[437,1088],[435,1098],[433,1104],[424,1116],[410,1123],[395,1125],[387,1124],[370,1118],[353,1100],[348,1090],[341,1075],[334,1050],[328,1025],[327,1000],[328,975]], { color: 'blue', fillColor: '#89cff0', fillOpacity: 0.5, weight: 2 }).bindPopup("Section L Outline");
     const sectionKOutline = L.polygon([[462,892],[468,899],[470,904],[470,912],[470,925],[469,950],[469,1075],[465,1080],[458,1082],[452,1078],[449,1072],[445,1065],[442,1060],[438,1053],[431,1047],[392,1014],[375,995],[362,971],[353,952],[353,935],[358,921],[369,906],[394,889],[411,886],[429,887],[455,888]], { color: 'green', fillColor: '#b0f2b6', fillOpacity: 0.5, weight: 2 }).bindPopup("Section K Outline");
     const sectionIOutline = L.polygon([[480,705],[480,877],[327,877],[327,715],[333,712],[337,708],[338,706],[340,704]], { color: 'orange', fillColor: '#ffd699', fillOpacity: 0.5, weight: 2 }).bindPopup("Section I Outline");
@@ -49,7 +58,7 @@
       'I':  { route: sectionIRoute, outline: sectionIOutline },
       '4':  { route: section4Route, outline: section4Outline },
 
-      'A':  { outline: sectionAOutline },
+      'A':  { route: sectionARoute, outline: sectionAOutline },
       'A1': { route: sectionA1Route, outline: sectionA1Outline },
       'A2': { route: sectionA2Route, outline: sectionA2Outline },
       'A3': { route: sectionA3Route, outline: sectionA3Outline },
@@ -57,17 +66,17 @@
       'A5': { route: sectionA5Route, outline: sectionA5Outline },
       'A6': { route: sectionA6Route, outline: sectionA6Outline },
 
-      'K':  { outline: sectionKOutline },
-      'E':  { outline: sectionEOutline },
-      '1':  { outline: section1Outline },
+      'K':  { route: sectionKRoute, outline: sectionKOutline },
+      'E':  { route: sectionERoute, outline: sectionEOutline },
+      '1':  { route: section1Route, outline: section1Outline },
       'O':  { outline: sectionOOutline },
       'D':  { outline: sectionDOutline },
-      'G':  { outline: sectionGOutline },
+      'G':  { route: sectionGRoute, outline: sectionGOutline },
       'D5': { outline: sectionD5Outline },
-      'D6': { outline: sectionD6Outline },
-      'C':  { outline: sectionCOutline },
+      'D6': { route: sectionD6Route, outline: sectionD6Outline },
+      'C':  { route: sectionCRoute, outline: sectionCOutline },
       'B':  { outline: sectionBOutline },
-      'UNION': { outline: unionCemeteryOutline }
+      'UNION': { route: sectionUnionRoute, outline: unionCemeteryOutline }
     };
   };
 })();

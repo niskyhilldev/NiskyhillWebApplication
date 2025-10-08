@@ -38,6 +38,20 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(`Clicked at: [${lat.toFixed(0)}, ${lng.toFixed(0)}]`);
   });
 
+    // ===== DEBUG: Show all sections (comment out when not needed) =====
+  // Show ALL sections:
+  // Build section layer catalog from sections.js
+  if (window.NiskySections) {
+    sectionLayers = window.NiskySections();
+  }
+
+  // ===== DEBUG: Show all sections (comment out when not needed) =====
+  // Show ALL sections:
+   Object.values(sectionLayers || {}).forEach(({route, outline}) => { if(route) route.addTo(map); if(outline) outline.addTo(map); });
+  
+  // Show SPECIFIC section (change 'D' to whatever section you want to test):
+  // if(sectionLayers?.['C']) { const s = sectionLayers['C']; if(s.route) s.route.addTo(map); if(s.outline) s.outline.addTo(map); }
+  // ====
 
  
     // Build section layer catalog from sections.js
