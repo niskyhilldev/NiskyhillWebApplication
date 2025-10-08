@@ -33,6 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     map.whenReady(fixMapSizeSoon);
     window.addEventListener('resize', fixMapSizeSoon);
 
+    map.on('click', function(e) {
+    const { lat, lng } = e.latlng;
+    console.log(`Clicked at: [${lat.toFixed(0)}, ${lng.toFixed(0)}]`);
+  });
+
+
  
     // Build section layer catalog from sections.js
     if (window.NiskySections) {
@@ -275,4 +281,6 @@ function extractPlotCoords(resident) {
       return dateStr;
     }
   }
+
+  
 });
