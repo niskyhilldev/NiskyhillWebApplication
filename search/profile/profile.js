@@ -33,9 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     map.whenReady(fixMapSizeSoon);
     window.addEventListener('resize', fixMapSizeSoon);
 
-    // Manage our pins (start + plot) together
-    pinLayer = L.layerGroup().addTo(map);
-
+ 
     // Build section layer catalog from sections.js
     if (window.NiskySections) {
       sectionLayers = window.NiskySections(); // { 'I': {route, outline}, ... }
@@ -88,34 +86,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return [first.lat, first.lng];
   }
 
-  function showStartMarker(code) {
-    if (!pinLayer) return;
-    let startLL = getRouteStartLatLng(code);
-
-    // fallback: NW corner of outline if no route
-    if (!startLL && sectionLayers?.[code]?.outline?.getBounds) {
-      const nw = sectionLayers[code].outline.getBounds().getNorthWest();
-      startLL = [nw.lat, nw.lng];
-    }
-    if (!startLL) return;
-
-    if (currentStartMarker) {
-      try { pinLayer.removeLayer(currentStartMarker); } catch(e){}
-    }
-    currentStartMarker = L.marker(startLL).bindPopup(`Start of Section ${code}`);
-    pinLayer.addLayer(currentStartMarker);
-  }
+ 
 
   function showPlotMarker(coords, labelHtml) {
-    if (!pinLayer || !coords) return;
-    if (currentPlotMarker) {
-      try { pinLayer.removeLayer(currentPlotMarker); } catch(e){}
-    }
-    currentPlotMarker = L.marker(coords).bindPopup(labelHtml || 'Plot');
-    pinLayer.addLayer(currentPlotMarker);
-    currentPlotMarker.openPopup();
+  if (!map || !coords) return;
+  
+  // Remove old plot marker if it exists
+  if (currentPlotMarker) {
+    try { map.removeLayer(currentPlotMarker); } catch(e){}
   }
-
+  
+  // Simple Leaflet syntax: create marker, add to map, bind popup
+  currentPlotMarker = L.marker(coords).addTo(map).bindPopup(labelHtml || 'Plot');
+  currentPlotMarker.openPopup();
+}
   function highlightSection(code) {
     if (!map || !sectionLayers || !code) return;
     clearAllSectionLayers();
@@ -142,29 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Read plot coords from resident payload (supports camelCase or snake_case)
 // Read plot coords from resident payload (supports camelCase or snake_case)
+//for exampel john hein is "mapXCord":399,"mapYCord":895," and id 2685
 function extractPlotCoords(resident) {
   const lot = resident?.lot;
   if (!lot) return null;
 
-  // Check for mapXCord and mapYCord (your actual backend fields)
-  if (Number.isFinite(lot.mapYCord) && Number.isFinite(lot.mapXCord)) {
+  // Simple check for mapXCord and mapYCord
+  if (lot.mapXCord != null && lot.mapYCord != null) {
     return [lot.mapYCord, lot.mapXCord]; // [lat(y), lng(x)]
-  }
-
-  // CamelCase (other variations)
-  if (Number.isFinite(lot.yPixelCord) && Number.isFinite(lot.xPixelCord)) {
-    return [lot.yPixelCord, lot.xPixelCord];
-  }
-  if (Number.isFinite(lot.yCordCord) && Number.isFinite(lot.xPixelCord)) {
-    return [lot.yCordCord, lot.xPixelCord];
-  }
-
-  // snake_case (if backend uses it)
-  if (Number.isFinite(lot.y_pixel_cord) && Number.isFinite(lot.x_pixel_cord)) {
-    return [lot.y_pixel_cord, lot.x_pixel_cord];
-  }
-  if (Number.isFinite(lot.y_cord_cord) && Number.isFinite(lot.x_pixel_cord)) {
-    return [lot.y_cord_cord, lot.x_pixel_cord];
   }
 
   return null;
@@ -192,6 +161,8 @@ function extractPlotCoords(resident) {
     if (code) highlightSection(code);
     return true;
   }
+
+
 
   function focusFromContext() {
     if (!map) return;
@@ -272,6 +243,7 @@ function extractPlotCoords(resident) {
 
       // 2) Exact plot from backend coords
       const plotCoords = extractPlotCoords(resident);
+      console.log('Extracted plot coords:', plotCoords); // Debug line
       if (plotCoords) {
         const label = `<b>${name || 'Plot'}</b>${formattedDate ? `<br>${formattedDate}` : ''}`;
         showPlotMarker(plotCoords, label);
