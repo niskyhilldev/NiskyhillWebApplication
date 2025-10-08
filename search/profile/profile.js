@@ -141,28 +141,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Read plot coords from resident payload (supports camelCase or snake_case)
-  function extractPlotCoords(resident) {
-    const lot = resident?.lot;
-    if (!lot) return null;
+// Read plot coords from resident payload (supports camelCase or snake_case)
+function extractPlotCoords(resident) {
+  const lot = resident?.lot;
+  if (!lot) return null;
 
-    // CamelCase (preferred)
-    if (Number.isFinite(lot.yPixelCord) && Number.isFinite(lot.xPixelCord)) {
-      return [lot.yPixelCord, lot.xPixelCord]; // [lat(y), lng(x)]
-    }
-    if (Number.isFinite(lot.yCordCord) && Number.isFinite(lot.xPixelCord)) {
-      return [lot.yCordCord, lot.xPixelCord];
-    }
-
-    // snake_case (if backend uses it)
-    if (Number.isFinite(lot.y_pixel_cord) && Number.isFinite(lot.x_pixel_cord)) {
-      return [lot.y_pixel_cord, lot.x_pixel_cord];
-    }
-    if (Number.isFinite(lot.y_cord_cord) && Number.isFinite(lot.x_pixel_cord)) {
-      return [lot.y_cord_cord, lot.x_pixel_cord];
-    }
-
-    return null;
+  // Check for mapXCord and mapYCord (your actual backend fields)
+  if (Number.isFinite(lot.mapYCord) && Number.isFinite(lot.mapXCord)) {
+    return [lot.mapYCord, lot.mapXCord]; // [lat(y), lng(x)]
   }
+
+  // CamelCase (other variations)
+  if (Number.isFinite(lot.yPixelCord) && Number.isFinite(lot.xPixelCord)) {
+    return [lot.yPixelCord, lot.xPixelCord];
+  }
+  if (Number.isFinite(lot.yCordCord) && Number.isFinite(lot.xPixelCord)) {
+    return [lot.yCordCord, lot.xPixelCord];
+  }
+
+  // snake_case (if backend uses it)
+  if (Number.isFinite(lot.y_pixel_cord) && Number.isFinite(lot.x_pixel_cord)) {
+    return [lot.y_pixel_cord, lot.x_pixel_cord];
+  }
+  if (Number.isFinite(lot.y_cord_cord) && Number.isFinite(lot.x_pixel_cord)) {
+    return [lot.y_cord_cord, lot.x_pixel_cord];
+  }
+
+  return null;
+}
 
   // Case-insensitive lookup into the inline dataset; adds plot pin, keeps start pin
   function focusTargetByKey(key){
