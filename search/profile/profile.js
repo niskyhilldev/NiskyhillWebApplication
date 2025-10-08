@@ -88,23 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return [first.lat, first.lng];
   }
 
-  function showStartMarker(code) {
-    if (!pinLayer) return;
-    let startLL = getRouteStartLatLng(code);
-
-    // fallback: NW corner of outline if no route
-    if (!startLL && sectionLayers?.[code]?.outline?.getBounds) {
-      const nw = sectionLayers[code].outline.getBounds().getNorthWest();
-      startLL = [nw.lat, nw.lng];
-    }
-    if (!startLL) return;
-
-    if (currentStartMarker) {
-      try { pinLayer.removeLayer(currentStartMarker); } catch(e){}
-    }
-    currentStartMarker = L.marker(startLL).bindPopup(`Start of Section ${code}`);
-    pinLayer.addLayer(currentStartMarker);
-  }
 
   function showPlotMarker(coords, labelHtml) {
     if (!pinLayer || !coords) return;
