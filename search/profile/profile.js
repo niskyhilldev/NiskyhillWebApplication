@@ -109,8 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (entry.route)   entry.route.addTo(map);
     if (entry.outline) entry.outline.addTo(map);
 
-    // Add a start/entrance pin for this section
-    showStartMarker(code);
 
     // Optional fade-in if you added CSS for .fade-in
     const rEl = entry.route?.getElement?.();   if (rEl) rEl.classList.add('fade-in');
