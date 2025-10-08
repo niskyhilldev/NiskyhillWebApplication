@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`${API_BASE_URL}/search?name=${(name)}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
             lastQuery = name;
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displaySearchResults(); //display first page
 
         } catch (error) {
-            statusDiv.innerHTML = `Error searching: ${error.message}`;
+            statusDiv.innerHTML = `Error while searching. Please try a different name or spelling.`;
             console.error('Search error:', error);
         }
     }
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      style="border: 1px solid #ddd; padding: 15px; margin: 0 20px 10px 20px; border-radius: 5px; background-color: #f9f9f9; cursor: pointer; border-color: black;">
                     <h3>${formatName(resident)}</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div><strong>Death Date:</strong> ${formatDate(resident.burialDate)}</div>
+                        <div><strong>Burial Date:</strong> ${formatDate(resident.burialDate)}</div>
                         <div><strong>Section:</strong> ${resident.sectionName || ''}</div>
                         <div><strong>Resident ID:</strong> ${resident.rid || ''}</div>
                         <div><strong>Lot:</strong> ${resident.lotNumber || ''}</div>
