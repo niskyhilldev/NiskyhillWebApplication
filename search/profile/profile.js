@@ -226,35 +226,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function displayResident(resident){
-    const name = [resident.firstName, resident.middleName, resident.lastName].filter(Boolean).join(' ');
-    const formattedDate = formatDate(resident.burialDate);
+  function displayResident(resident) {
+  const name = [resident.firstName, resident.middleName, resident.lastName].filter(Boolean).join(' ');
+  const formattedDate = formatDate(resident.burialDate);
+  const lot = resident?.lot || {};
+  const sectionName = lot?.section?.name;
+  const lotNumber = lot?.number;
 
-    const lot = resident?.lot || {};
-    const sectionName = lot?.section?.name;
-    const lotNumber   = lot?.number;
 
-    document.getElementById("name").textContent          = name || 'Not available';
-    document.getElementById("burialDate").textContent    = formattedDate || 'Not available';
-    document.getElementById("section").textContent       = sectionName || 'Not available';
-    document.getElementById("lot").textContent           = (lotNumber ?? 'Not available');
-    document.getElementById("lotOwner").textContent      = lot?.owner || 'Not available';
-    document.getElementById("lotDescriptor").textContent = lot?.descriptor || 'Not available';
-    document.getElementById("residentID").textContent    = resident?.rid || 'Not available';
+  const x = lot?.mapXCord ?? null;
+  const y = lot?.mapYCord ?? null;
+  const plotCoords = (x != null && y != null) ? [y, x] : null; // Leaflet expects [lat, lng]
 
-    initMap();
-    setTimeout(() => {
-      // 1) Highlight section (adds start pin)
-      if (sectionName) highlightSection(normalizeSection(sectionName));
+  // ===== Update the visible text fields =====
+  document.getElementById("name").textContent = name || 'Not available';
+  document.getElementById("burialDate").textContent = formattedDate || 'Not available';
+  document.getElementById("section").textContent = sectionName || 'Not available';
+  document.getElementById("lot").textContent = lotNumber ?? 'Not available';
+  document.getElementById("lotOwner").textContent = lot?.owner || 'Not available';
+  document.getElementById("lotDescriptor").textContent = lot?.descriptor || 'Not available';
+  document.getElementById("residentID").textContent = resident?.rid || 'Not available';
 
-      // 2) Exact plot from backend coords
-      const plotCoords = extractPlotCoords(resident);
-      if (plotCoords) {
-        const label = `<b>${name || 'Plot'}</b>${formattedDate ? `<br>${formattedDate}` : ''}`;
-        showPlotMarker(plotCoords, label);
-        map.setView(plotCoords, map.getZoom());
-        return; // Done: we have precise coords
-      }
+  // ===== Initialize and update map =====
+  initMap();
+  setTimeout(() => {
+    if (sectionName) highlightSection(normalizeSection(sectionName));
+
+    if (plotCoords) {
+      showPlotMarker(plotCoords, `<b>${name}</b><br>Plot ${lotNumber}`);
+      map.setView(plotCoords, map.getZoom());
+    } else {
+      // fallback: try to look up section + lot name
+      const key = `Section ${normalizeSection(sectionName)} Plot ${lotNumber}`;
+      focusTargetByKey(key);
+    }
+  }, 150);
+}
+
 
       // 3) Fallback: try inline dataset key
       if (sectionName && lotNumber != null) {
