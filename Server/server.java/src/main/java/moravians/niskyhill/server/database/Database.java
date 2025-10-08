@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import moravians.niskyhill.server.exceptions.HttpStatus;
@@ -162,80 +163,86 @@ public class Database {
     }
 
     public List<Resident> searchResidents(String name) throws HttpStatusException {
-        final String q = """
-            SELECT *
-            FROM resident r
-                JOIN lot l ON r.lot = l.lid
-                JOIN section s ON l.section = s.sid
-            WHERE to_tsvector(
-                'english',
+    final String q = """
+        SELECT *
+        FROM resident r
+            JOIN lot l ON r.lot = l.lid
+            JOIN section s ON l.section = s.sid
+        WHERE to_tsvector(
+                'simple',
                 COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
-                )
-                @@ to_tsquery('english', ?)
-            ORDER BY ts_rank(
-                to_tsvector(
-                    'english',
-                    COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
-                ),
-                to_tsquery('english', ?)
-            ) DESC;
+            )
+            @@ to_tsquery('simple', ?)
+        ORDER BY ts_rank(
+            to_tsvector(
+                'simple',
+                COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
+            ),
+            to_tsquery('simple', ?)
+        ) DESC;
         """;
 
-        List<Resident> residents = new ArrayList<>();
+    List<Resident> residents = new ArrayList<>();
 
-        try (PreparedStatement ps = connection.prepareStatement(q)) {
-            String trimmed = name.trim();
-            int lastSpace = trimmed.lastIndexOf(' ');
+    try (PreparedStatement ps = connection.prepareStatement(q)) {
+        String trimmed = name.trim();
 
-            String queryString;
-            if (lastSpace == -1) { // only one word
-                queryString = trimmed + ":*";
-            } else { // separate all words except last, use & between them, last word gets :* for prefix
-                String beforeLast = trimmed.substring(0, lastSpace).replace(" ", " & ");
-                String lastWord = trimmed.substring(lastSpace + 1);
-                queryString = beforeLast + " & " + lastWord + ":*";
-            }
+        // Split into words
+        String[] words = trimmed.split("\\s+");
 
-            ps.setString(1, queryString);
-            ps.setString(2, queryString);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Resident resident = new Resident(
-                        rs.getLong("rid"),
-                        rs.getString("firstname"),
-                        rs.getString("middlename"),
-                        rs.getString("lastname"),
-                        rs.getString("birth_date"),
-                        rs.getString("burial_date"),
-                        rs.getString("death_date"),
-                        rs.getString("capsule"),
-                        rs.getBoolean("marker"),
-                        rs.getBoolean("foundation"),
-                        rs.getBoolean("viewable"),
-                        new Lot(
-                            rs.getLong("lid"),
-                            rs.getString("number"),
-                            rs.getString("descriptor"),
-                            rs.getString("owner"),
-                            rs.getLong("x_pixel_cord"),
-                            rs.getLong("y_pixel_cord"),
-                            new Section(
-                                rs.getLong("sid"),
-                                rs.getString("name"),
-                                rs.getString("map")
-                            )
-                        )
-                    );
-                    residents.add(resident);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.printf("Error executing query: %s\n", e.getMessage());
-            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to retrieve residents", e);
+        // Build query string: all words joined by AND (&), only last gets :*
+        String queryString;
+        if (words.length == 1) {
+            queryString = words[0] + ":*"; // single word = prefix
+        } else {
+            String beforeLast = String.join(" & ", Arrays.copyOf(words, words.length - 1));
+            String last = words[words.length - 1] + ":*";
+            queryString = beforeLast + " & " + last;
         }
-        return residents;
+
+        ps.setString(1, queryString);
+        ps.setString(2, queryString);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Resident resident = new Resident(
+                    rs.getLong("rid"),
+                    rs.getString("firstname"),
+                    rs.getString("middlename"),
+                    rs.getString("lastname"),
+                    rs.getString("birth_date"),
+                    rs.getString("burial_date"),
+                    rs.getString("death_date"),
+                    rs.getString("capsule"),
+                    rs.getBoolean("marker"),
+                    rs.getBoolean("foundation"),
+                    rs.getBoolean("viewable"),
+                    new Lot(
+                        rs.getLong("lid"),
+                        rs.getString("number"),
+                        rs.getString("descriptor"),
+                        rs.getString("owner"),
+                        rs.getLong("x_pixel_cord"),
+                        rs.getLong("y_pixel_cord"),
+                        new Section(
+                            rs.getLong("sid"),
+                            rs.getString("name"),
+                            rs.getString("map")
+                        )
+                    )
+                );
+                residents.add(resident);
+            }
+        }
+    } catch (SQLException e) {
+        System.err.printf("Error executing query: %s%n", e.getMessage());
+        throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to retrieve residents", e);
     }
+
+    return residents;
+}
+
+
 
     public List<Lot> getAllLots() throws HttpStatusException {
         final String q = """
