@@ -131,7 +131,7 @@ function extractPlotCoords(resident) {
 
   // Simple check for mapXCord and mapYCord
   if (lot.mapXCord != null && lot.mapYCord != null) {
-    return [lot.mapYCord, lot.mapXCord]; // [lat(y), lng(x)]
+    return [lot.mapXCord, lot.mapYCord]; // [lat(y), lng(x)]
   }
 
   return null;
