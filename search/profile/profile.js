@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Map state =====
   let map;
   let graveMarkers = {};
-  let sectionLayers = null; // filled by sections.js
-  let pinLayer;                 // holds dynamic pins for start + plot
+  let sectionLayers = null;  // filled by sections.js
+  let pinLayer;              // holds dynamic pins for start + plot
   let currentStartMarker = null;
   let currentPlotMarker  = null;
 
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     map = L.map('profile-map', { crs: L.CRS.Simple, minZoom: -2, zoomSnap: 0.5 });
 
     const bounds = [[0, 0], [1000, 2000]];
-    L.imageOverlay('map-1.png', bounds).addTo(map);   // png is in same folder as profile.html
+    L.imageOverlay('map-1.png', bounds).addTo(map); // PNG lives next to profile.html
     map.fitBounds(bounds);
     map.setView([300, 1000], map.getZoom() + 2);
 
@@ -33,37 +33,26 @@ document.addEventListener('DOMContentLoaded', () => {
     map.whenReady(fixMapSizeSoon);
     window.addEventListener('resize', fixMapSizeSoon);
 
-    // OPTIONAL: click-to-capture coords when mapping new plots
-    // map.on('click', (e) => {
-    //   const { lat, lng } = e.latlng;
-    //   console.log(`Clicked coords: [${lat.toFixed(0)}, ${lng.toFixed(0)}]`);
-    // });
-
-    // layer to manage our pins (start + plot) together
+    // Manage our pins (start + plot) together
     pinLayer = L.layerGroup().addTo(map);
-
-    // OPTIONAL: permanent site entrance marker
-    // L.marker([478, 882]).addTo(map).bindPopup("Main Entrance");
 
     // Build section layer catalog from sections.js
     if (window.NiskySections) {
       sectionLayers = window.NiskySections(); // { 'I': {route, outline}, ... }
     }
 
-    // Optional inline dataset (use grave-data.js for full set)
+    // Optional inline dataset for quick manual checks
     window.graveLocations = window.graveLocations || {
       "Section I Plot 12": { coords: [332, 846], name: "Section I Plot 12", dates: "Section I", section: "I" }
     };
 
-    // Prepare reusable markers (key by both the exact key and the display name, if different)
+    // Prebuild dataset markers
     graveMarkers = {};
     Object.keys(window.graveLocations).forEach(k => {
       const d = window.graveLocations[k];
       const marker = L.marker(d.coords).bindPopup(`<b>${d.name || k}</b>${d.dates ? `<br>${d.dates}` : ''}`);
       graveMarkers[k] = marker;
-      if (d.name && d.name !== k) {
-        graveMarkers[d.name] = marker; // second handle for lookup
-      }
+      if (d.name && d.name !== k) graveMarkers[d.name] = marker;
     });
   }
 
@@ -84,15 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Find a good "start" point for a section’s route
   function getRouteStartLatLng(code) {
     if (!sectionLayers) return null;
     const entry = sectionLayers[code];
     if (!entry || !entry.route || !entry.route.getLatLngs) return null;
 
     let pts = entry.route.getLatLngs();
-    // If polyline has multiple rings (unlikely here), use the first
     if (Array.isArray(pts) && Array.isArray(pts[0]) && pts[0].lat === undefined) {
-      pts = pts[0];
+      pts = pts[0]; // handle multi-rings
     }
     const first = Array.isArray(pts) ? pts[0] : null;
     if (!first) return null;
@@ -103,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pinLayer) return;
     let startLL = getRouteStartLatLng(code);
 
-    // fallback: NW corner of outline if route missing
+    // fallback: NW corner of outline if no route
     if (!startLL && sectionLayers?.[code]?.outline?.getBounds) {
       const nw = sectionLayers[code].outline.getBounds().getNorthWest();
       startLL = [nw.lat, nw.lng];
@@ -136,23 +125,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (entry.route)   entry.route.addTo(map);
     if (entry.outline) entry.outline.addTo(map);
 
-    // NEW: add a start/entrance pin for this section
+    // Add a start/entrance pin for this section
     showStartMarker(code);
 
-    // Optional fade-in (if you added the CSS)
+    // Optional fade-in if you added CSS for .fade-in
     const rEl = entry.route?.getElement?.();   if (rEl) rEl.classList.add('fade-in');
     const oEl = entry.outline?.getElement?.(); if (oEl) oEl.classList.add('fade-in');
   }
 
   function parseSectionFromKey(key) {
     if (!key) return '';
-    // Handles "Section I Plot 12", "Section A 1 Plot 7", etc.
     const m = key.match(/section\s+([A-Za-z0-9\s-]+)/i);
     if (!m) return '';
     return normalizeSection(m[1]);
   }
 
-  // Case-insensitive plot focus; adds plot pin (keeps start pin)
+  // Read plot coords from resident payload (supports camelCase or snake_case)
+  function extractPlotCoords(resident) {
+    const lot = resident?.lot;
+    if (!lot) return null;
+
+    // CamelCase (preferred)
+    if (Number.isFinite(lot.yPixelCord) && Number.isFinite(lot.xPixelCord)) {
+      return [lot.yPixelCord, lot.xPixelCord]; // [lat(y), lng(x)]
+    }
+    if (Number.isFinite(lot.yCordCord) && Number.isFinite(lot.xPixelCord)) {
+      return [lot.yCordCord, lot.xPixelCord];
+    }
+
+    // snake_case (if backend uses it)
+    if (Number.isFinite(lot.y_pixel_cord) && Number.isFinite(lot.x_pixel_cord)) {
+      return [lot.y_pixel_cord, lot.x_pixel_cord];
+    }
+    if (Number.isFinite(lot.y_cord_cord) && Number.isFinite(lot.x_pixel_cord)) {
+      return [lot.y_cord_cord, lot.x_pixel_cord];
+    }
+
+    return null;
+  }
+
+  // Case-insensitive lookup into the inline dataset; adds plot pin, keeps start pin
   function focusTargetByKey(key){
     if (!map) return false;
     const dict = window.graveLocations || {};
@@ -162,49 +174,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!d) {
       const lower = key.toLowerCase();
       const matchKey = Object.keys(dict).find(k => k.toLowerCase() === lower);
-      if (matchKey) {
-        actualKey = matchKey;
-        d = dict[matchKey];
-      }
+      if (matchKey) { actualKey = matchKey; d = dict[matchKey]; }
     }
     if (!d) return false;
 
     const label = `<b>${d.name || actualKey}</b>${d.dates ? `<br>${d.dates}` : ''}`;
-
-    // Drop/replace the plot pin only (leave the start pin intact)
     showPlotMarker(d.coords, label);
-
-    // Center map on the plot
     map.setView(d.coords, map.getZoom());
 
-    // Highlight the section too
     const code = d.section ? normalizeSection(d.section) : parseSectionFromKey(actualKey);
     if (code) highlightSection(code);
-
     return true;
   }
 
   function focusFromContext() {
     if (!map) return;
 
-    // 1) explicit query key (?q=Section I Plot 12)
+    // ?q=Section I Plot 12
     if (qParam) {
       const maybeSection = parseSectionFromKey(qParam);
       if (maybeSection) highlightSection(maybeSection);
       if (focusTargetByKey(qParam)) return;
     }
 
-    // 2) explicit coordinates (?lat=...&lng=...)
+    // ?lat=...&lng=...
     if (!Number.isNaN(latParam) && !Number.isNaN(lngParam)) {
-      if (currentPlotMarker) { try { pinLayer.removeLayer(currentPlotMarker); } catch(e){} }
-      currentPlotMarker = L.marker([latParam, lngParam]).bindPopup('Selected location');
-      pinLayer.addLayer(currentPlotMarker);
-      currentPlotMarker.openPopup();
+      showPlotMarker([latParam, lngParam], 'Selected location');
       map.setView([latParam, lngParam], map.getZoom());
       return;
     }
 
-    // 3) DOM fields: Section + Lot -> highlight + try plot key
+    // DOM fields: Section + Lot
     const sectionTxt = (document.getElementById('section')?.textContent || '').trim();
     const lotTxt     = (document.getElementById('lot')?.textContent || '').trim();
     const norm = normalizeSection(sectionTxt);
@@ -214,79 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = `Section ${norm} Plot ${lotTxt}`;
       if (focusTargetByKey(key)) return;
     }
-  }
-
-  // ====== DEV BLOCKS (comment/uncomment to use while testing) ======
-
-  // --- DEV 1: Show sections without backend ---
-  // if (true) { // ← set to false or comment this whole block to disable
-  //   initMap(); // build the map
-  //   if (window.NiskySections && !sectionLayers) sectionLayers = window.NiskySections();
-  //   if (sectionLayers) {
-  //     // OPTION A: draw ALL sections (routes + outlines)
-  //     Object.values(sectionLayers).forEach(({ route, outline }) => {
-  //       if (outline) outline.addTo(map);
-  //       if (route)   route.addTo(map);
-  //     });
-  //
-  //     // OPTION B: draw only specific sections
-  //     // ['I','A1','F','4','K'].forEach(code => {
-  //     //   const e = sectionLayers[code.toUpperCase()];
-  //     //   if (!e) return;
-  //     //   if (e.outline) e.outline.addTo(map);
-  //     //   if (e.route)   e.route.addTo(map);
-  //     // });
-  //   }
-  //   return; // skip the API while testing
-  // }
-
-  // --- DEV 2: Simulate a search result (section + plot) ---
-  // if (true) { // ← set to false or comment to disable
-  //   initMap(); // build the map (uses map-1.png)
-  //   // Example 1: Section I, Plot 12
-  //   devTestSearch('I', 12);
-  //
-  //   // Example 2: Section A1, Plot 7
-  //   // devTestSearch('A1', 7);
-  //
-  //   // Example 3: Section F only (no plot in graveLocations yet)
-  //   // devTestSearch('F', null);
-  //
-  //   return; // skip the API while testing
-  // }
-
-  function devTestSearch(sectionCode, lotNumber, fallbackCoords = null) {
-    initMap();
-    if (window.NiskySections && !sectionLayers) sectionLayers = window.NiskySections();
-
-    const norm = normalizeSection(sectionCode);
-
-    // Update the on-page fields so you can visually confirm
-    if (document.getElementById('section')) document.getElementById('section').textContent = norm || '—';
-    if (document.getElementById('lot'))     document.getElementById('lot').textContent     = (lotNumber ?? '—');
-
-    // Highlight the section outline/route (places start pin too)
-    highlightSection(norm);
-
-    // Try exact plot via graveLocations
-    if (lotNumber != null) {
-      const key = `Section ${norm} Plot ${lotNumber}`;
-      if (focusTargetByKey(key)) return; // dataset had the plot
-    }
-
-    // Otherwise drop a pin at the section center (or fallback coords)
-    let coords = fallbackCoords;
-    if (!coords && sectionLayers?.[norm]?.outline) {
-      const center = sectionLayers[norm].outline.getBounds().getCenter();
-      coords = [center.lat, center.lng];
-    }
-    if (!coords) coords = [300, 1000]; // last-resort center
-
-    showPlotMarker(coords, lotNumber != null
-      ? `Section ${norm} Plot ${lotNumber} (test)`
-      : `Section ${norm} (test)`
-    );
-    map.setView(coords, map.getZoom());
   }
 
   // ===== Data fetch and render =====
@@ -334,17 +261,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initMap();
     setTimeout(() => {
-      // Highlight section (adds start pin)
+      // 1) Highlight section (adds start pin)
       if (sectionName) highlightSection(normalizeSection(sectionName));
 
-      // Try to focus exact plot via dataset (adds/updates plot pin)
+      // 2) Exact plot from backend coords
+      const plotCoords = extractPlotCoords(resident);
+      if (plotCoords) {
+        const label = `<b>${name || 'Plot'}</b>${formattedDate ? `<br>${formattedDate}` : ''}`;
+        showPlotMarker(plotCoords, label);
+        map.setView(plotCoords, map.getZoom());
+        return; // Done: we have precise coords
+      }
+
+      // 3) Fallback: try inline dataset key
       if (sectionName && lotNumber != null) {
         const key = `Section ${normalizeSection(sectionName)} Plot ${lotNumber}`;
         if (!focusTargetByKey(key)) {
-          // If no exact plot in dataset, we at least keep the section highlighted
+          // 4) Last resort: drop pin at section center
+          const code = normalizeSection(sectionName);
+          const center = sectionLayers?.[code]?.outline?.getBounds?.().getCenter?.();
+          if (center) showPlotMarker([center.lat, center.lng], `Section ${code} (center)`);
         }
       } else {
-        // Otherwise try context (q=..., lat/lng, etc.)
+        // Or rely on URL/DOM context
         focusFromContext();
       }
     }, 150);
