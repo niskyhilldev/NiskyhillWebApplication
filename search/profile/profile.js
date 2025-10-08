@@ -120,20 +120,25 @@ document.addEventListener('DOMContentLoaded', () => {
   currentPlotMarker = L.marker(coords).addTo(map).bindPopup(labelHtml || 'Plot');
   currentPlotMarker.openPopup();
 }
-  function highlightSection(code) {
-    if (!map || !sectionLayers || !code) return;
-    clearAllSectionLayers();
-    const entry = sectionLayers[code];
-    if (!entry) return;
-
-    if (entry.route)   entry.route.addTo(map);
-    if (entry.outline) entry.outline.addTo(map);
-
-
-    // Optional fade-in if you added CSS for .fade-in
-    const rEl = entry.route?.getElement?.();   if (rEl) rEl.classList.add('fade-in');
-    const oEl = entry.outline?.getElement?.(); if (oEl) oEl.classList.add('fade-in');
+function highlightSection(code) {
+  if (!map || !sectionLayers || !code) return;
+  clearAllSectionLayers();
+  const entry = sectionLayers[code];
+  if (!entry) {
+    console.log('Section not found:', code);
+    return;
   }
+  console.log(`Section ${code}:`, { hasRoute: !!entry.route, hasOutline: !!entry.outline });
+  if (entry.route) {
+    entry.route.addTo(map);
+    console.log(`Route displayed for section ${code}`);
+  }
+  
+  if (entry.outline) entry.outline.addTo(map);
+
+  const rEl = entry.route?.getElement?.();   if (rEl) rEl.classList.add('fade-in');
+  const oEl = entry.outline?.getElement?.(); if (oEl) oEl.classList.add('fade-in');
+}
 
   function parseSectionFromKey(key) {
     if (!key) return '';
