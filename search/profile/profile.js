@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     map.fitBounds(bounds);
     map.setView([350, 1000], map.getZoom() + 1);
 
+      L.marker([478, 882]).addTo(map).bindPopup("Main Entrance");
+
     function fixMapSizeSoon(){ setTimeout(() => map.invalidateSize(), 200); }
     map.whenReady(fixMapSizeSoon);
     window.addEventListener('resize', fixMapSizeSoon);
