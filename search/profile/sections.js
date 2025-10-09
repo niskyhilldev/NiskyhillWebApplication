@@ -23,8 +23,12 @@
     const sectionGRoute = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[323,950],[323, 1147],[319, 1147]], { color: 'navy', weight: 3 });
     const section1Route = L.polyline([[477,882],[470,890],[471,1076],[466,1083],[460,1088],[448,1101],[440,1109],[435,1116]], { color: 'orange', weight: 3 });
     const sectionCRoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[266,638],[264,634],[261,622],[257,613],[256,604],[256,483]], { color: 'slateblue', weight: 3 });
+    const sectionD5Route = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[325,950],[323, 1256], [320, 1256]] , { color: 'darkred', weight: 3});
+  
     const sectionD6Route = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[325,950],[321,1327], [318, 1330]] , { color: 'darkred', weight: 3});
-
+    const sectionDRoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[285, 647]], { color: 'darkgreen', weight: 3 });
+    const sectionBRoute = L.polyline([[477,882],[387,882],[373,851],[365,827],[362,797],[358,760],[351,739],[328,706],[310,700],[297,699],[294,675],[288,660],[287,654],[293,635],[300,616],[303,608],[301,598],[297,585],[293,570],[296,553],[300,539],[308,515],[313,492],[314,483],[316, 294],[313, 294]], { color: 'mediumseagreen', weight: 3 });
+    const sectionORoute = L.polyline([[477,882],[387,882],[382,887],[378,892],[374,896],[370,901],[366,905],[362,910],[359,914],[355,919],[353,924],[350,929],[349,935],[348,938],[325,950],[322, 1184],[329, 1200]], { color: 'teal', weight: 3 });
 
 
 /* Outlines (unchanged) */
@@ -69,13 +73,13 @@
       'K':  { route: sectionKRoute, outline: sectionKOutline },
       'E':  { route: sectionERoute, outline: sectionEOutline },
       '1':  { route: section1Route, outline: section1Outline },
-      'O':  { outline: sectionOOutline },
-      'D':  { outline: sectionDOutline },
+      'O':  { route: sectionORoute, outline: sectionOOutline },
+      'D':  { route: sectionDRoute, outline: sectionDOutline },
       'G':  { route: sectionGRoute, outline: sectionGOutline },
-      'D5': { outline: sectionD5Outline },
+      'D5': { route: sectionD5Route, outline: sectionD5Outline },
       'D6': { route: sectionD6Route, outline: sectionD6Outline },
       'C':  { route: sectionCRoute, outline: sectionCOutline },
-      'B':  { outline: sectionBOutline },
+      'B':  { route: sectionBRoute, outline: sectionBOutline },
       'UNION': { route: sectionUnionRoute, outline: unionCemeteryOutline }
     };
   };

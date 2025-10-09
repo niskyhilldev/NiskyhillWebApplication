@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //  Object.values(sectionLayers || {}).forEach(({route, outline}) => { if(route) route.addTo(map); if(outline) outline.addTo(map); });
   
   // Show SPECIFIC section (change 'D' to whatever section you want to test):
-  // if(sectionLayers?.['C']) { const s = sectionLayers['C']; if(s.route) s.route.addTo(map); if(s.outline) s.outline.addTo(map); }
+  // if(sectionLayers?.['D5']) { const s = sectionLayers['D5']; if(s.route) s.route.addTo(map); if(s.outline) s.outline.addTo(map); }
   // ====
 
  
