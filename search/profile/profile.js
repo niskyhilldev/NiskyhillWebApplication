@@ -22,12 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapEl = document.getElementById('profile-map');
     if (!mapEl) return;
 
-    map = L.map('profile-map', { crs: L.CRS.Simple, minZoom: -2, zoomSnap: 0.5 });
-
+  map = L.map('profile-map', { 
+    crs: L.CRS.Simple, 
+    minZoom: 0, 
+    maxZoom: 2,
+    zoomSnap: 0.5,
+    maxBounds: [[0, 0], [1000, 2000]],  // Restrict panning to image bounds
+    maxBoundsViscosity: 1.0  // Makes the boundary hard (1.0) vs soft (0.0)
+  });
     const bounds = [[0, 0], [1000, 2000]];
     L.imageOverlay('map-1.png', bounds).addTo(map); // PNG lives next to profile.html
     map.fitBounds(bounds);
-    map.setView([300, 1000], map.getZoom() + 2);
+    map.setView([350, 1000], map.getZoom() + 1);
 
     function fixMapSizeSoon(){ setTimeout(() => map.invalidateSize(), 200); }
     map.whenReady(fixMapSizeSoon);
