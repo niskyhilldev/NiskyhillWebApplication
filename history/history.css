@@ -501,6 +501,8 @@ a { text-decoration: none; }
   --nh-white:#ffffff;
   --panel-pad: clamp(2.5rem, 4vw, 6rem);
   --content-max: 1100px;
+  --section-min: clamp(340px, 44vh, 560px);
+  --measure: 65ch; /* ideal paragraph width */
 }
 
 /* full-width panels - FIXED */
@@ -624,3 +626,45 @@ a { text-decoration: none; }
 /* optional entrance animation */
 @keyframes fadeUp { from{opacity:0; transform: translateY(12px);} to{opacity:1; transform:none;} }
 .block{ animation: fadeUp .5s ease both; }
+
+
+/* Compact variant: shrink overall box + image height for short blurbs */
+.block.compact{
+  /* trim vertical padding */
+  padding-top: clamp(.75rem, 2.5vw, 2rem);
+  padding-bottom: clamp(.75rem, 2.5vw, 2rem);
+
+  /* drop the panel min-height only for this section */
+  --section-min: clamp(220px, 28vh, 380px);
+}
+
+/* Make content top-align (instead of centered) so it feels intentional */
+.block.compact .content{
+  align-content: start;     /* top */
+  gap: .6rem;               /* slightly tighter spacing */
+}
+
+/* Keep the image from towering over the short text */
+.block.compact .media{
+  min-height: clamp(220px, 28vh, 360px);
+}
+
+/* Slightly narrower text for a tighter look */
+.block.compact .aboutInfo{
+  max-width: 58ch;
+}
+
+/* On mobile, let it flow naturally */
+@media (max-width: 1000px){
+  .block.compact{
+    padding-top: clamp(1rem, 3vw, 1.5rem);
+    padding-bottom: clamp(1rem, 3vw, 1.5rem);
+  }
+  .block.compact .content,
+  .block.compact .media{
+    min-height: auto;
+  }
+  .block.compact .aboutInfo{
+    max-width: 100%;
+  }
+}
