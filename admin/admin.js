@@ -861,25 +861,7 @@ function toggleFileForm() {
 document.getElementById('newResidentForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const firstName = document.getElementById('fName').value;
-    const middleName = document.getElementById('mName').value;
-    const lastName = document.getElementById('lName').value;
-    const lotNumber = document.getElementById('resLotNum').value;
-    const lotPortion = document.getElementById('resPortion').value;
-    const section = document.getElementById('resCemSection').value;
-    // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
-    // const organization = document.getElementById('resOrganization').value;
-    const dob = document.getElementById('dofb').value;
-    const dod = document.getElementById('dofd').value;
-    const vessel = document.getElementById('vesselType').value;
-    const valid = document.getElementById('valid').checked;
-    
+   
     const portion = document.getElementById('resPortion')
 
     newResident = {
@@ -897,23 +879,23 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     }
 
     console.log(newResident)
-    // Add new entry to the data object
-    data[newId] = {
-        lotNumber: lotNumber,
-        lotId: lotPortion,
-        section: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        dob: dob,
-        dod: dod,
-        vessel: vessel,
-        valid: valid,
-        owns: false,
-        // notes: notes,
-        organization: organization
-    };
 
+
+    fetch(`${API_BASE_URL}/residents/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newResident) 
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        }
+    );
 
     
     // Clear the form fields
