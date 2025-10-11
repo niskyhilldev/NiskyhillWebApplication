@@ -241,7 +241,7 @@ function populateTable(filteredData, type) {
         filteredData.forEach((entry, index) => {
             console.log(entry['firstName'])
             const row = document.createElement("tr");
-            row.dataset.rid = entry.rid; // preferred modern way
+            row.dataset.rid = entry.rid; 
 
             row.innerHTML = `
                 <td>${entry.firstName || ""}</td>
@@ -250,7 +250,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.burialDate || ""}</td>
                 <td>
                     <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${entry.rid}', 'resident')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
+                    <button onclick="deleteEntry('${entry.rid}', 'residents')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -979,8 +979,18 @@ document.getElementById("showFileFormBtn").addEventListener("click", () => {
 
 function deleteEntry(id, type) {
     if(type === 'residents'){
-        residentResults[id] = null;
-        populateTable(residentResults, 'residents');
+        fetch(`${API_BASE_URL}/residents/delete/${id}`, {
+            method: "DELETE",
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("Success:", result);
+            })
+            .catch(error => {
+                window.alert("Error deleting resident" + error);
+        });
+        const row = document.querySelector(`tr[data-rid="${id}"]`);
+        row.remove();
     }
     else if(type === 'owners'){
         ownerResults[id] = null;
