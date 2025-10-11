@@ -880,6 +880,23 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     const vessel = document.getElementById('vesselType').value;
     const valid = document.getElementById('valid').checked;
     
+    const portion = document.getElementById('resPortion')
+
+    newResident = {
+        firstName: document.getElementById('fName').value,
+        middleName: document.getElementById('mName').value,
+        lastName: document.getElementById('lName').value,
+        birthDate: document.getElementById('dofb').value,
+        burialDate: document.getElementById('burialDate').value,
+        deathDate: document.getElementById('dofd').value,
+        capsule: document.getElementById('vesselType').value,
+        marker: document.getElementById('marker').checked,
+        foundation: document.getElementById('foundation').checked,
+        publicViewable: document.getElementById('valid').checked,
+        lid: portion.options[portion.selectedIndex].getAttribute("data-lid")
+    }
+
+    console.log(newResident)
     // Add new entry to the data object
     data[newId] = {
         lotNumber: lotNumber,
@@ -896,6 +913,7 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
         // notes: notes,
         organization: organization
     };
+
 
     
     // Clear the form fields
@@ -1190,6 +1208,7 @@ lotSelect.addEventListener("change", () => {
         const opt = document.createElement("option");
         opt.value = portion.lot.descriptor;
         opt.textContent = portion.lot.descriptor;
+        opt.setAttribute('data-lid', portion.lot.lid);
         portionSelect.appendChild(opt);
       });
       portionSelect.disabled = false;
