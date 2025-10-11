@@ -1125,7 +1125,7 @@ fetch(API_BASE_URL + "/sections/all")
     selectEl.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
-      option.value = section.id;
+      option.value = section.name;
       option.textContent = section.name;
       selectEl.appendChild(option);
     });
@@ -1151,14 +1151,15 @@ sectionSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${API_BASE_URL}/lots/all`)
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
     .then(res => res.json())
     .then(data => {
+        // console.log(data)
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
       data.forEach(lot => {
         const opt = document.createElement("option");
-        opt.value = lot.id;
-        opt.textContent = lot.number;
+        opt.value = lot.lot.number;
+        opt.textContent = lot.lot.number;
         lotSelect.appendChild(opt);
       });
       lotSelect.disabled = false;
@@ -1172,6 +1173,7 @@ sectionSelect.addEventListener("change", () => {
 // --- When Lot Changes, Load Portions ---
 lotSelect.addEventListener("change", () => {
   const lotId = lotSelect.value;
+  const sectionId = sectionSelect.value;
   portionSelect.innerHTML = '<option value="">Loading portions...</option>';
   portionSelect.disabled = true;
 
@@ -1180,14 +1182,14 @@ lotSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${BASE_URL}/lots/${lotId}/portions`)
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
     .then(res => res.json())
     .then(data => {
       portionSelect.innerHTML = '<option value="">Select a portion</option>';
       data.forEach(portion => {
         const opt = document.createElement("option");
-        opt.value = portion.id;
-        opt.textContent = portion.name;
+        opt.value = portion.lot.descriptor;
+        opt.textContent = portion.lot.descriptor;
         portionSelect.appendChild(opt);
       });
       portionSelect.disabled = false;
