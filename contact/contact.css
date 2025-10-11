@@ -403,7 +403,7 @@ fieldset {
 /* Hero section with parallax background */
 .bg-hero {
   position: relative;
-  background: url("img/redTrees.jpg") center/cover no-repeat fixed; 
+  background: url("img/redTrees.jpg") center/cover no-repeat; 
   color: #fff;
   min-height: 45vh;   /* adjust height (70% of viewport) */
   display: flex;
