@@ -117,8 +117,11 @@
 
     <h2 style="text-align:center;">Add a Resident</h2>
     <button id="showResidentFormBtn" class="showButton">+</button>
-    <div id="addResidentForm" style="display: none;">
+    <div id="addResidentForm" style="display: none; position: relative;">
+
         <form id="newResidentForm">
+            <button type="button" class="close-btn" id="closeResidentFormBtn">&times;</button>
+
             <label for="fName">First Name*:</label>
             <input type="text" id="fName" required>
             

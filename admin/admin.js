@@ -1210,3 +1210,8 @@ lotSelect.addEventListener("change", () => {
       portionSelect.innerHTML = '<option value="">Error loading portions</option>';
     });
 });
+
+document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
+    document.getElementById("addResidentForm").style.display = "none";
+    document.getElementById('showResidentFormBtn').style.display = "block";
+});
