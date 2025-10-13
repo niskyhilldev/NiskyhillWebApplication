@@ -48,7 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displaySearchResults() {
-        if (!allResidents || allResidents.length === 0) {
+        const selectedSection = sectionFilter.value;
+        const filteredResidents = selectedSection 
+            ? allResidents.filter(r => r.sectionName === selectedSection)
+            : allResidents;
+
+        if (!filteredResidents || filteredResidents.length === 0) {
             resultsDiv.innerHTML = `
                 <div style="text-align: center; color: #666; padding: 20px;">
                     <p>No residents found${lastQuery ? ` for "${lastQuery}"` : ''}.</p>
@@ -56,10 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             return;
         }
-            const selectedSection = sectionFilter.value;
-            const filteredResidents = selectedSection 
-                ? allResidents.filter(r => r.sectionName === selectedSection)
-                : allResidents;
 
         const total = filteredResidents.length;
         const totalPages = Math.ceil(total / pageSize);
