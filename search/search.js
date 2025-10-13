@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let allResidents = [];
     let lastQuery = '';
 
+    const sectionFilter = document.getElementById('sectionFilter');
+
+    sectionFilter.addEventListener('change', () => {
+        currentPage = 1;
+        displaySearchResults();
+    })
+
     nameInput.addEventListener('input', () => {
         currentPage = 1; //reset the page on each new search
         debouncedSearch(nameInput.value);
@@ -49,12 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             return;
         }
+            const selectedSection = sectionFilter.value;
+            const filteredResidents = selectedSection 
+                ? allResidents.filter(r => r.sectionName === selectedSection)
+                : allResidents;
 
-        const total = allResidents.length;
+        const total = filteredResidents.length;
         const totalPages = Math.ceil(total / pageSize);
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
-        const residents = allResidents.slice(start, end);
+        const residents = filteredResidents.slice(start, end);
 
         let html = `<h2 style='margin: 0 20px 10px 20px;'>Search Results (${total} found)</h2>`;
 
