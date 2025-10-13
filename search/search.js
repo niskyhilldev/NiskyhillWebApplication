@@ -7,12 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
     let allResidents = [];
-    let lastQuery = '';
 
     const sectionFilter = document.getElementById('sectionFilter');
 
     sectionFilter.addEventListener('change', () => {
-        currentPage = 1;
+        currentPage = 1; //reset the page on each new search
         displaySearchResults();
     })
 
@@ -37,12 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
-            lastQuery = name;
             statusDiv.innerHTML = '';
             displaySearchResults(); //display first page
 
         } catch (error) {
-            statusDiv.innerHTML = `Error while searching. Please try a different name or spelling.`;
             console.error('Search error:', error);
         }
     }
@@ -56,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!filteredResidents || filteredResidents.length === 0) {
             resultsDiv.innerHTML = `
                 <div style="text-align: center; color: #666; padding: 20px;">
-                    <p>No residents found${lastQuery ? ` for "${lastQuery}"` : ''}.</p>
+                    <p>No residents found.</p>
                 </div>
             `;
             return;
