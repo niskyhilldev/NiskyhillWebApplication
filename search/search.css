@@ -251,11 +251,6 @@ a {
   text-align: center;
 }
 
-.search-form {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
 
 /* Dropdown Button */
 /* credit: https://www.w3schools.com/howto/howto_js_dropdown.asp */
@@ -323,7 +318,6 @@ a {
   --padding: 14px;
   border-radius: 28px;
   background: #f6f6f6;
-  transition: box-shadow 0.25s;
   width: 80%;
   margin-left: 10%;
 }
@@ -338,8 +332,20 @@ a {
   height: 4rem;
 }
 
-.search:focus-within{
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.75);
+.sectionFilter{
+    width: 25%;
+    font-size: 16px;
+    border-radius: 28px;
+    background: #f6f6f6;
+    cursor: pointer;
+    min-width: 200px;
+    margin-left: 10%;
+    font-family: 'Lexend', sans-serif;
+    color: #333333; 
+    border: none;
+    height: 2rem;
+    padding: 14px;  
+    margin-bottom: 15px; 
 }
 
 .search-input::placeholder,
@@ -348,6 +354,12 @@ a {
 }
 
 .search > div {
+  display: flex;
+  align-items: center;
+  padding-left: var(--padding);
+}
+
+.sectionFilter > div {
   display: flex;
   align-items: center;
   padding-left: var(--padding);
@@ -412,17 +424,45 @@ a {
   }
 
   @media (max-width: 500px){
-    .input-title{
+    .input-title, .input-title2{
       text-align: center;
     }
+    .sectionFilter{
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
+}
+
+
+.input-title{
+  display: inline-block; 
+  width: 80%; 
+  margin-left: 10%; 
+  padding: 0.6rem; 
+  font-weight: bold; 
+  font-size: 1.5rem; 
+  font-family: 'Instrument Sans', sans-serif;
+}
+
+
+.input-title2{
+  display: inline-block; 
+  width: 80%; 
+  margin-left: 10%; 
+  padding: 0.6rem; 
+  font-weight: bold; 
+  font-size: 1.2rem; 
+  font-family: 'Instrument Sans', sans-serif;
 }
 
 
   /* Hero section with parallax background */
 .bg-hero {
   position: relative;
-  background: url("img/nisky.jpg") center/cover no-repeat fixed; 
+  background: url("img/nisky.jpg") center/cover no-repeat; 
   color: #fff;
   min-height: 45vh;   /* adjust height (70% of viewport) */
   display: flex;
@@ -540,5 +580,4 @@ a {
     font-size: 1.25rem; 
   }
 }
-  
-  
+

@@ -7,7 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
     let allResidents = [];
-    let lastQuery = '';
+
+    const sectionFilter = document.getElementById('sectionFilter');
+
+    sectionFilter.addEventListener('change', () => {
+        currentPage = 1; //reset the page on each new search
+        displaySearchResults();
+    })
 
     nameInput.addEventListener('input', () => {
         currentPage = 1; //reset the page on each new search
@@ -30,31 +36,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
-            lastQuery = name;
             statusDiv.innerHTML = '';
             displaySearchResults(); //display first page
 
         } catch (error) {
-            statusDiv.innerHTML = `Error while searching. Please try a different name or spelling.`;
             console.error('Search error:', error);
         }
     }
 
     function displaySearchResults() {
-        if (!allResidents || allResidents.length === 0) {
+        const selectedSection = sectionFilter.value;
+        const filteredResidents = selectedSection 
+            ? allResidents.filter(r => r.sectionName === selectedSection)
+            : allResidents;
+
+        if (!filteredResidents || filteredResidents.length === 0) {
             resultsDiv.innerHTML = `
                 <div style="text-align: center; color: #666; padding: 20px;">
-                    <p>No residents found${lastQuery ? ` for "${lastQuery}"` : ''}.</p>
+                    <p>No residents found.</p>
                 </div>
             `;
             return;
         }
 
-        const total = allResidents.length;
+        const total = filteredResidents.length;
         const totalPages = Math.ceil(total / pageSize);
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
-        const residents = allResidents.slice(start, end);
+        const residents = filteredResidents.slice(start, end);
 
         let html = `<h2 style='margin: 0 20px 10px 20px;'>Search Results (${total} found)</h2>`;
 
