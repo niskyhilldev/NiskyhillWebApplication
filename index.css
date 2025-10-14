@@ -12,24 +12,40 @@ html, body {
 }
 
 .headerTitle {
+  position: relative;
   color: white;
-  font-weight: 700; 
+  font-weight: 700;
   font-size: 50px;
   height: 85vh;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
   background-position: bottom center;
-  background-size: cover; 
+  background-size: cover;
   background-image: url('img/niskyHomepage.JPG');
-  width: 100%; 
-  margin: 0 auto; 
-  padding: 100px; 
-  opacity: 0.8; 
-  font-family: Instrument Sans; 
-  font-weight: bold; 
+  width: 100%;
+  margin: 0 auto;
+  padding: 100px;
+  font-family: Instrument Sans;
+  font-weight: bold;
   word-wrap: break-word;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.headerTitle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.headerTitle > * {
+  position: relative;
+  z-index: 1;
 }
 
 .headerSmallText {
@@ -171,20 +187,19 @@ html, body {
 }
 
 .learnMoreButtonAltColor:hover {
-  color: black;
+  color: #0d2543;
   background: white;
-  border-color: black;
+  border-color: #0d2543;
 }
 
 .learnMoreButtonAltColor2 {
   width: 200px; 
   height: 40px; 
-  background: #0d2543; 
-  background: #0d2543; 
+  background: white; 
   border-radius: 19px;
   border-style: solid;
   border-color: #0d2543;
-  color: white;
+  color: #0d2543;
   font-weight: 700; 
   font-family: Instrument Sans;
   font-size: 14px;
@@ -193,9 +208,9 @@ html, body {
 }
 
 .learnMoreButtonAltColor2:hover {
-  color: black;
-  background: white;
-  border-color: black;
+  color: white;
+  background: #0d2543;
+  border-color: white;
 }
 
 .googleMap {
@@ -618,15 +633,6 @@ a { text-decoration: none; }
 @media (max-width: 600px){
   .wrapper {
       text-align: center;
-  }
-
-  .learnMoreButtonAltColor2 {
-      position: absolute;
-      top: 50%;
-  }
-  .learnMoreButton{
-      position: absolute;
-      top: 50%;
   }
 }
 
