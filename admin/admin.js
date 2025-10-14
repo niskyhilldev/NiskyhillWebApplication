@@ -469,9 +469,19 @@ function createPopup(details, rowId, type, id) {
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${rowId}" data-rid="${id}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lot.number || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lot.descriptor || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.lot.section.name || ''}"></label>
+            <label for="sectionNumber">Section:</label>
+            <select id="sectionNumber" required>
+                <option value="">${details.lot.section.name || ''}</option>
+            </select>
+            <label for="lotNumber">Lot Number:</label>
+            <select id="lotNumber" required>
+                <option value="">${details.lot.number || ''}</option>
+            </select>
+
+            <label for="lotPortion">Lot Portion:</label>
+            <select id="lotPortion" required>
+                <option value="">${details.lot.descriptor || ''}</option>
+            </select>
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
             <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
