@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let map;
   let graveMarkers = {};
   let sectionLayers = null;  // filled by sections.js
-  let pinLayer;              // holds dynamic pins for start + plot
-  let currentStartMarker = null;
   let currentPlotMarker  = null;
 
   // ===== Map init =====
@@ -33,7 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const bounds = [[0, 0], [1000, 2000]];
     L.imageOverlay('map-1.png', bounds).addTo(map); // PNG lives next to profile.html
     map.fitBounds(bounds);
-    map.setView([350, 1000], map.getZoom() + 1);
+    map.setView([375, 850], map.getZoom() + .75);
+
+    //for mobile adjustment
+  
+
 
       L.marker([478, 882]).addTo(map).bindPopup("Main Entrance");
 
