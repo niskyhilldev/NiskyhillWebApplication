@@ -471,16 +471,16 @@ function createPopup(details, rowId, type, id) {
             <h3>Details</h3>
             <label for="sectionNumber">Section:</label>
             <select id="sectionNumber" required>
-                <option value="">${details.lot.section.name || ''}</option>
+                <option value=${details.lot.section.name || ''}>${details.lot.section.name || ''}</option>
             </select>
             <label for="lotNumber">Lot Number:</label>
             <select id="lotNumber" required>
-                <option value="">${details.lot.number || ''}</option>
+                <option value=${details.lot.number || ''}>${details.lot.number || ''}</option>
             </select>
 
             <label for="lotPortion">Lot Portion:</label>
             <select id="lotPortion" required>
-                <option value="">${details.lot.descriptor || ''}</option>
+                <option value=${details.lot.descriptor || ''}>${details.lot.descriptor || ''}</option>
             </select>
             <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
             <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
@@ -688,6 +688,35 @@ function createPopup(details, rowId, type, id) {
     popupContainer.id = "popupContainer";
     popupContainer.innerHTML = popupHTML;
     document.body.appendChild(popupContainer);
+
+    if(type == 'resident'){
+        const sectionSelector = document.getElementById("sectionNumber");
+        const lotSelector = document.getElementById("lotNumber");
+        const portionSelector = document.getElementById("lotPortion");
+        //Get sections and update dropdowns
+        fetch(API_BASE_URL + "/sections/all")
+        .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then(data => {
+            // selesectionSelectorctEl.innerHTML = '<option value="">Select a section</option>';
+            data.forEach(section => {
+                if(section.name !== sectionSelector.value){
+                    const option = document.createElement("option");
+                    option.value = section.name;
+                    option.textContent = section.name;
+                    sectionSelector.appendChild(option);
+                }
+                
+            });
+            console.log(sectionSelector)
+        })
+        .catch(error => {
+            console.error("Error fetching sections:", error);
+            selectEl.innerHTML = '<option value="">Error loading sections</option>';
+        });
+    }
 }
 function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
