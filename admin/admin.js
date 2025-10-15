@@ -693,6 +693,7 @@ function createPopup(details, rowId, type, id) {
         const sectionSelector = document.getElementById("sectionNumber");
         const lotSelector = document.getElementById("lotNumber");
         const portionSelector = document.getElementById("lotPortion");
+        let sectionId = sectionSelector.value;
         //Get sections and update dropdowns
         fetch(API_BASE_URL + "/sections/all")
         .then(response => {
@@ -716,8 +717,25 @@ function createPopup(details, rowId, type, id) {
             console.error("Error fetching sections:", error);
             selectEl.innerHTML = '<option value="">Error loading sections</option>';
         });
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+                .then(res => res.json())
+                .then(data => {
+                data.forEach(lot => {
+                    console.log(lot)
+                    if(lot.lot.number !== lotSelector.value){
+                        const opt = document.createElement("option");
+                        opt.value = lot.lot.number;
+                        opt.textContent = lot.lot.number;
+                        lotSelector.appendChild(opt);
+                    }
+                });
+                lotSelector.disabled = false;
+                })
+                .catch(err => {
+                console.error(err);
+                lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+                });
         sectionSelector.addEventListener("change", () => {
-            console.log("name")
             const sectionId = sectionSelector.value;
             lotSelector.innerHTML = '<option value="">Loading lots...</option>';
             lotSelector.disabled = true;
@@ -732,7 +750,6 @@ function createPopup(details, rowId, type, id) {
             fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
                 .then(res => res.json())
                 .then(data => {
-                    // console.log(data)
                 lotSelector.innerHTML = '<option value="">Select a lot</option>';
                 data.forEach(lot => {
                     const opt = document.createElement("option");
