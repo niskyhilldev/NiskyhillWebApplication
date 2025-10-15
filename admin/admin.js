@@ -694,6 +694,7 @@ function createPopup(details, rowId, type, id) {
         const lotSelector = document.getElementById("lotNumber");
         const portionSelector = document.getElementById("lotPortion");
         let sectionId = sectionSelector.value;
+        let lotId = lotSelector.value;
         //Get sections and update dropdowns
         fetch(API_BASE_URL + "/sections/all")
         .then(response => {
@@ -735,6 +736,25 @@ function createPopup(details, rowId, type, id) {
                 console.error(err);
                 lotSelector.innerHTML = '<option value="">Error loading lots</option>';
                 });
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+            .then(res => res.json())
+            .then(data => {
+            data.forEach(portion => {
+                if(portion.lot.descriptor !== portionSelector.value){
+                    const opt = document.createElement("option");
+                    opt.value = portion.lot.descriptor;
+                    opt.textContent = portion.lot.descriptor;
+                    opt.setAttribute('data-lid', portion.lot.lid);
+                    portionSelector.appendChild(opt);
+                }
+            });
+            portionSelector.disabled = false;
+            })
+            .catch(err => {
+                console.error(err);
+                portionSelector.innerHTML = '<option value="">Error loading portions</option>';
+            });
+        // });
         sectionSelector.addEventListener("change", () => {
             const sectionId = sectionSelector.value;
             lotSelector.innerHTML = '<option value="">Loading lots...</option>';
