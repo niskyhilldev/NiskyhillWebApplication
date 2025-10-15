@@ -716,6 +716,68 @@ function createPopup(details, rowId, type, id) {
             console.error("Error fetching sections:", error);
             selectEl.innerHTML = '<option value="">Error loading sections</option>';
         });
+        sectionSelector.addEventListener("change", () => {
+            console.log("name")
+            const sectionId = sectionSelector.value;
+            lotSelector.innerHTML = '<option value="">Loading lots...</option>';
+            lotSelector.disabled = true;
+            portionSelector.innerHTML = '<option value="">Select a lot first</option>';
+            portionSelector.disabled = true;
+
+            if (!sectionId) {
+                lotSelect.innerHTML = '<option value="">Select a section first</option>';
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    // console.log(data)
+                lotSelector.innerHTML = '<option value="">Select a lot</option>';
+                data.forEach(lot => {
+                    const opt = document.createElement("option");
+                    opt.value = lot.lot.number;
+                    opt.textContent = lot.lot.number;
+                    lotSelector.appendChild(opt);
+                });
+                lotSelector.disabled = false;
+                })
+                .catch(err => {
+                console.error(err);
+                lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+                });
+        });
+
+        // --- When Lot Changes, Load Portions ---
+        lotSelector.addEventListener("change", () => {
+        const lotId = lotSelector.value;
+        const sectionId = sectionSelector.value;
+        portionSelector.innerHTML = '<option value="">Loading portions...</option>';
+        portionSelector.disabled = true;
+
+        if (!lotId) {
+            portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+            return;
+        }
+
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+            .then(res => res.json())
+            .then(data => {
+            portionSelector.innerHTML = '<option value="">Select a portion</option>';
+            data.forEach(portion => {
+                const opt = document.createElement("option");
+                opt.value = portion.lot.descriptor;
+                opt.textContent = portion.lot.descriptor;
+                opt.setAttribute('data-lid', portion.lot.lid);
+                portionSelector.appendChild(opt);
+            });
+            portionSelector.disabled = false;
+            })
+            .catch(err => {
+                console.error(err);
+                portionSelector.innerHTML = '<option value="">Error loading portions</option>';
+            });
+        });
     }
 }
 function enableEditing() {
