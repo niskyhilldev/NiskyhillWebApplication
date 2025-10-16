@@ -101,27 +101,27 @@ public class Server {
             ctx.json(ResidentService.getResident(ctx.pathParam("rid"), database)); 
         });
 
-        // Update a resident
+        // Update a resident (Requires Authorization)
         app.put("/residents/update", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // // Check Authorization
             UpdateResidentDTO updateResidentDTO = ctx.bodyAsClass(UpdateResidentDTO.class);
             if (ResidentService.updateResident(updateResidentDTO, database)){
                 ctx.status(200).result("Resident updated Successfully");
             }
         });
 
-        // Add a new resident 
+        // Add a new resident (Requires Authorization)
         app.post("/residents/add", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
             if (ResidentService.addResident(newResidentDTO, database)){
                 ctx.status(200).result("New Resident Created Successfully");
             }
         });
 
-        // Delete a resident
+        // Delete a resident (Requires Authorization)
         app.delete("/residents/delete/{rid}", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
             if (ResidentService.deleteResident(ctx.pathParam("rid"),database)) {
                 ctx.status(200).result("Resident Deleted Successfully");
             }
@@ -137,32 +137,32 @@ public class Server {
             ctx.json(LotService.getLot(ctx.pathParam("lid"), database)); 
         });
 
-        // Search for a lot (given lot_number and section_name) and return the lot with all its residents 
+        // Search for a lot (given lot_number and section_name) and return the lot with all its residents )
         app.get("/lots/residents/search", ctx -> {
             ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
         });
 
-        // Add a new lot 
+        // Add a new lot  (Requires Authorization)
         app.post("/lots/add", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
             if (LotService.addLot(newLotDTO, database)){
                 ctx.status(200).result("New Lot Created Successfully");
             }
         });
 
-        // Update a lot 
+        // Update a lot (Requires Authorization)
         app.put("/lots/update", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
             UpdateLotDTO updateLotDTO = ctx.bodyAsClass(UpdateLotDTO.class);
             if (LotService.updateLot(updateLotDTO, database)){
                 ctx.status(200).result("Lot updated Successfully");
             }
         });
 
-        // Delete a lot
+        // Delete a lot (Requires Authorization)
         app.delete("/lots/delete/{lid}", ctx -> {
-            AuthHandler.requireRouteAuth(ctx);
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
             if (LotService.deleteLot(ctx.pathParam("lid"),database)) {
                 ctx.status(200).result("Lot Deleted Successfully");
             }
