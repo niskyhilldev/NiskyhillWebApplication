@@ -64,7 +64,7 @@
         <div style="position: relative;">
             <div>
                     <label for="name" class='input-title'>Enter Resident Name</label>        
-                    <div class="search" style="margin-bottom: 30px;">
+                    <div class="search" style="margin-bottom: 20px;">
                         <label style="display: flex; align-items: center; padding-left: var(--padding); cursor: pointer;">
                             <span class="search-icon material-symbols-outlined">search</span>
                             <input type="text" id="name" placeholder="Search residents..." class="search-input">
@@ -94,6 +94,9 @@
                         <option value="#1">Section #1</option>
                         <option value="#4">Section #4</option>
                     </select>
+                    
+                    <p for="yearFilter" class='input-title2'>Filter by Death Year</p> 
+                    <input type="number" id="yearFilter" placeholder=" e.g., 1900" class='sectionFilter' style="padding: 8px; font-size: 14px;" min="1800" max="2100">
                 
                 <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
                 <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 1rem;"></div>
@@ -141,4 +144,3 @@
     </script>
 </body>
 </html>
-

@@ -9,11 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let allResidents = [];
 
     const sectionFilter = document.getElementById('sectionFilter');
+    const yearFilter = document.getElementById('yearFilter');
 
     sectionFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
         displaySearchResults();
     })
+
+    yearFilter.addEventListener('input', () => {
+        currentPage = 1; //reset the page on each new search
+        displaySearchResults();
+    });
 
     nameInput.addEventListener('input', () => {
         currentPage = 1; //reset the page on each new search
@@ -46,14 +52,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displaySearchResults() {
         const selectedSection = sectionFilter.value;
-        const filteredResidents = selectedSection 
-            ? allResidents.filter(r => r.sectionName === selectedSection)
-            : allResidents;
+        const selectedYear = yearFilter.value.trim();
+        
+        let filteredResidents = allResidents;
+        
+        // Filter by section
+        if (selectedSection) {
+            filteredResidents = filteredResidents.filter(r => r.sectionName === selectedSection);
+        }
+        
+        // Filter by death year
+        if (selectedYear) {
+            filteredResidents = filteredResidents.filter(r => {
+                if (!r.burialDate) return false;
+                const year = new Date(r.burialDate).getFullYear();
+                return year.toString() === selectedYear;
+            });
+        }
 
         if (!filteredResidents || filteredResidents.length === 0) {
             resultsDiv.innerHTML = `
                 <div style="text-align: center; color: #666; padding: 20px;">
-                    <p>No residents found.</p>
+                    <p>No residents found. Try updating the name or filter parameters.</p>
                 </div>
             `;
             return;
