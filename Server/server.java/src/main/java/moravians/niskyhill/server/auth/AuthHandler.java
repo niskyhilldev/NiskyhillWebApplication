@@ -4,6 +4,8 @@ import io.javalin.http.Context;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import moravians.niskyhill.server.exceptions.HttpStatus;
+import moravians.niskyhill.server.exceptions.HttpStatusException;
 import java.security.Key;
 import java.util.Date;
 
@@ -54,7 +56,7 @@ public class AuthHandler {
      * Sets 401 if token is missing/invalid, stores userEmail in context if valid
      * @param ctx the context of the server request
      */
-    public static void requireRouteAuth(Context ctx) {
+    public static void requireRouteAuth(Context ctx) throws HttpStatusException{
         String token = null;
         
         // First try Authorization header
@@ -68,8 +70,7 @@ public class AuthHandler {
 
         String userEmail = validateToken(token);
         if (userEmail == null) {
-            ctx.status(401).result("Unauthorized");
-            return;
+            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized"); // throw exception and block route access 
         }
         
         ctx.attribute("userEmail", userEmail);

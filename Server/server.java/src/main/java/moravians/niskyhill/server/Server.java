@@ -72,17 +72,17 @@ public class Server {
         app.post("/auth/login", ctx -> {
             LoginDTO loginDTO = ctx.bodyAsClass(LoginDTO.class);
 
-            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) {
-                String token = AuthHandler.generateToken(loginDTO.email());
+            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) { // see if the user exists in the system
+                String token = AuthHandler.generateToken(loginDTO.email()); // generate a token for that user
 
-                Cookie cookie = new Cookie("token", token);
-                cookie.setMaxAge(3600);  // 1 hour
-                cookie.setHttpOnly(true); 
+                Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
+                cookie.setMaxAge(3600);  // set token for one hour
+                cookie.setHttpOnly(true);  // block access to cookie from JS files
 
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Login successful"));
             } else {
-                ctx.status(401).result("Invalid credentials");
+                ctx.status(401).result("Invalid Credentials");
             }
         });
 
