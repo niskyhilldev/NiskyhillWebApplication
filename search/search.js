@@ -56,12 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let filteredResidents = allResidents;
         
-        // Filter by section
         if (selectedSection) {
             filteredResidents = filteredResidents.filter(r => r.sectionName === selectedSection);
         }
         
-        // Filter by death year
         if (selectedYear) {
             filteredResidents = filteredResidents.filter(r => {
                 if (!r.burialDate) return false;

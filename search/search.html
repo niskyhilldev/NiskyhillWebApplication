@@ -72,37 +72,42 @@
                     </label>
                     </div>
 
-                    <div class="center">
-                        <p for="yearFilter" class='input-title2'>Filter by Death Year</p> 
-                        <input type="number" id="yearFilter" placeholder=" e.g., 1900" class='sectionFilter'min="1800" max="2100">
+
+                    <div class = 'filterFlex'>
+                        <div>
+                            <p for="yearFilter" class='input-title2'>Filter by Death Year</p> 
+                            <input type="number" id="yearFilter" placeholder=" e.g., 1900" class='sectionFilter'min="1800" max="2100">
+                        </div>
+
+                        <div>
+                            <p for="name" class='input-title2'>Filter by Section</p> 
+                            <select class='sectionFilter' id="sectionFilter">
+                                <option value="">All Sections</option>
+                                <option value="A">Section A</option>
+                                <option value="A-1">Section A-1</option>
+                                <option value="A-2">Section A-2</option>
+                                <option value="A-3">Section A-3</option>
+                                <option value="A-4">Section A-4</option>
+                                <option value="A-5">Section A-5</option>
+                                <option value="A-6">Section A-6</option>
+                                <option value="B">Section B</option>
+                                <option value="C">Section C</option>
+                                <option value="D">Section D</option>
+                                <option value="E">Section E</option>
+                                <option value="EG">Section EG</option>
+                                <option value="F">Section F</option>
+                                <option value="G">Section G</option>
+                                <option value="I">Section I</option>
+                                <option value="K">Section K</option>
+                                <option value="L">Section L</option>
+                                <option value="O">Section O</option>
+                                <option value="#1">Section #1</option>
+                                <option value="#4">Section #4</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="center">
-                        <p for="name" class='input-title2'>Filter by Section</p> 
-                        <select  class='sectionFilter' id="sectionFilter">
-                            <option value="">All Sections</option>
-                            <option value="A">Section A</option>
-                            <option value="A-1">Section A-1</option>
-                            <option value="A-2">Section A-2</option>
-                            <option value="A-3">Section A-3</option>
-                            <option value="A-4">Section A-4</option>
-                            <option value="A-5">Section A-5</option>
-                            <option value="A-6">Section A-6</option>
-                            <option value="B">Section B</option>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
-                            <option value="E">Section E</option>
-                            <option value="EG">Section EG</option>
-                            <option value="F">Section F</option>
-                            <option value="G">Section G</option>
-                            <option value="I">Section I</option>
-                            <option value="K">Section K</option>
-                            <option value="L">Section L</option>
-                            <option value="O">Section O</option>
-                            <option value="#1">Section #1</option>
-                            <option value="#4">Section #4</option>
-                        </select>
-                    </div>
+                
                     
                 
                 <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
