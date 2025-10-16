@@ -7,74 +7,94 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
 
-
+/**
+ * Handles authentication and authorization for the Nisky Hill server
+ */
 public class AuthHandler {
-
+    
     // Secret key for signing JWTs
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); 
-
+    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    
     // Token expiration time (1 hour)
     private static final long EXPIRATION_MS = 1000 * 60 * 60;
-    
-
 
     /**
-     * Creates a Token for a user of the system 
-     * @param email the email of the user 
-     * @return the JWT token now associated with the user
+     * Creates a JWT token for a user
+     * @param email the email of the user
+     * @return the JWT token associated with the user
      */
     public static String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
-                .signWith(key)
-                .compact();
+            .setSubject(email)
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
+            .signWith(key)
+            .compact();
     }
 
     /**
-     * Validates a JWT token 
+     * Validates a JWT token
      * @param token the JWT token to be validated
-     * @retrun email of ther uer the token belongs to if valid, null otherwise.
+     * @return email of the user the token belongs to if valid, null otherwise
      */
     public static String validateToken(String token) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
         } catch (Exception e) {
             return null;
         }
     }
 
     /**
-     * Middleware to require authentication for a route.
-     * Sets 401 if token is missing/invalid and stores userEmail in context if valid.
+     * Requires authentication for API routes
+     * Sets 401 if token is missing/invalid, stores userEmail in context if valid
      * @param ctx the context of the server request
      */
-    public static void requireAuth(Context ctx) {
+    public static void requireRouteAuth(Context ctx) {
+        String token = null;
+        
+        // First try Authorization header
         String authHeader = ctx.header("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) { // Check if the client has a token 
-            ctx.redirect("/admin/login.html"); // direct the user to the login page
-            return;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        } else {
+            // Fallback to cookie
+            token = ctx.cookie("token");
         }
 
-        String token = authHeader.substring(7); // extract the client token from request
-        String userEmail = validateToken(token); // get the email of the user assoiacted with the token
-
-        if (userEmail == null) { // if there was no user found, block access
+        String userEmail = validateToken(token);
+        if (userEmail == null) {
             ctx.status(401).result("Unauthorized");
             return;
         }
-
-        ctx.attribute("userEmail", userEmail); // Store authenticated user email for route handlers
+        
+        ctx.attribute("userEmail", userEmail);
     }
 
     /**
-     * Helper to retrieve the authenticated user's email from the context
+     * Requires authentication for static page access
+     * Redirects to login page if token is missing/invalid
+     * @param ctx the context of the server request
+     */
+    public static void requirePageAuth(Context ctx) {
+        String token = ctx.cookie("token");
+        String userEmail = validateToken(token);
+        
+        if (userEmail == null) {
+            ctx.redirect("/login/login.html");
+            ctx.skipRemainingHandlers();
+            return;
+        }
+        
+        ctx.attribute("userEmail", userEmail);
+    }
+
+    /**
+     * Retrieves the authenticated user's email from the context
      * @param ctx the context of the server request
      * @return the authenticated user's email
      */

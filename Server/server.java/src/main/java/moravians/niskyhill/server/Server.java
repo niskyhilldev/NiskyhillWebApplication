@@ -17,6 +17,7 @@ import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.LotService;
 import moravians.niskyhill.server.services.ResidentService;
 import moravians.niskyhill.server.services.SectionService;
+import io.javalin.http.Cookie;
 
 
 /**
@@ -26,20 +27,18 @@ public class Server {
     
     public static void main(String[] args) {
 
-        /* we only want to istanciante the database once, so we will create it here and pass it to the static service layers */
+        /* Instantiate the database */
         Database database = Database.getDatabase(); 
 
-        /*
-         * Configure the Instance of the Javalin Server
-         */
+        /* Configure the Javalin Server */
         Javalin app = Javalin.create(config -> {
 
-            /* Create A Terminal Logger to View requests */
+            /* Terminal logger to view requests */
             config.requestLogger.http((ctx, ms) -> {
                 System.out.printf("%-10s\t%-50s\t%s\n", ctx.method(), ctx.path(), ctx.status());
             });
 
-            /* Create a Place to hold the Static HTML and CSS Files */
+            /* Static file configuration */
             config.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/";
                 staticFiles.directory = "/public"; 
@@ -47,138 +46,150 @@ public class Server {
             });
         });
 
-        /* Enable CORS */
+        /* Enable CORS for all requests */
         app.before(ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed orgin address 
+            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed origin address 
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         });
 
-        /*  Handle preflight requests */
+        /* Handle preflight requests */
         app.options("/*", ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed orgin addres
+            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed origin address
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             ctx.status(204);
         });
 
-    
+        /* Require authentication for all admin resources */
+        app.before("/admin/*", ctx -> {
+            AuthHandler.requirePageAuth(ctx);
+        });
+
         /* HTTP ROUTES */
 
-        // login to the system (generates session token for a valid user)
+        // Login to the system (generates session token and sets it in the cookie)
         app.post("/auth/login", ctx -> {
             LoginDTO loginDTO = ctx.bodyAsClass(LoginDTO.class);
 
-            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) { // if the user is a valid user in the system, make them a token
+            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) {
                 String token = AuthHandler.generateToken(loginDTO.email());
-                ctx.json(Map.of("token", token)); // Send newly made token back to client
-            } else { 
+
+                Cookie cookie = new Cookie("token", token);
+                cookie.setMaxAge(3600);  // 1 hour
+                cookie.setHttpOnly(true); 
+
+                ctx.cookie(cookie);
+                ctx.json(Map.of("message", "Login successful"));
+            } else {
                 ctx.status(401).result("Invalid credentials");
             }
         });
 
-        // get all residents (and their lot + sections)
+        // Get all residents (and their lot + sections)
         app.get("/residents/all", ctx -> {
             ctx.json(ResidentService.getAllResidents(database));
         });
         
-        // search for a resident by any combination of their first, middle, and last name 
+        // Search for a resident by any combination of their first, middle, and last name 
         app.get("/residents/search", ctx -> {
-            ctx.json(ResidentService.searchResidents(ctx.queryParam("name"), database)); // name is in the param (since it could have whitespace)
+            ctx.json(ResidentService.searchResidents(ctx.queryParam("name"), database));
         });
 
-        // get a resident by their id
+        // Get a resident by their id
         app.get("/residents/find/{rid}", ctx -> {
             ctx.json(ResidentService.getResident(ctx.pathParam("rid"), database)); 
         });
 
-        // get all lots
-        app.get("/lots/all", ctx -> {
-            ctx.json(LotService.getAllLots(database)); 
-        });
-
-        // get a lot by its id
-        app.get("/lots/find/{lid}", ctx -> {
-            ctx.json(LotService.getLot(ctx.pathParam("lid"), database)); 
-        });
-
-        // get all sections 
-        app.get("/sections/all", ctx -> {
-            ctx.json(SectionService.getAllSections(database)); 
-        });
-
-        // get a section by its id 
-        app.get("/sections/find/{sid}", ctx -> {
-            ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
-        });
-
-        // search for a lot (given lot_number and section_name, either which could be null, but they both cant be null) and return a lot and all of the residents it contains 
-        app.get("/lots/residents/search", ctx -> {
-            ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
-        }).before(AuthHandler::requireAuth);
-
-        // update a resident
+        // Update a resident
         app.put("/residents/update", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             UpdateResidentDTO updateResidentDTO = ctx.bodyAsClass(UpdateResidentDTO.class);
             if (ResidentService.updateResident(updateResidentDTO, database)){
                 ctx.status(200).result("Resident updated Successfully");
             }
-        }).before(AuthHandler::requireAuth);
+        });
 
-        // add a new resident 
+        // Add a new resident 
         app.post("/residents/add", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
             if (ResidentService.addResident(newResidentDTO, database)){
                 ctx.status(200).result("New Resident Created Successfully");
             }
-        }).before(AuthHandler::requireAuth);
+        });
 
-        // delete a resident
+        // Delete a resident
         app.delete("/residents/delete/{rid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             if (ResidentService.deleteResident(ctx.pathParam("rid"),database)) {
                 ctx.status(200).result("Resident Deleted Successfully");
             }
-        }).before(AuthHandler::requireAuth);
+        });
 
-        // add a new lot 
+        // Get all lots
+        app.get("/lots/all", ctx -> {
+            ctx.json(LotService.getAllLots(database)); 
+        });
+
+        // Get a lot by its id
+        app.get("/lots/find/{lid}", ctx -> {
+            ctx.json(LotService.getLot(ctx.pathParam("lid"), database)); 
+        });
+
+        // Search for a lot (given lot_number and section_name) and return the lot with all its residents 
+        app.get("/lots/residents/search", ctx -> {
+            ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
+        });
+
+        // Add a new lot 
         app.post("/lots/add", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
             if (LotService.addLot(newLotDTO, database)){
                 ctx.status(200).result("New Lot Created Successfully");
             }
-        }).before(AuthHandler::requireAuth);
+        });
 
-        // update a lot 
+        // Update a lot 
         app.put("/lots/update", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             UpdateLotDTO updateLotDTO = ctx.bodyAsClass(UpdateLotDTO.class);
             if (LotService.updateLot(updateLotDTO, database)){
                 ctx.status(200).result("Lot updated Successfully");
             }
-        }).before(AuthHandler::requireAuth);
+        });
 
-        // delete a lot
+        // Delete a lot
         app.delete("/lots/delete/{lid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
             if (LotService.deleteLot(ctx.pathParam("lid"),database)) {
                 ctx.status(200).result("Lot Deleted Successfully");
             }
-        }).before(AuthHandler::requireAuth);
-
-
-
-
-        /**
-         * Map the HttpStatusException Class to HTTP Errors
-         */
-        app.exception(HttpStatusException.class, (HttpStatusException e, Context ctx) -> {
-            ctx.status(e.getHttpStatus()).json(e.getMessage()); // (status, reason)
         });
 
-        /**
-         * Get port from environment (Heroku) or default to 8080 (for local deployment)
-         */
+        // Get all sections 
+        app.get("/sections/all", ctx -> {
+            ctx.json(SectionService.getAllSections(database)); 
+        });
+
+        // Get a section by its id 
+        app.get("/sections/find/{sid}", ctx -> {
+            ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
+        });
+
+
+        
+        /* Exception Handlers */
+
+        // Map HttpStatusException to HTTP errors
+        app.exception(HttpStatusException.class, (HttpStatusException e, Context ctx) -> {
+            ctx.status(e.getHttpStatus()).json(e.getMessage());
+        });
+
+        // Get port from environment (Heroku) or default to 8080 (for local deployment)
         String port = System.getenv("PORT");
         int serverPort = (port != null) ? Integer.parseInt(port) : 8080;
-
 
         /* Start the Server */
         app.start(serverPort);
