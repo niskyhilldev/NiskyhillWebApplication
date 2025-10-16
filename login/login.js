@@ -38,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } else {
                 // Login failed
-                errorMessage.textContent = data || "Bad Credentials";
+                errorMessage.textContent = data || "Invalid Credentials";
             }
         } catch (error) {
             console.error('Login error:', error);
-            errorMessage.textContent = "Bad Credentials";
+            errorMessage.textContent = "Invalid Credentials";
         }
     });
 });
