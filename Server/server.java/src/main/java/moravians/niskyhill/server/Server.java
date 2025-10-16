@@ -1,9 +1,14 @@
 package moravians.niskyhill.server;
 
+import java.util.Map;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
+import moravians.niskyhill.server.auth.AuthHandler;
+import moravians.niskyhill.server.auth.UserStore;
 import moravians.niskyhill.server.database.Database;
+import moravians.niskyhill.server.dtos.LoginDTO;
 import moravians.niskyhill.server.dtos.NewLotDTO;
 import moravians.niskyhill.server.dtos.NewResidentDTO;
 import moravians.niskyhill.server.dtos.UpdateLotDTO;
@@ -57,8 +62,20 @@ public class Server {
             ctx.status(204);
         });
 
-        
+    
         /* HTTP ROUTES */
+
+        // login to the system (generates session token for a valid user)
+        app.post("/auth/login", ctx -> {
+            LoginDTO loginDTO = ctx.bodyAsClass(LoginDTO.class);
+
+            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) { // if the user is a valid user in the system, make them a token
+                String token = AuthHandler.generateToken(loginDTO.email());
+                ctx.json(Map.of("token", token)); // Send newly made token back to client
+            } else { 
+                ctx.status(401).result("Invalid credentials");
+            }
+        });
 
         // get all residents (and their lot + sections)
         app.get("/residents/all", ctx -> {
@@ -98,7 +115,7 @@ public class Server {
         // search for a lot (given lot_number and section_name, either which could be null, but they both cant be null) and return a lot and all of the residents it contains 
         app.get("/lots/residents/search", ctx -> {
             ctx.json(LotService.getLotResidents(ctx.queryParam("lot"), ctx.queryParam("section"), database)); 
-        });
+        }).before(AuthHandler::requireAuth);
 
         // update a resident
         app.put("/residents/update", ctx -> {
@@ -106,7 +123,7 @@ public class Server {
             if (ResidentService.updateResident(updateResidentDTO, database)){
                 ctx.status(200).result("Resident updated Successfully");
             }
-        }); 
+        }).before(AuthHandler::requireAuth);
 
         // add a new resident 
         app.post("/residents/add", ctx -> {
@@ -114,14 +131,14 @@ public class Server {
             if (ResidentService.addResident(newResidentDTO, database)){
                 ctx.status(200).result("New Resident Created Successfully");
             }
-        });
+        }).before(AuthHandler::requireAuth);
 
         // delete a resident
         app.delete("/residents/delete/{rid}", ctx -> {
             if (ResidentService.deleteResident(ctx.pathParam("rid"),database)) {
                 ctx.status(200).result("Resident Deleted Successfully");
             }
-        });
+        }).before(AuthHandler::requireAuth);
 
         // add a new lot 
         app.post("/lots/add", ctx -> {
@@ -129,7 +146,7 @@ public class Server {
             if (LotService.addLot(newLotDTO, database)){
                 ctx.status(200).result("New Lot Created Successfully");
             }
-        });
+        }).before(AuthHandler::requireAuth);
 
         // update a lot 
         app.put("/lots/update", ctx -> {
@@ -137,14 +154,14 @@ public class Server {
             if (LotService.updateLot(updateLotDTO, database)){
                 ctx.status(200).result("Lot updated Successfully");
             }
-        }); 
+        }).before(AuthHandler::requireAuth);
 
         // delete a lot
         app.delete("/lots/delete/{lid}", ctx -> {
             if (LotService.deleteLot(ctx.pathParam("lid"),database)) {
                 ctx.status(200).result("Lot Deleted Successfully");
             }
-        });
+        }).before(AuthHandler::requireAuth);
 
 
 
