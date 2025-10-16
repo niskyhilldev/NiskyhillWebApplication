@@ -333,7 +333,8 @@ a {
 }
 
 .sectionFilter{
-    width: 25%;
+    width: 30%;
+    box-sizing: border-box;
     font-size: 16px;
     border-radius: 28px;
     background: #f6f6f6;
@@ -423,17 +424,6 @@ a {
     -webkit-overflow-scrolling: touch;
   }
 
-  @media (max-width: 500px){
-    .input-title, .input-title2{
-      text-align: center;
-    }
-    .sectionFilter{
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
 }
 
 
@@ -457,6 +447,28 @@ a {
   font-size: 1.2rem; 
   font-family: 'Instrument Sans', sans-serif;
 }
+
+@media (max-width: 600px){
+    .input-title{
+      text-align: center;
+      margin-left: 0;
+      width: 100%;
+    }
+    .input-title2{
+      text-align: center;
+      margin-left: 0;
+      width: 100%;
+    }
+    .center{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .sectionFilter{
+      margin-left: 0;
+    }
+  }
 
 
   /* Hero section with parallax background */
@@ -580,4 +592,11 @@ a {
     font-size: 1.25rem; 
   }
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 

@@ -12,6 +12,7 @@
         <script type="text/javascript" src="search.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=filter_list" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
@@ -70,33 +71,39 @@
                             <input type="text" id="name" placeholder="Search residents..." class="search-input">
                     </label>
                     </div>
-                    <p for="name" class='input-title2'>Filter by Section</p> 
-                    <select class='sectionFilter' id="sectionFilter">
-                        <option value="">All Sections</option>
-                        <option value="A">Section A</option>
-                        <option value="A-1">Section A-1</option>
-                        <option value="A-2">Section A-2</option>
-                        <option value="A-3">Section A-3</option>
-                        <option value="A-4">Section A-4</option>
-                        <option value="A-5">Section A-5</option>
-                        <option value="A-6">Section A-6</option>
-                        <option value="B">Section B</option>
-                        <option value="C">Section C</option>
-                        <option value="D">Section D</option>
-                        <option value="E">Section E</option>
-                        <option value="EG">Section EG</option>
-                        <option value="F">Section F</option>
-                        <option value="G">Section G</option>
-                        <option value="I">Section I</option>
-                        <option value="K">Section K</option>
-                        <option value="L">Section L</option>
-                        <option value="O">Section O</option>
-                        <option value="#1">Section #1</option>
-                        <option value="#4">Section #4</option>
-                    </select>
+
+                    <div class="center">
+                        <p for="yearFilter" class='input-title2'>Filter by Death Year</p> 
+                        <input type="number" id="yearFilter" placeholder=" e.g., 1900" class='sectionFilter'min="1800" max="2100">
+                    </div>
+
+                    <div class="center">
+                        <p for="name" class='input-title2'>Filter by Section</p> 
+                        <select  class='sectionFilter' id="sectionFilter">
+                            <option value="">All Sections</option>
+                            <option value="A">Section A</option>
+                            <option value="A-1">Section A-1</option>
+                            <option value="A-2">Section A-2</option>
+                            <option value="A-3">Section A-3</option>
+                            <option value="A-4">Section A-4</option>
+                            <option value="A-5">Section A-5</option>
+                            <option value="A-6">Section A-6</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                            <option value="E">Section E</option>
+                            <option value="EG">Section EG</option>
+                            <option value="F">Section F</option>
+                            <option value="G">Section G</option>
+                            <option value="I">Section I</option>
+                            <option value="K">Section K</option>
+                            <option value="L">Section L</option>
+                            <option value="O">Section O</option>
+                            <option value="#1">Section #1</option>
+                            <option value="#4">Section #4</option>
+                        </select>
+                    </div>
                     
-                    <p for="yearFilter" class='input-title2'>Filter by Death Year</p> 
-                    <input type="number" id="yearFilter" placeholder=" e.g., 1900" class='sectionFilter' style="padding: 8px; font-size: 14px;" min="1800" max="2100">
                 
                 <div id="searchStatus" style="margin-bottom: 15px; margin-left: 1rem; font-style: italic; color: #666;"></div>
                 <div id="searchResults" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: 1rem;"></div>
