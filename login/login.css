@@ -1,11 +1,25 @@
 body {
   font-family: Arial, sans-serif;
-  background: white;
+  background: url('../img/niskyHomepage.JPG') no-repeat center center;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6); /* White overlay */
+  pointer-events: none;
+  z-index: 0; /* Push overlay behind content */
 }
 
 .login-container {
@@ -14,6 +28,8 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   width: 300px;
+  position: relative; /* Create stacking context */
+  z-index: 1; /* Lift above overlay */
 }
 
 .login-container h2 {
@@ -69,8 +85,6 @@ body {
 #username, #password {
   padding-right: 0px;
 }
-
-
 
 .logoContainer {
   display: flex;
