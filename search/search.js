@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name');
     const resultsDiv = document.getElementById('searchResults');
     const statusDiv = document.getElementById('searchStatus');
-    const API_BASE_URL = 'http://localhost:8080/residents';
+    const API_BASE_URL = 'http://localhost:8080';
 
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsDiv.innerHTML = '';
 
         try {
-            const response = await fetch(`${API_BASE_URL}/search?name=${(name)}`);
+            const response = await fetch(`${API_BASE_URL}/residents/search?name=${(name)}`);
             if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
