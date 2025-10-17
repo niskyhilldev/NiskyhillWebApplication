@@ -1353,3 +1353,37 @@ document.getElementById("closeResidentFormBtn").addEventListener("click", functi
     document.getElementById("addResidentForm").style.display = "none";
     document.getElementById('showResidentFormBtn').style.display = "block";
 });
+
+
+
+
+
+// --------- Nav Bar Session Tracking Logic------------------>
+
+const profileIcon = document.getElementById('profileIcon');
+const profileDropdown = document.getElementById('profileDropdown');
+const profileWrapper = document.getElementById('profileWrapper');
+const logoutBtn = document.getElementById('logoutBtn');
+const resetPasswordLink = document.getElementById('resetPasswordLink');
+
+profileIcon.addEventListener('click', () => {
+    profileDropdown.style.display =
+    profileDropdown.style.display === 'block' ? 'none' : 'block';
+});
+
+document.addEventListener('click', (e) => {
+    if (!profileWrapper.contains(e.target)) {
+        profileDropdown.style.display = 'none';
+    }
+});
+
+// Dummy Logout Button  Listener
+    logoutBtn.addEventListener('click', () => {
+    // add Logout Logic
+});
+
+// Dummy Reset Password Listener
+    resetPasswordLink.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent navigation
+    // add reset password logic
+});
