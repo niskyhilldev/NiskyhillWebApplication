@@ -76,7 +76,7 @@ public class Server {
                 String token = AuthHandler.generateToken(loginDTO.email()); // generate a token for that user
 
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
-                cookie.setMaxAge(3600);  // set token for one hour
+                cookie.setMaxAge(3600);  // set Cookie for one Hour
                 cookie.setHttpOnly(true);  // block access to cookie from JS files
 
                 ctx.cookie(cookie);
@@ -84,6 +84,17 @@ public class Server {
             } else {
                 ctx.status(401).result("Invalid Credentials");
             }
+        });
+
+        // Route to Logout of the system (Delete Cookie with session key fro the users brower)
+        app.post("/auth/logout", ctx -> {
+            // Create a cookie with the same name and set MaxAge to 0 to delete it
+            Cookie cookie = new Cookie("token", "");
+            cookie.setMaxAge(0);    // Deletes the cookie
+            cookie.setHttpOnly(true);
+
+            ctx.cookie(cookie);
+            ctx.json(Map.of("message", "Logged out successfully"));
         });
 
         // Get all residents (and their lot + sections)
