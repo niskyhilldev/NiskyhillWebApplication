@@ -44,8 +44,8 @@ body {
 }
 
 .login-container button:hover {
-  background: white;
-  color: #0d2543;
+  transform: scale(1.1);
+  transition: transform 0.2s ease; 
 }
 
 .extra-links {

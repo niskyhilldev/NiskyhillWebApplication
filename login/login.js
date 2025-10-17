@@ -33,8 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Success - Redirect back to the admin age
-                window.location.href = "/admin/dashboard.html";
+                // Success - Redirect back to the admin age (after 1 second)
+                errorMessage.style.color = "green";
+                errorMessage.textContent = "Login Successfull";
+
+                setTimeout(() => {
+                    window.location.href = "/admin/dashboard.html";
+                },1000)
+                
 
             } else {
                 // Login failed
