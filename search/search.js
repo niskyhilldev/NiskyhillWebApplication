@@ -7,16 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
     let allResidents = [];
+    let allSections = [];
 
     const sectionFilter = document.getElementById('sectionFilter');
     const yearFilter = document.getElementById('yearFilter');
+
+    window.onload = getSections;
+    window.onload = addYearsToFilter;
 
     sectionFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
         displaySearchResults();
     })
 
-    yearFilter.addEventListener('input', () => {
+    yearFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
         displaySearchResults();
     });
@@ -47,6 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Search error:', error);
+        }
+    }
+
+    async function getSections(){
+        try{
+            const sections = await fetch(`${API_BASE_URL}/sections/all`);
+            if (!sections.ok) throw new Error(`Error while searching retrieving sections.`)
+
+            allSections = await sections.json(); //store all sections
+
+            allSections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.name;
+                option.textContent = section.name;
+                sectionFilter.appendChild(option);
+            })
+        }catch(error){
+            console.error('Sections retrieval error:', error);
+        }
+    }
+
+    function addYearsToFilter(){
+        const currentYear = new Date().getFullYear();
+        for(let year = currentYear; year >= 1800; year--){
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearFilter.appendChild(option);
         }
     }
 
