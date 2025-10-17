@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f2f2f2;
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +9,7 @@ body {
 }
 
 .login-container {
-  background: #fff;
+  background: #0d2543;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -33,7 +33,9 @@ body {
 .login-container button {
   width: 100%;
   padding: 0.8rem;
-  background: #007BFF;
+  background: #af8c30;
+  font-family: Inria Serif;
+  letter-spacing: 1.2px;
   color: white;
   border: none;
   border-radius: 5px;
@@ -42,7 +44,8 @@ body {
 }
 
 .login-container button:hover {
-  background: #0056b3;
+  background: white;
+  color: #0d2543;
 }
 
 .extra-links {
@@ -65,4 +68,54 @@ body {
 
 #username, #password {
   padding-right: 0px;
+}
+
+
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  line-height: 1;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.topText {
+  color: white;
+  font-size: 40px;
+  font-family: Inria Serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  margin-left: 20px;
+}
+
+.bottomText {
+  color: white;
+  font-size: 22px;
+  font-family: Inria Serif;
+  line-height: 15.86px;
+  letter-spacing: 3.72px;
+  font-weight: 1000;
+  word-wrap: break-word;
+  text-align: center;
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+a {
+  color: inherit;      
+  text-decoration: none;
+}
+
+.loginHeaderText{
+  color: white;
+  letter-spacing: 2.5px;
+  font-family: Inria Serif;
+  font-size: 50px;
+  margin-top: 0;
+  padding-top: 0;
 }
