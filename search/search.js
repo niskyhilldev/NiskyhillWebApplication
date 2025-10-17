@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectionFilter = document.getElementById('sectionFilter');
     const yearFilter = document.getElementById('yearFilter');
 
-    window.onload = getSections;
-    window.onload = addYearsToFilter;
+    getSections();
+    addYearsToFilter();
 
     sectionFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
