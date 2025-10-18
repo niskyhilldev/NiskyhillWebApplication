@@ -204,7 +204,7 @@ h1 {
 .reset-link:hover { text-decoration: underline; }
 
 .logout-btn {
-  background: #ff4d4d;
+  background: #af8c30;
   color: white;
   border: none;
   width: 100%;
@@ -212,7 +212,11 @@ h1 {
   border-radius: 6px;
   cursor: pointer;
 }
-.logout-btn:hover { background: #e64444; }
+.logout-btn:hover { 
+  transform: scale(1.05);
+  background: #af8c30;
+  transition: transform 0.2s ease; 
+}
 
 .profile-wrapper {
     margin-right: 100px;

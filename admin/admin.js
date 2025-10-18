@@ -1366,6 +1366,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileWrapper = document.getElementById('profileWrapper');
     const logoutBtn = document.getElementById('logoutBtn');
     const resetPasswordLink = document.getElementById('resetPasswordLink');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userRole  = document.getElementById('role');
+
 
     profileIcon.addEventListener('click', () => {
         profileDropdown.style.display =
@@ -1378,12 +1382,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
- 
     logoutBtn.addEventListener('click', () => {
         handleLogout();
     });
 
-    // Dummy Reset Password Listener
     resetPasswordLink.addEventListener('click', (e) => {
         e.preventDefault(); // Prevent navigation
     // add reset password logic
@@ -1405,9 +1407,9 @@ async function handleLogout() {
       window.location.href = './admin/dashboard.html'; // redirect after successful logout
     } else {
       const errorData = await response.json();
-      // error message
+      console.log("error Logging out")
     }
   } catch (err) {
-    //error message
+    console.log("error Logging out")
   }
 }
