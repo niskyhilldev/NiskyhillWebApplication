@@ -1360,30 +1360,54 @@ document.getElementById("closeResidentFormBtn").addEventListener("click", functi
 
 // --------- Nav Bar Session Tracking Logic------------------>
 
-const profileIcon = document.getElementById('profileIcon');
-const profileDropdown = document.getElementById('profileDropdown');
-const profileWrapper = document.getElementById('profileWrapper');
-const logoutBtn = document.getElementById('logoutBtn');
-const resetPasswordLink = document.getElementById('resetPasswordLink');
+document.addEventListener("DOMContentLoaded", () => { 
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileWrapper = document.getElementById('profileWrapper');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const resetPasswordLink = document.getElementById('resetPasswordLink');
 
-profileIcon.addEventListener('click', () => {
-    profileDropdown.style.display =
-    profileDropdown.style.display === 'block' ? 'none' : 'block';
-});
+    profileIcon.addEventListener('click', () => {
+        profileDropdown.style.display =
+        profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
 
-document.addEventListener('click', (e) => {
-    if (!profileWrapper.contains(e.target)) {
-        profileDropdown.style.display = 'none';
-    }
-});
+    document.addEventListener('click', (e) => {
+        if (!profileWrapper.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+        }
+    });
 
-// Dummy Logout Button  Listener
+ 
     logoutBtn.addEventListener('click', () => {
-    // add Logout Logic
+        handleLogout();
+    });
+
+    // Dummy Reset Password Listener
+    resetPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent navigation
+    // add reset password logic
+    });
 });
 
-// Dummy Reset Password Listener
-    resetPasswordLink.addEventListener('click', (e) => {
-    e.preventDefault(); // Prevent navigation
-    // add reset password logic
-});
+async function handleLogout() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, { 
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+        // success message
+      window.location.href = './admin/dashboard.html'; // redirect after successful logout
+    } else {
+      const errorData = await response.json();
+      // error message
+    }
+  } catch (err) {
+    //error message
+  }
+}
