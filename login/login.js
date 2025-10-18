@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.error('Login error:', error);
-            errorMessage.textContent = "Invalid Credentials";
+            errorMessage.textContent = "Error Logging In";
         }
     });
 });

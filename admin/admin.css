@@ -182,7 +182,7 @@ h1 {
 .profile-dropdown {
   position: absolute;
   top: 60px;
-  right: 0;     /* aligned with right edge */
+  right: 0;    
   left: -85px;
   right: 0;
   background: white;
@@ -192,6 +192,13 @@ h1 {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   display: none;
   min-width: 220px;
+}
+
+.logoutError {
+  color: red;
+  font-size: 0.9em;
+  text-align: center;
+  padding-top: 8px;
 }
 
 .profile-dropdown p { margin: 4px 0; }

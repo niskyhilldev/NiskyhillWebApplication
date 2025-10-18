@@ -1366,33 +1366,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileWrapper = document.getElementById('profileWrapper');
     const logoutBtn = document.getElementById('logoutBtn');
     const resetPasswordLink = document.getElementById('resetPasswordLink');
+    const logoutError = document.getElementById('logoutErrorText');
     const userName = document.getElementById('userName');
     const userEmail = document.getElementById('userEmail');
     const userRole  = document.getElementById('role');
 
-
+    // click on the Person Icon
     profileIcon.addEventListener('click', () => {
+        logoutError.textContent = "";
         profileDropdown.style.display =
         profileDropdown.style.display === 'block' ? 'none' : 'block';
     });
 
+    // Click off the person icon
     document.addEventListener('click', (e) => {
         if (!profileWrapper.contains(e.target)) {
             profileDropdown.style.display = 'none';
         }
     });
 
+    // click the logout button
     logoutBtn.addEventListener('click', () => {
-        handleLogout();
+        handleLogout(logoutError);
     });
 
+    // click the reset password text
     resetPasswordLink.addEventListener('click', (e) => {
         e.preventDefault(); // Prevent navigation
-    // add reset password logic
     });
 });
 
-async function handleLogout() {
+async function handleLogout(logoutError) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, { 
       method: 'POST',
@@ -1403,13 +1407,12 @@ async function handleLogout() {
     });
 
     if (response.ok) {
-        // success message
       window.location.href = './admin/dashboard.html'; // redirect after successful logout
     } else {
+      logoutError.textContent = "Error Logging Out";
       const errorData = await response.json();
-      console.log("error Logging out")
     }
   } catch (err) {
-    console.log("error Logging out")
+    logoutError.textContent = "Error Logging Out";
   }
 }
