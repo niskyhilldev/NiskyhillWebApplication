@@ -712,7 +712,6 @@ function createPopup(details, rowId, type, id) {
                 }
                 
             });
-            console.log(sectionSelector)
         })
         .catch(error => {
             console.error("Error fetching sections:", error);
@@ -722,7 +721,6 @@ function createPopup(details, rowId, type, id) {
                 .then(res => res.json())
                 .then(data => {
                 data.forEach(lot => {
-                    console.log(lot)
                     if(lot.lot.number !== lotSelector.value){
                         const opt = document.createElement("option");
                         opt.value = lot.lot.number;
@@ -754,7 +752,6 @@ function createPopup(details, rowId, type, id) {
                 console.error(err);
                 portionSelector.innerHTML = '<option value="">Error loading portions</option>';
             });
-        // });
         sectionSelector.addEventListener("change", () => {
             const sectionId = sectionSelector.value;
             lotSelector.innerHTML = '<option value="">Loading lots...</option>';
@@ -856,7 +853,6 @@ async function saveChanges(type) {
             "lid": lotInfo.lid
         }
         const data = JSON.stringify(resident);
-        console.log(data);
         try {
             const response = await fetch(`${API_BASE_URL}/residents/update`,  {
                 method:'PUT',
@@ -878,7 +874,6 @@ async function saveChanges(type) {
             }
 
             const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
-            console.log(element)
             element.innerHTML = `
                 <td>${resident.firstName || ""}</td>
                 <td>${resident.middleName || ""}</td>
