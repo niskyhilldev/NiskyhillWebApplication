@@ -2,21 +2,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name');
     const resultsDiv = document.getElementById('searchResults');
     const statusDiv = document.getElementById('searchStatus');
-    const API_BASE_URL = 'http://localhost:8080/residents';
+    const API_BASE_URL = 'http://localhost:8080';
 
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
     let allResidents = [];
+    let allSections = [];
 
     const sectionFilter = document.getElementById('sectionFilter');
     const yearFilter = document.getElementById('yearFilter');
+
+    getSections();
+    addYearsToFilter();
 
     sectionFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
         displaySearchResults();
     })
 
-    yearFilter.addEventListener('input', () => {
+    yearFilter.addEventListener('change', () => {
         currentPage = 1; //reset the page on each new search
         displaySearchResults();
     });
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsDiv.innerHTML = '';
 
         try {
-            const response = await fetch(`${API_BASE_URL}/search?name=${(name)}`);
+            const response = await fetch(`${API_BASE_URL}/residents/search?name=${(name)}`);
             if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
@@ -50,18 +54,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function getSections(){
+        try{
+            const sections = await fetch(`${API_BASE_URL}/sections/all`);
+            if (!sections.ok) throw new Error(`Error while searching retrieving sections.`)
+
+            allSections = await sections.json(); //store all sections
+
+            allSections.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.name;
+                option.textContent = section.name;
+                sectionFilter.appendChild(option);
+            })
+        }catch(error){
+            console.error('Sections retrieval error:', error);
+        }
+    }
+
+    function addYearsToFilter(){
+        const currentYear = new Date().getFullYear();
+        for(let year = currentYear; year >= 1800; year--){
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearFilter.appendChild(option);
+        }
+    }
+
     function displaySearchResults() {
         const selectedSection = sectionFilter.value;
         const selectedYear = yearFilter.value.trim();
         
         let filteredResidents = allResidents;
         
-        // Filter by section
         if (selectedSection) {
             filteredResidents = filteredResidents.filter(r => r.sectionName === selectedSection);
         }
         
-        // Filter by death year
         if (selectedYear) {
             filteredResidents = filteredResidents.filter(r => {
                 if (!r.burialDate) return false;

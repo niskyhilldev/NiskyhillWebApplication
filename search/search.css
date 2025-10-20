@@ -340,13 +340,15 @@ a {
     background: #f6f6f6;
     cursor: pointer;
     min-width: 200px;
-    margin-left: 10%;
     font-family: 'Lexend', sans-serif;
     color: #333333; 
     border: none;
     height: 2rem;
     padding: 14px;  
     margin-bottom: 15px; 
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 .search-input::placeholder,
@@ -441,11 +443,12 @@ a {
 .input-title2{
   display: inline-block; 
   width: 80%; 
-  margin-left: 10%; 
-  padding: 0.6rem; 
+  padding: 0.2rem; 
   font-weight: bold; 
   font-size: 1.2rem; 
   font-family: 'Instrument Sans', sans-serif;
+  text-align: center;
+  min-width: 250px;
 }
 
 @media (max-width: 600px){
@@ -458,15 +461,6 @@ a {
       text-align: center;
       margin-left: 0;
       width: 100%;
-    }
-    .center{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .sectionFilter{
-      margin-left: 0;
     }
   }
 
@@ -597,6 +591,23 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.filterFlex{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 7rem;
+}
+
+@media (max-width: 600px){
+  .filterFlex{ 
+    flex-direction: column;
+    gap: 0;
+  }
+  .input-title2{
+    min-width: 0;
+  }
 }
 
 

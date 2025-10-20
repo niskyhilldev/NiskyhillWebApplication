@@ -1348,3 +1348,66 @@ document.getElementById("closeResidentFormBtn").addEventListener("click", functi
     document.getElementById("addResidentForm").style.display = "none";
     document.getElementById('showResidentFormBtn').style.display = "block";
 });
+
+
+
+
+
+// --------- Nav Bar Session Tracking Logic------------------>
+
+document.addEventListener("DOMContentLoaded", () => { 
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileWrapper = document.getElementById('profileWrapper');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const resetPasswordLink = document.getElementById('resetPasswordLink');
+    const logoutError = document.getElementById('logoutErrorText');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userRole  = document.getElementById('role');
+
+    // click on the Person Icon
+    profileIcon.addEventListener('click', () => {
+        logoutError.textContent = "";
+        profileDropdown.style.display =
+        profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Click off the person icon
+    document.addEventListener('click', (e) => {
+        if (!profileWrapper.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+        }
+    });
+
+    // click the logout button
+    logoutBtn.addEventListener('click', () => {
+        handleLogout(logoutError);
+    });
+
+    // click the reset password text
+    resetPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent navigation
+    });
+});
+
+async function handleLogout(logoutError) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, { 
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      window.location.href = './admin/dashboard.html'; // redirect after successful logout
+    } else {
+      logoutError.textContent = "Error Logging Out";
+      const errorData = await response.json();
+    }
+  } catch (err) {
+    logoutError.textContent = "Error Logging Out";
+  }
+}

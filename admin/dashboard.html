@@ -10,6 +10,38 @@
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
 </head>
 <body>
+
+    <nav class='navBar'>
+        <div class="navLogo">
+            <span class="topText"><a href="../index.html">Nisky Hill</a></span>
+            <span class="bottomText"><a href="../index.html">Cemetery</a></span>
+        </div>
+
+        <div class="headerContainer">
+            <h1 class="adminHeader">Administration</h1>
+        </div>
+
+        <div class="profile-wrapper" id="profileWrapper">
+            <div class="profile-icon" id="profileIcon">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="13" r="12" fill="#0d2543"/>
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#af8c30"/>
+                </svg>
+            </div>
+
+            <div class="profile-dropdown" id="profileDropdown">
+                <p><strong id="userName">John Doe</strong></p>
+                <p id="userEmail">johndoe@example.com</p>
+                <p class="role" id="userRole">Manager</p>
+                <hr>
+                <a href="#" class="reset-link" id="resetPasswordLink">Reset Password</a>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+                <p id="logoutErrorText" class="logoutError"></p>
+            </div>
+        </div>
+    </nav>
+
+
     <h1>Lots</h1>
     <h2 style="text-align:center;">Search for a Lot</h2>
     <div class="search-container">
