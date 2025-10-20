@@ -67,30 +67,20 @@
     <h2 style="text-align:center;">Add a Lot</h2>
     <button id="showLotFormBtn" class="showButton">+</button>
     <div id="addLotForm" style="display: None;">
-        <form id="newLotForm">            
+        <form id="newLotForm">    
+            <label for="sectionId">Section*:</label>
+            <select id="sectionId" required>
+                <option value="">Loading...</option>
+            </select>
+
             <label for="addLotNumber">Lot Number*:</label>
             <input type="text" id="addLotNumber" required>
             
             <label for="addLotPortion">Lot Portion*:</label>
             <input type="text" id="addLotPortion" required>
             
-            <label for="sectionId">Section*:</label>
-            <input type="text" id="sectionId" required>
-            
-            <label for="ownerFirst">Owner First Name:</label>
+            <label for="ownerFirst">Owner:</label>
             <input type="text" id="ownerFirst">
-            
-            <label for="ownerMiddle">Owner Middle Name:</label>
-            <input type="text" id="ownerMiddle">
-            
-            <label for="ownerLast">Owner Last Name:</label>
-            <input type="text" id="ownerLast">
-
-            <label for="ownerSuffix">Owner Suffix:</label>
-            <input type="text" id="ownerSuffix">
-
-            <label for="organization">Organization:</label>
-            <input type="text" id="organization">
 
             <button type="submit">Add Entry</button>
         </form>
