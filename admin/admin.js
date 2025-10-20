@@ -174,7 +174,62 @@ async function performLotSearch() {
         console.error('Search error:', error);
     }
 }
+async function performLotSearch2() {
+    const section = document.getElementById("searchSection").value.trim();
+    const lot = document.getElementById("searchLotPlots").value.trim();
 
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+        console.log(section)
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        console.log(lots);
+
+        // Example: store results and display them
+        plotResults = lots;
+        populateTable(lots, 'plots');
+
+    } catch (error) {
+        // statusDiv.innerHTML = `Error searching: ${error.message}`;
+        const tableBody = document.getElementById("resLotTableBody");
+
+        // Clear any previous rows
+        tableBody.innerHTML = "";
+
+        // Create a row
+        const row = document.createElement("tr");
+
+        // Create a single cell that spans all columns
+        const cell = document.createElement("td");
+        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
+        cell.textContent = "No results found";
+        cell.style.textAlign = "center"; // optional: center the text
+
+        // Append the cell to the row, and row to the table body
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        console.error('Search error:', error);
+    }
+}
 function performPlotSearch() {
     let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
     let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
@@ -325,7 +380,7 @@ function populateTable(filteredData, type) {
         });
     }
     else if(type === 'plots'){
-        const tableBody = document.getElementById("plotTableBody");
+        const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
         if (filteredData.length === 0) {
@@ -337,7 +392,7 @@ function populateTable(filteredData, type) {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.lot.sectionName || ""}</td>
+                <td>${entry.lot.section.name || ""}</td>
                 <td>${entry.lot.number || ""}</td>
                 <td>${entry.lot.descriptor || ""}</td>
                 <td>
