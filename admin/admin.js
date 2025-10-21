@@ -711,9 +711,6 @@ function createPopup(details, rowId, type, id) {
             <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.number || ''}"></label>
             <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.descriptor || ''}"></label>
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="viewPlots('${details.section || ''}', '${details.number || ''}', '${details.descriptor || ''}')">View Plots</button>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
             <button onclick="closePopup()">Close</button>
