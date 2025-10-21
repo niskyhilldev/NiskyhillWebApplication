@@ -12,7 +12,7 @@ const plotsData = {
     "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
     "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
 };
-const sections = [
+let sections = [
     { name: "A", file: null },
     { name: "B", file: null },
     { name: "C", file: null }
@@ -1095,28 +1095,51 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
 document.getElementById('newLotForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
+   
+    // const sectionId = sections[document.getElementById('sectionId').value]
+    const sectionName = document.getElementById('sectionId').value;
+    let sectionId = null;
+    for(let i = 0; i < sections.length; i++){
+        if (sections[i]['name'] === sectionName){
+            sectionId = sections[i]['sid'];
+            break;
+        }
+    }
 
-    // Get all the values from the form
-    const lotNumber = document.getElementById('addLotNumber').value;
-    const lotPortion = document.getElementById('addLotPortion').value;
-    const section = document.getElementById('sectionId').value;
-    const ownerFirst = document.getElementById('ownerFirst').value;
-    const ownerMiddle = document.getElementById('ownerMiddle').value;
-    const ownerLast = document.getElementById('ownerLast').value;
-    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
+    newLot = {
+        number: document.getElementById('addLotNumber').value,
+        descriptor: document.getElementById('addLotPortion').value,
+        owner: document.getElementById('ownerFirst').value,
+        mapXCord: null,
+        mapYCord: null,
+        sid: sectionId
+    }
+
+    console.log(newLot)
+
+
+    fetch(`${API_BASE_URL}/lots/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newLot) 
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        }
+    );
+
     
-    // Add new entry to the data object
-    plotsData[newId] = {
-        lotNumber: lotNumber,
-        lotPartition: lotPortion,
-        section: section,
-        owner: `${ownerFirst || ""} ${ownerMiddle || ""} ${ownerLast || ""}`,
-        // internmentRecord: record,
-    };
+    // Clear the form fields
+    document.getElementById('newResidentForm').reset();
+
+    document.getElementById("addResidentForm").style.display = "none";   // hide form
+    document.getElementById("showResidentFormBtn").style.display = "block";    // show +
 
     
     // Clear the form fields
@@ -1319,6 +1342,7 @@ fetch(API_BASE_URL + "/sections/all")
     return response.json();
   })
   .then(data => {
+    sections = data;
     selectEl = document.getElementById("resCemSection");
     selectEl.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
