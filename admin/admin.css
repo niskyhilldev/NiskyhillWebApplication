@@ -167,6 +167,12 @@ h1 {
   color: white;
 }
 
+@media (max-width: 1000px){
+  .adminHeader{
+    display: none;
+  }
+}
+
 .profile-wrapper {
   position: relative;
   z-index: 10;
