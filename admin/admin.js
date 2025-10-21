@@ -398,7 +398,7 @@ function populateTable(filteredData, type) {
                 <td>${entry.lot.number || ""}</td>
                 <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${entry.lot.lid}', 'plots')">View More</button>
+                    <button onclick="viewMore('${entry || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${entry.lot.lid}', 'plots')">View More</button>
                     <button onclick="deleteEntry('${entry.lot.lid}', 'plots')">Delete</button>
                 </td>
             `;
@@ -461,11 +461,37 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
         details = lotResults[rowId];
     }
     else if (type == 'plots'){
-        details = {
-            "lotNumber": plotResults[rowId].lot.number, 
-            "section": plotResults[rowId].lot.sectionName, 
-            "lotPartition": plotResults[rowId].lot.descriptor, 
-            "owner": `${plotResults[rowId].firstName || ''} ${plotResults[rowId].middleName || ''} ${plotResults[rowId].lastName || ''}`
+        try {
+            console.log(row)
+            
+            const response = await fetch(`${API_BASE_URL}/lots/find/${row}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const lots = await response.json();
+            // statusDiv.innerHTML = '';
+            //send call to display results with filtered data and name entered
+            // displaySearchResults(residents, name);
+            console.log(lots)
+            // residentResults = residents;
+            details = lots;
+            id = lots.lid;
+            
+            //network error
+            
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
         }
     }
     else if(type === 'burial'){
@@ -673,18 +699,21 @@ function createPopup(details, rowId, type, id) {
         }
     }
     else if (type === 'plots') {
+        console.log(details);
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
+        <div class="popup" id="popup" data-row-id="${details.lid}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.lotPartition || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label for="sectionNumber">Section:</label>
+            <select id="sectionNumber" required disabled>
+                <option value=${details.section.name || ''}>${details.section.name || ''}</option>
+            </select>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.number || ''}"></label>
+            <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.descriptor || ''}"></label>
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
-            <label>Internment Records: <input type="file" id="internmentRecords" disabled onchange="handleFileUpload(event)">
                 <a id="downloadLink" style="display:none;" download>Download File</a>
             </label>
-            <button onclick="viewPlots('${details.section || ''}', '${details.lotNumber || ''}', '${details.lotPartition || ''}')">View Plots</button>
+            <button onclick="viewPlots('${details.section || ''}', '${details.number || ''}', '${details.descriptor || ''}')">View Plots</button>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
             <button onclick="closePopup()">Close</button>
@@ -868,6 +897,19 @@ function createPopup(details, rowId, type, id) {
                 console.error(err);
                 portionSelector.innerHTML = '<option value="">Error loading portions</option>';
             });
+        });
+    }
+    else if (type === 'plots'){
+        const sectionSelector = document.getElementById("sectionNumber");
+
+        sections.forEach(section => {
+            if(section.name !== sectionSelector.value){
+                const option = document.createElement("option");
+                option.value = section.name;
+                option.textContent = section.name;
+                sectionSelector.appendChild(option);
+            }
+            
         });
     }
 }
