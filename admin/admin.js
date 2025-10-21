@@ -389,15 +389,17 @@ function populateTable(filteredData, type) {
         }
 
         filteredData.forEach((entry, index) => {
+            console.log(entry)
             const row = document.createElement("tr");
+            row.dataset.lid = entry.lot.lid; 
 
             row.innerHTML = `
                 <td>${entry.lot.section.name || ""}</td>
                 <td>${entry.lot.number || ""}</td>
                 <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${index}', 'plots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${entry.lot.lid}', 'plots')">View More</button>
+                    <button onclick="deleteEntry('${entry.lot.lid}', 'plots')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -1134,12 +1136,6 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
         }
     );
 
-    
-    // Clear the form fields
-    document.getElementById('newResidentForm').reset();
-
-    document.getElementById("addResidentForm").style.display = "none";   // hide form
-    document.getElementById("showResidentFormBtn").style.display = "block";    // show +
 
     
     // Clear the form fields
@@ -1212,8 +1208,18 @@ function deleteEntry(id, type) {
         populateTable(lotResults, 'lots');
     }
     else if(type === 'plots'){
-        plotResults[id] = null;
-        populateTable(plotResults, 'plots');
+        fetch(`${API_BASE_URL}/lots/delete/${id}`, {
+            method: "DELETE",
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("Success:", result);
+            })
+            .catch(error => {
+                window.alert("Error deleting resident" + error);
+        });
+        const row = document.querySelector(`tr[data-lid="${id}"]`);
+        row.remove();
     }
 }
 function viewPlots(section, lotNumber, lotPartition){
