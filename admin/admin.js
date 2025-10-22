@@ -191,7 +191,9 @@ async function performLotSearch2() {
 
         if (!response.ok) {
             if (response.status === 404) {
-                throw new Error('No lots found matching search criteria');
+                // throw new Error('No lots found matching search criteria');
+                populateTable([], 'plots');
+                return;
             } else if (response.status === 400) {
                 throw new Error('Invalid search parameters');
             } else if (response.status === 500) {
@@ -354,7 +356,7 @@ function populateTable(filteredData, type) {
         });
 
     }
-    if(type === 'burial'){
+    else if(type === 'burial'){
         const tableBody = document.getElementById("burialTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
@@ -382,8 +384,8 @@ function populateTable(filteredData, type) {
     else if(type === 'plots'){
         const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
-
         if (filteredData.length === 0) {
+            
             tableBody.innerHTML = "<tr><td colspan='4'>No results found</td></tr>";
             return;
         }
@@ -1041,15 +1043,85 @@ async function saveChanges(type) {
         closePopup();
     }
     else if (type === 'plots'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        let oldLot = {};
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (plotResults[rowId]){
-            plotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            plotResults[rowId].section = document.getElementById("section").value;
-            plotResults[rowId].lotPartition = document.getElementById("lotPartition").value;
-            plotResults[rowId].owner = document.getElementById("lotOwner").value;
+
+        try {
+            console.log(rowId)
+            
+            const response = await fetch(`${API_BASE_URL}/lots/find/${rowId}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const lots = await response.json();
+            // statusDiv.innerHTML = '';
+            //send call to display results with filtered data and name entered
+            // displaySearchResults(residents, name);
+            console.log(lots)
+            oldLot = lots;
+            
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
         }
-        populateTable(plotResults, 'plots'); 
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const lot = {
+            lid: rowId,
+            number: document.getElementById('lotNumber').value,
+            descriptor: document.getElementById('lotPartition').value,
+            owner: document.getElementById('lotOwner').value,
+            mapXCord: oldLot.mapXCord,
+            mapYCord: oldLot.mapYCord,
+            sid: getSectionId(document.getElementById('sectionNumber').value,)
+        }
+        console.log(lot);
+        const data = JSON.stringify(lot);
+        try {
+            const response = await fetch(`${API_BASE_URL}/lots/update`,  {
+                method:'PUT',
+                headers: {
+                    'Content-Type': 'application/json', // Indicate that the request body contains JSON data
+                },
+                body: data,
+            })
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${rowId} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const element = document.querySelectorAll(`tr[data-lid="${rowId}"]`)[0];
+            element.innerHTML = `
+                <td>${getSectionName(lot.sid) || ""}</td>
+                <td>${lot.number || ""}</td>
+                <td>${lot.descriptor || ""}</td>
+                <td>
+                    <button onclick="viewMore('${lot || ""}', '${lot.middleName || ""}', '${lot.lastName || ""}', '${lot.burialDate || ""}', '${lot.lid}', 'plots')">View More</button>
+                    <button onclick="deleteEntry('${lot.lid}', 'plots')">Delete</button>
+                </td>
+            `;
+            const responseData = await response.text();
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Put error:', error);
+        }
     }
         
 }
@@ -1379,6 +1451,22 @@ function performFileSearch() {
     });
 }
 
+function getSectionId(name){
+    for(let i = 0; i < sections.length; i++){
+        if(sections[i]['name'] === name){
+            return sections[i]['sid'];
+        }
+    }
+    return null;
+}
+function getSectionName(id){
+    for(let i = 0; i < sections.length; i++){
+        if(sections[i]['sid'] === id){
+            return sections[i]['name'];
+        }
+    }
+    return null;
+}
 
 //Get sections and update dropdowns
 fetch(API_BASE_URL + "/sections/all")
