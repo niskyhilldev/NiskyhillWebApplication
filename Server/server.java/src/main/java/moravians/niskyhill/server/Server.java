@@ -1,22 +1,22 @@
 package moravians.niskyhill.server;
 
 import java.util.Map;
-
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.staticfiles.Location;
 import moravians.niskyhill.server.auth.AuthHandler;
-import moravians.niskyhill.server.auth.UserStore;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.dtos.LoginDTO;
 import moravians.niskyhill.server.dtos.NewLotDTO;
 import moravians.niskyhill.server.dtos.NewResidentDTO;
 import moravians.niskyhill.server.dtos.UpdateLotDTO;
 import moravians.niskyhill.server.dtos.UpdateResidentDTO;
+import moravians.niskyhill.server.dtos.UpdateUserPasswordDTO;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.LotService;
 import moravians.niskyhill.server.services.ResidentService;
 import moravians.niskyhill.server.services.SectionService;
+import moravians.niskyhill.server.services.UserService;
 import io.javalin.http.Cookie;
 
 
@@ -71,9 +71,10 @@ public class Server {
         // Login to the system (generates session token and sets it in the cookie)
         app.post("/auth/login", ctx -> {
             LoginDTO loginDTO = ctx.bodyAsClass(LoginDTO.class);
+            Long userId = UserService.findUser(loginDTO.email(), loginDTO.password(), database);
 
-            if (UserStore.isValidUser(loginDTO.email(), loginDTO.password())) { // see if the user exists in the system
-                String token = AuthHandler.generateToken(loginDTO.email()); // generate a token for that user
+            if (userId != null) { // see if the user exists in the system
+                String token = AuthHandler.generateToken(userId); // generate a token for that user
 
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
                 cookie.setMaxAge(3600);  // set Cookie for one Hour
@@ -95,6 +96,23 @@ public class Server {
 
             ctx.cookie(cookie);
             ctx.json(Map.of("message", "Logged out successfully"));
+        });
+
+        // Route to get the current user of the system
+        app.get("auth/user", ctx -> {
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
+            Long currentUserId = AuthHandler.getAuthenticatedUserId(ctx);
+            ctx.json(UserService.getUser(currentUserId, database));
+        });
+
+        // Route to update a user password
+        app.post("auth/update/password", ctx -> {
+            AuthHandler.requireRouteAuth(ctx); // Check Authorization
+            Long currentUserId = AuthHandler.getAuthenticatedUserId(ctx);
+            UpdateUserPasswordDTO updateUserPasswordDTO = ctx.bodyAsClass(UpdateUserPasswordDTO.class);
+            if (UserService.setPassword(currentUserId, updateUserPasswordDTO.password(), database)){
+                ctx.status(200).result("Password Updated Successfully");
+            }
         });
 
         // Get all residents (and their lot + sections)

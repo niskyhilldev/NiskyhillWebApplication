@@ -25,9 +25,9 @@ public class AuthHandler {
      * @param email the email of the user
      * @return the JWT token associated with the user
      */
-    public static String generateToken(String email) {
+    public static String generateToken(Long userId) {
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(userId.toString())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
             .signWith(key)
             .compact();
@@ -36,16 +36,18 @@ public class AuthHandler {
     /**
      * Validates a JWT token
      * @param token the JWT token to be validated
-     * @return email of the user the token belongs to if valid, null otherwise
+     * @return userId of the user the token belongs to if valid, null otherwise
      */
-    public static String validateToken(String token) {
+    public static Long validateToken(String token) {
         try {
-            return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+            String userId = Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody()
+                        .getSubject();
+            
+            return Long.parseLong(userId);
         } catch (Exception e) {
             return null;
         }
@@ -68,12 +70,10 @@ public class AuthHandler {
             token = ctx.cookie("token");
         }
 
-        String userEmail = validateToken(token);
-        if (userEmail == null) {
+        Long userId = validateToken(token);
+        if (userId == null) {
             throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized"); // throw exception and block route access 
         }
-        
-        ctx.attribute("userEmail", userEmail);
     }
 
     /**
@@ -83,15 +83,13 @@ public class AuthHandler {
      */
     public static void requirePageAuth(Context ctx) {
         String token = ctx.cookie("token");
-        String userEmail = validateToken(token);
+        Long userId = validateToken(token);
         
-        if (userEmail == null) {
-            ctx.redirect("/login/login.html");
+        if (userId == null) {
+            ctx.redirect("/login/login.html"); // redirect to the login page
             ctx.skipRemainingHandlers();
             return;
         }
-        
-        ctx.attribute("userEmail", userEmail);
     }
 
     /**
@@ -99,7 +97,8 @@ public class AuthHandler {
      * @param ctx the context of the server request
      * @return the authenticated user's email
      */
-    public static String getAuthenticatedUser(Context ctx) {
-        return ctx.attribute("userEmail");
+    public static Long getAuthenticatedUserId(Context ctx) {
+        String token = ctx.cookie("token");
+        return validateToken(token);
     }
 }

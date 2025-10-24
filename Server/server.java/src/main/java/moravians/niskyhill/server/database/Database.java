@@ -14,6 +14,8 @@ import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
+import moravians.niskyhill.server.models.User;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -765,7 +767,7 @@ public class Database {
     }
 
 
-     public boolean deleteLot(Long lid) throws HttpStatusException {
+    public boolean deleteLot(Long lid) throws HttpStatusException {
         String q = """
                 DELETE FROM lot 
                 WHERE lid = ?
@@ -784,5 +786,95 @@ public class Database {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Lot with id " + lid, e);
         }
+    }
+
+
+    public User getUser(String email) throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM users
+                WHERE email = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()){
+                return new User(
+                    rs.getLong("uid"),
+                    rs.getString("email"),
+                    rs.getString("hashed_password"),
+                    rs.getString("salt"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("role")
+                );
+            }
+
+            return null;
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed Search for User " + email, e);
+        }
+    }
+
+    public boolean updateUserPassword(Long userId, String password, String salt) throws HttpStatusException {
+        String q = """
+                Update users
+                SET 
+                    password =  ?,
+                    salt = ?
+                WHERE uid = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setString(1, password);
+            ps.setString(2, salt);
+            ps.setLong(3, userId);
+
+            if (ps.executeUpdate() < 1) {
+                return false;
+            }
+            return true;
+            
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed Update User Password", e);
+        }
+    }
+
+    public User getUser(Long userId) throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM users
+                WHERE uid = ?
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(q);
+            ps.setLong(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()){
+                return new User(
+                    rs.getLong("uid"),
+                    rs.getString("email"),
+                    rs.getString("hashed_password"),
+                    rs.getString("salt"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("role")
+                );
+            }
+
+            return null;
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Find User " + userId, e);
+        }
+
     }
 }
