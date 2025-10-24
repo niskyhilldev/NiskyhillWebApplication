@@ -42,6 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 setTimeout(() => {
                     window.location.href = "/admin/dashboard.html";
                 },1000)
+
+                setTimeout(() => { // set timeout to redirect back to login screen when token expires 
+                    alert("Your session has expired. Please log in again.");
+                    window.location.href = "/login/login.html";
+                }, 8000);
                 
 
             } else {
