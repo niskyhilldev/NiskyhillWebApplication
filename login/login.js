@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } else {
                 // Login failed
-                errorMessage.textContent = data || "Invalid Credentials";
+                errorMessage.textContent = "Invalid Credentials";
             }
         } catch (error) {
             console.error('Login error:', error);

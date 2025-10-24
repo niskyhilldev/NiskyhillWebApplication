@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } else {
                 // Login failed
-                errorMessage.textContent = data || "Invalid Credentials";
+                errorMessage.textContent = "Error Updating Password"
             }
         } catch (error) {
             console.error('Error Updating Password', error);
