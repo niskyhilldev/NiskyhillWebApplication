@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutError = document.getElementById('logoutErrorText');
     const userName = document.getElementById('userName');
     const userEmail = document.getElementById('userEmail');
-    const userRole  = document.getElementById('role');
+    const userRole  = document.getElementById('userRole');
 
     // click on the Person Icon
     profileIcon.addEventListener('click', () => {
