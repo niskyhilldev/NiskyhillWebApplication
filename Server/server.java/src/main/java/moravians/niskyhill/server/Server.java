@@ -83,7 +83,7 @@ public class Server {
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Login successful"));
             } else {
-                ctx.status(401).result("Invalid Credentials");
+                ctx.status(401).json(Map.of("message", "Login Failed"));
             }
         });
 
@@ -105,13 +105,17 @@ public class Server {
             ctx.json(UserService.getUser(currentUserId, database));
         });
 
-        // Route to update a user password
-        app.post("auth/update/password", ctx -> {
+        // Route to update a user password (and remove session token)
+        app.put("auth/password/update", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization
             Long currentUserId = AuthHandler.getAuthenticatedUserId(ctx);
             UpdateUserPasswordDTO updateUserPasswordDTO = ctx.bodyAsClass(UpdateUserPasswordDTO.class);
             if (UserService.setPassword(currentUserId, updateUserPasswordDTO.password(), database)){
-                ctx.status(200).result("Password Updated Successfully");
+                Cookie cookie = new Cookie("token", "");
+                cookie.setMaxAge(0);    // Deletes the cookie
+                cookie.setHttpOnly(true);
+                ctx.cookie(cookie);
+                ctx.json(Map.of("message", "Password Updated Successfully"));
             }
         });
 

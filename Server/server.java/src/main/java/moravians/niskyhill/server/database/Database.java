@@ -824,7 +824,7 @@ public class Database {
         String q = """
                 Update users
                 SET 
-                    password =  ?,
+                    hashed_password =  ?,
                     salt = ?
                 WHERE uid = ?
                 """;
