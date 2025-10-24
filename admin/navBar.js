@@ -72,9 +72,9 @@ async function setCurrentUserInfo(userName, userEmail, userRole, logoutError){
 
         if (response.ok){
             const data = await response.json();
-            userName.textContent = `${userDTO.firstName} ${userDTO.lastName}`;
-            userEmail.textContent = userDTO.email;
-            userRole.textContent = userDTO.role;
+            userName.textContent = `${data.firstName} ${data.lastName}`;
+            userEmail.textContent = data.email;
+            userRole.textContent = data.role;
         } else {
             logoutError.textContent = "Error Displaying User Information";
         }
