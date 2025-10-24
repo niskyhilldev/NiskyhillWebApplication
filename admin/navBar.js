@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // click the reset password text
     resetPasswordLink.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent navigation
+        window.location.href = "/admin/update_password/updatepassword.html"; // redirect to the reset password page
     });
 });
 
