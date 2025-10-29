@@ -840,31 +840,7 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
     document.getElementById("addLotForm").style.display = "none";   // hide form
     document.getElementById("showLotFormBtn").style.display = "block";    // show +
 });
-document.getElementById('newFileForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // // Generate a new unique ID based on the highest existing key in data
-    // const newId = Object.keys(plotsData).length > 0 
-    //     ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-    //     : 0;
 
-    // // Get all the values from the form
-    // const section = document.getElementById('addSectionId').value;
-    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // // Add new entry to the data object
-    // sections[newId] = {
-    //     section: section,
-    //     internmentRecord: record,
-    // };
-
-    
-    // Clear the form fields
-    document.getElementById('newFileForm').reset();
-
-    document.getElementById("addFileForm").style.display = "none";   // hide form
-    document.getElementById("showFileFormBtn").style.display = "block";  //show +
-});
 
 document.getElementById("showLotFormBtn").addEventListener("click", () => {
     document.getElementById("addLotForm").style.display = "block";   // show form
@@ -873,10 +849,6 @@ document.getElementById("showLotFormBtn").addEventListener("click", () => {
 document.getElementById("showResidentFormBtn").addEventListener("click", () => {
     document.getElementById("addResidentForm").style.display = "block";   // show form
     document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
-});
-document.getElementById("showFileFormBtn").addEventListener("click", () => {
-    document.getElementById("addFileForm").style.display = "block";   // show form
-    document.getElementById("showFileFormBtn").style.display = "none";    // hide +
 });
 
 function deleteEntry(id, type) {
@@ -1029,4 +1001,8 @@ lotSelect.addEventListener("change", () => {
 document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
     document.getElementById("addResidentForm").style.display = "none";
     document.getElementById('showResidentFormBtn').style.display = "block";
+});
+document.getElementById("closeLotFormBtn").addEventListener("click", function () {
+    document.getElementById("addLotForm").style.display = "none";
+    document.getElementById('showLotFormBtn').style.display = "block";
 });

@@ -68,7 +68,9 @@
     <h2 style="text-align:center;">Add a Lot</h2>
     <button id="showLotFormBtn" class="showButton">+</button>
     <div id="addLotForm" style="display: None;">
-        <form id="newLotForm">    
+        <form id="newLotForm">   
+            <button type="button" class="close-btn" id="closeLotFormBtn">&times;</button>
+            
             <label for="sectionId">Section*:</label>
             <select id="sectionId" required>
                 <option value="">Loading...</option>
@@ -202,47 +204,5 @@
             <button type="submit">Add Entry</button>
         </form>
     </div>
-
-    <h1>Files</h1>
-    <h2 style="text-align:center;">View Files for a Lot</h2>
-    <div class="search-container">
-        <label for="searchSectionPlots">Section:</label>
-        <input type="text" id="searchSectionPlots" placeholder="Search section">
-        <label for="searchLotFiles">Lot:</label>
-        <input type="text" id="searchLotFiles" placeholder="Search lot">
-        <button onclick="performFileSearch()">Search</button>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Partition</th>
-                <th>File</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="fileTableBody">
-            <!-- Table content will be dynamically populated -->
-        </tbody>
-    </table>
-    <h2 style="text-align:center;">Add Files</h2>
-    <button id="showFileFormBtn" class="showButton">+</button>
-    <div id="addFileForm" style="display: none;">
-        <form id="newFileForm">                        
-            <label for="fileSectionId">Section*:</label>
-            <input type="text" id="fileSectionId" required>
-
-            <label for="fileLotId">Lot*:</label>
-            <input type="text" id="fileLotId" required>
-
-            <label for="filePartition">Partition*:</label>
-            <input type="text" id="filePartition" required>
-            
-            <label for="newFile">Files*:</label>
-            <input type="file" id="newFile" onchange="handleFileUpload(event)" multiple required>
-            
-            <button type="submit">Add Entry</button>
-        </form>
-        
-    </div>
+  
 </body>
