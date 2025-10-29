@@ -24,37 +24,6 @@ let ownerResults, burialResults, residentResults, lotResults, plotResults, plotP
 
 API_BASE_URL = 'http://localhost:8080';
 
-function performBurialSearch() {
-    let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchOwnOrg").value.trim().toLowerCase();
-
-    let results = Object.values(data).filter(entry => {
-        if(entry.dob){
-            return false;
-        }
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
-            }
-            return false;
-        }
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    burialResults = results;
-    populateTable(results, 'burial');
-}
 async function performResidentSearch() {
     let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
 
@@ -301,31 +270,6 @@ function populateTable(filteredData, type) {
         });
 
     }
-    else if(type === 'burial'){
-        const tableBody = document.getElementById("burialTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'burial')">Bury</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
     else if(type === 'plots'){
         const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
@@ -513,119 +457,7 @@ function createPopup(details, rowId, type, id) {
         </div>
     `;
     }
-    else if (type === 'owners'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('owners')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
-    else if (type === 'lots'){
-        if(details.owns && !details.dod){ //owner
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else if (details.owns){ //owner and resident
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>Owned Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Owned Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Owned Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else{
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-    }
     else if (type === 'plots') {
-        console.log(details);
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
         <div class="popup" id="popup" data-row-id="${details.lid}">
@@ -639,52 +471,6 @@ function createPopup(details, rowId, type, id) {
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
-    else if (type === 'burial') {
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" value="${details.lotNumber || ''}"></label>
-            <label>Lot Partition: <input type="text" id="lotPartition" value="${details.lotPartition || ''}"></label>
-            <label>Section: <input type="text" id="section" value="${details.section || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" value="${details.dod || ''}"></label>
-            <label>Vessel: 
-                <select id="vessel">
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                </select>
-            </label>
-            <label>Internment Records: <input type="file" id="internmentRecords" onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="saveChanges('burial')">Save</button>
-            <button onclick="closePopup()">Cancel</button>
-        </div>
-        `;
-    }
-    else if (type === 'plotPeople') {
-        const peopleList = [];
-    
-        Object.values(details).forEach(person => {
-            if (person.buriedFirst && person.buriedLast) {
-                peopleList.push(`${person.buriedFirst} ${person.buriedMiddle || ""} ${person.buriedLast}`.trim());
-            }
-        });
-    
-        if (peopleList.length === 0) {
-            peopleList.push('No records available');
-        }
-    
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>People in Lot</h3>
-            <p>${peopleList.join('<br>')}</p>
             <button onclick="closePopup()">Close</button>
         </div>
         `;
@@ -979,31 +765,7 @@ async function saveChanges(type) {
             console.error('Put error:', error);
         }
     }
-        
 }
-
-
-function toggleForm() {
-    const form = document.getElementById('addOwnerForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleResForm() {
-    const form = document.getElementById('addResidentForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleLotForm() {
-    const form = document.getElementById('addLotForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleSectionForm() {
-    const form = document.getElementById('addSectionForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleFileForm() {
-    const form = document.getElementById('addFileForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
 
 
 document.getElementById('newResidentForm').addEventListener('submit', function(event) {
@@ -1140,7 +902,6 @@ document.getElementById("showFileFormBtn").addEventListener("click", () => {
     document.getElementById("showFileFormBtn").style.display = "none";    // hide +
 });
 
-
 function deleteEntry(id, type) {
     if(type === 'residents'){
         fetch(`${API_BASE_URL}/residents/delete/${id}`, {
@@ -1156,14 +917,6 @@ function deleteEntry(id, type) {
         const row = document.querySelector(`tr[data-rid="${id}"]`);
         row.remove();
     }
-    else if(type === 'owners'){
-        ownerResults[id] = null;
-        populateTable(ownerResults, 'owners');
-    }
-    else if(type === 'lots'){
-        lotResults[id] = null;
-        populateTable(lotResults, 'lots');
-    }
     else if(type === 'plots'){
         fetch(`${API_BASE_URL}/lots/delete/${id}`, {
             method: "DELETE",
@@ -1178,123 +931,6 @@ function deleteEntry(id, type) {
         const row = document.querySelector(`tr[data-lid="${id}"]`);
         row.remove();
     }
-}
-function viewPlots(section, lotNumber, lotPartition){
-    let results = Object.values(data).filter(entry => {
-        console.log(entry);
-        
-        if (section && lotNumber && lotPartition && entry.section && entry.section.toLowerCase() === section.toLowerCase() 
-        && entry.lotNumber && entry.lotNumber.toLowerCase() === lotNumber.toLowerCase() 
-        && entry.lotId && entry.lotId.toLowerCase() === lotPartition.toLowerCase()) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    plotPeopleResults = results;
-    createPopup(results, 0, 'plotPeople');
-}
-function showEditor() {
-    const editor = document.getElementById("sectionEditor");
-    editor.style.display = "block";
-
-    const tableBody = document.getElementById("sectionTableBody");
-    tableBody.innerHTML = ""; // Clear existing rows
-
-    sections.forEach((section, index) => {
-        const row = document.createElement("tr");
-
-        // Editable section name
-        const nameCell = document.createElement("td");
-        const nameInput = document.createElement("input");
-        nameInput.type = "text";
-        nameInput.value = section.name;
-        nameInput.oninput = (e) => sections[index].name = e.target.value;
-        nameCell.appendChild(nameInput);
-
-        // File upload
-        const fileCell = document.createElement("td");
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.onchange = (e) => sections[index].file = e.target.files[0];
-        fileCell.appendChild(fileInput);
-
-        row.appendChild(nameCell);
-        row.appendChild(fileCell);
-        tableBody.appendChild(row);
-    });
-}
-
-function saveSections() {
-    const tableBody = document.getElementById("sectionTableBody");
-    
-    // Clear existing rows to update them
-    tableBody.innerHTML = "";
-
-    sections.forEach((section) => {
-        const row = document.createElement("tr");
-
-        // Non-editable section name
-        const nameCell = document.createElement("td");
-        nameCell.textContent = section.name;
-
-        // Non-editable file information
-        const fileCell = document.createElement("td");
-        fileCell.textContent = section.file ? section.file.name : "No file available";
-
-        row.appendChild(nameCell);
-        row.appendChild(fileCell);
-        tableBody.appendChild(row);
-    });
-}
-
-function performFileSearch() {
-    const fileTableBody = document.getElementById("fileTableBody");
-    
-    // Clear existing table content
-    fileTableBody.innerHTML = "";
-
-    // Temporary file data
-    const tempFiles = [
-        { partition: "Northern Half", name: "File1.pdf", action: "Download" },
-        { partition: "Southern Half", name: "File2.docx", action: "Download" }
-    ];
-
-    // Populate the table with temporary files
-    tempFiles.forEach(file => {
-        const row = document.createElement("tr");
-
-        const fileCell = document.createElement("td");
-        fileCell.textContent = file.name;
-
-        const partitionCell = document.createElement("td");
-        partitionCell.textContent = file.partition;
-
-        const actionCell = document.createElement("td");
-        const actionButton = document.createElement("button");
-        actionButton.textContent = file.action;
-        actionButton.onclick = () => alert(`Downloading ${file.name}`);
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.style.marginLeft = "10px"; 
-        deleteButton.onclick = (event) => {
-            const rowIndex = event.target.parentNode.parentNode.rowIndex; // Get row index
-            document.querySelector("table").deleteRow(rowIndex); // Delete row from the table
-        };
-
-        actionCell.appendChild(actionButton);
-        actionCell.appendChild(deleteButton);
-        row.appendChild(partitionCell);
-        row.appendChild(fileCell);
-        row.appendChild(actionCell);
-
-        fileTableBody.appendChild(row);
-    });
 }
 
 function getSectionId(name){
