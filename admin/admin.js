@@ -630,7 +630,7 @@ async function saveChanges(type) {
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         const rid = popup.getAttribute("data-rid");
-        const lotInfo = await getLotInfo(document.getElementById("section").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value) 
+        const lotInfo = await getLotInfo(document.getElementById("sectionNumber").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value) 
         resident = {
             'rid': rid,
             "firstName": document.getElementById("buriedFirst").value,
@@ -904,6 +904,8 @@ document.getElementById("showFileFormBtn").addEventListener("click", () => {
 
 function deleteEntry(id, type) {
     if(type === 'residents'){
+        const confirmed = window.confirm("Are you sure you want to delete this resident?");
+        if (!confirmed) return; // Stop execution if the user cancels
         fetch(`${API_BASE_URL}/residents/delete/${id}`, {
             method: "DELETE",
             })
@@ -918,6 +920,8 @@ function deleteEntry(id, type) {
         row.remove();
     }
     else if(type === 'plots'){
+        const confirmed = window.confirm("Are you sure you want to delete this lot? It will also delete all residents associated with it!");
+        if (!confirmed) return; // Stop execution if the user cancels
         fetch(`${API_BASE_URL}/lots/delete/${id}`, {
             method: "DELETE",
             })
