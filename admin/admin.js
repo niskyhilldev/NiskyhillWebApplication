@@ -20,7 +20,7 @@ let sections = [
 
 
 let currentRow;
-let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
+let residentResults, lotResults, plotResults;
 
 API_BASE_URL = 'http://localhost:8080';
 
