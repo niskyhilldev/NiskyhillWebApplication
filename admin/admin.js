@@ -1,23 +1,6 @@
-const data = {
-    "0": { lotOwnNumber: "123", lotOwnId: "Northern Half", sectionOwn: "1",lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
-    "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { lotOwnNumber: "456", lotOwnId: "B", sectionOwn: "2", organization: "Nisky Hill", owns: true },
-    "3": { lotOwnNumber: "4", lotOwnId: "Northern Half", sectionOwn: "B", buriedFirst: "Matthew", buriedLast: "Bergin", owns: true}
-};
-const plotsData = {
-    "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
-    "1": { lotNumber: "456", section: "2", lotPartition: "Southern Third", owner: "Jane Smith" },
-    "2": { lotNumber: "789", section: "3", lotPartition: "Western Half of Northern Half", owner: "Nisky Hill Organization" },
-    "3": { lotNumber: "101", section: "4", lotPartition: "Eastern Quarter", owner: "Alice Johnson" },
-    "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
-    "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
-};
-let sections = [
-    { name: "A", file: null },
-    { name: "B", file: null },
-    { name: "C", file: null }
-];
-
+const data = {};
+const plotsData = {};
+let sections = [];
 
 let currentRow;
 let residentResults, lotResults, plotResults;
@@ -25,6 +8,7 @@ let residentResults, lotResults, plotResults;
 API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
+    //Call the api to get all the residents based off the name entered and display them
     let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
 
     try {
@@ -59,6 +43,7 @@ async function performResidentSearch() {
         }
 }
 async function performLotSearch() {
+    //Call the api to get all the residents based off the lot/section entered and display them
     const section = document.getElementById("searchSectionRes").value.trim();
     const lot = document.getElementById("searchLotRes").value.trim();
 
@@ -111,6 +96,7 @@ async function performLotSearch() {
     }
 }
 async function performLotSearch2() {
+    //Call the api to get all the plots based off the name entered and display them
     const section = document.getElementById("searchSection").value.trim();
     const lot = document.getElementById("searchLotPlots").value.trim();
 
@@ -166,33 +152,8 @@ async function performLotSearch2() {
         console.error('Search error:', error);
     }
 }
-function performPlotSearch() {
-    let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
-
-    fetch('http://localhost:8080/owners/all')
-        .then(response => response.json())
-        .then(serverData => {
-            let results = Object.values(serverData).filter(entry => {
-                if (section && lot && entry.lot.sectionName && entry.lot.sectionName.toLowerCase() === section && entry.lot.number && entry.lot.number.toLowerCase() === lot) {
-                    return true;
-                }
-                return false;
-            });
-
-            if (results.length > 0) {
-                console.log("Search Results:", results);
-            } else {
-                console.log("No matching results found.");
-            }
-            plotResults = results;
-            populateTable(results, 'plots');
-        })
-        .catch(error => {
-            console.error("Error fetching lots:", error);
-        });
-}
 function populateTable(filteredData, type) {
+    //Actually display the data passed in the corresponding table
     if(type === 'residents'){
         const tableBody = document.getElementById("residentTableBody");
         tableBody.innerHTML = ""; // Clear previous content
@@ -220,6 +181,7 @@ function populateTable(filteredData, type) {
         });
     }
     else if(type === 'lots'){
+        //residents based off lots
         const tableBody = document.getElementById("resLotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
@@ -262,6 +224,7 @@ function populateTable(filteredData, type) {
 
     }
     else if(type === 'plots'){
+        //plots/lots
         const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
         if (filteredData.length === 0) {
@@ -287,13 +250,12 @@ function populateTable(filteredData, type) {
         });
     }
 }
-
 async function viewMore(firstname, middleName, lastName, suffix, row, type) {
+    //get all the data for a popup
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
     id = 0;
     if(type === 'resident'){
-        // details = residentResults[rowId];
         try {
             const response = await fetch(`${API_BASE_URL}/residents/find/${row}`)
             if (!response.ok) {
@@ -315,8 +277,6 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             
             //network error
         } catch (error) {
-            // statusDiv.innerHTML = `Error searching: ${error.message}`;
-            // resultsDiv.innerHTML = '';
             console.error('Search error:', error);
         }
     }
@@ -354,14 +314,15 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     currentRow = document.getElementById(rowId);
     createPopup(details, rowId, type, id);
 }
-
 function closePopup() {
+    //close out of the popup
     const popupContainer = document.getElementById("popupContainer");
     if (popupContainer) {
         popupContainer.remove();
     }
 }
 async function getLotInfo(section, lot, partition){
+    //search for all information on a given plot (partition)
     try {
         // Build query string dynamically
         const queryParams = new URLSearchParams();
@@ -395,6 +356,7 @@ async function getLotInfo(section, lot, partition){
     }
 }
 function createPopup(details, rowId, type, id) {
+    //Create the popup with the given information
     //Remove existing popup if it exists
     closePopup();
     let popupHTML;
@@ -457,8 +419,6 @@ function createPopup(details, rowId, type, id) {
         `;
     }
     
-    
-
     // Create a container div and insert the popup HTML
     const popupContainer = document.createElement("div");
     popupContainer.id = "popupContainer";
@@ -604,9 +564,11 @@ function createPopup(details, rowId, type, id) {
     }
 }
 function enableEditing() {
+    //enable fields in the form
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
 async function saveChanges(type) {
+    //save changes to db and display
     if (type === 'residents'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
@@ -743,9 +705,8 @@ async function saveChanges(type) {
         }
     }
 }
-
-
 document.getElementById('newResidentForm').addEventListener('submit', function(event) {
+    //submit new resident form
     event.preventDefault();
     
    
@@ -791,9 +752,9 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
     document.getElementById("showResidentFormBtn").style.display = "block";    // show +
 });
 document.getElementById('newLotForm').addEventListener('submit', function(event) {
+    //submit new lot form
     event.preventDefault();
     
-   
     // const sectionId = sections[document.getElementById('sectionId').value]
     const sectionName = document.getElementById('sectionId').value;
     let sectionId = null;
@@ -840,18 +801,18 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
     document.getElementById("addLotForm").style.display = "none";   // hide form
     document.getElementById("showLotFormBtn").style.display = "block";    // show +
 });
-
-
 document.getElementById("showLotFormBtn").addEventListener("click", () => {
+    //open lot form
     document.getElementById("addLotForm").style.display = "block";   // show form
     document.getElementById("showLotFormBtn").style.display = "none";    // hide +
 });
 document.getElementById("showResidentFormBtn").addEventListener("click", () => {
+    //open resident form
     document.getElementById("addResidentForm").style.display = "block";   // show form
     document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
 });
-
 function deleteEntry(id, type) {
+    //delete an entry from the db and display
     if(type === 'residents'){
         const confirmed = window.confirm("Are you sure you want to delete this resident?");
         if (!confirmed) return; // Stop execution if the user cancels
@@ -885,8 +846,8 @@ function deleteEntry(id, type) {
         row.remove();
     }
 }
-
 function getSectionId(name){
+    //get sid from section name
     for(let i = 0; i < sections.length; i++){
         if(sections[i]['name'] === name){
             return sections[i]['sid'];
@@ -895,6 +856,7 @@ function getSectionId(name){
     return null;
 }
 function getSectionName(id){
+    //get name from sid
     for(let i = 0; i < sections.length; i++){
         if(sections[i]['sid'] === id){
             return sections[i]['name'];
@@ -999,10 +961,12 @@ lotSelect.addEventListener("change", () => {
 });
 
 document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
+    //close the resident form
     document.getElementById("addResidentForm").style.display = "none";
     document.getElementById('showResidentFormBtn').style.display = "block";
 });
 document.getElementById("closeLotFormBtn").addEventListener("click", function () {
+    //close the lot form
     document.getElementById("addLotForm").style.display = "none";
     document.getElementById('showLotFormBtn').style.display = "block";
 });
