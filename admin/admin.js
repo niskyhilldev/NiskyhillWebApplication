@@ -24,37 +24,6 @@ let ownerResults, burialResults, residentResults, lotResults, plotResults, plotP
 
 API_BASE_URL = 'http://localhost:8080';
 
-function performOwnerSearch() {
-    let lastName = document.getElementById("searchName").value.trim().toLowerCase();
-
-    let results = Object.values(data).filter(entry => {
-        fetch('http://localhost:8080/owners/all',
-            {
-                method: 'GET',
-                body: JSON.stringify(data)
-            }
-        )
-        .then(response => response.json())
-        .then(serverData => {
-            let results = Object.values(serverData).filter(entry => {
-                
-                return true;
-            });
-
-            if (results.length > 0) {
-                console.log("Search Results:", results);
-            } else {
-                console.log("No matching results found.");
-            }
-            ownerResults = results;
-            populateTable(results, 'owners');
-        })
-        .catch(error => {
-            console.error("Error fetching lots:", error);
-        });
-        
-    });
-}
 function performBurialSearch() {
     let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
     let organization = document.getElementById("searchOwnOrg").value.trim().toLowerCase();
@@ -93,7 +62,10 @@ async function performResidentSearch() {
         const response = await fetch(`${API_BASE_URL}/residents/search?name=${name}`)
         if (!response.ok) {
                 if (response.status === 404) {
-                    throw new Error(`Resident with ID ${rid} not found`);
+                    const residents = [];
+                    residentResults = residents;
+                    populateTable(residents, 'residents');
+                    throw new Error(`Resident not found`);
                 } else if (response.status === 400) {
                     throw new Error('Invalid Resident ID format');
                 } else if (response.status === 500) {
@@ -107,7 +79,6 @@ async function performResidentSearch() {
         // statusDiv.innerHTML = '';
         //send call to display results with filtered data and name entered
         // displaySearchResults(residents, name);
-        console.log(residents)
         residentResults = residents;
         populateTable(residents, 'residents');
             
@@ -260,33 +231,7 @@ function performPlotSearch() {
         });
 }
 function populateTable(filteredData, type) {
-    if(type === 'owners'){
-        const tableBody = document.getElementById("ownerTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.middleName || ""}</td>
-                <td>${entry.lastName || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.lastName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.suffix || ""}', '${index}', 'owners')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    else if(type === 'residents'){
+    if(type === 'residents'){
         const tableBody = document.getElementById("residentTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
@@ -446,26 +391,8 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             console.error('Search error:', error);
         }
     }
-    else if(type == 'owners') {
-        console.log(ownerResults)
-        details = {
-            "lotOwnNumber": ownerResults[rowId].lot.number, 
-            "sectionOwn": ownerResults[rowId].lot.sectionName, 
-            "lotOwnId": ownerResults[rowId].lot.descriptor, 
-            "firstName": ownerResults[rowId].firstName,
-            "middleName": ownerResults[rowId].middleName,
-            "lastName": ownerResults[rowId].lastName,
-            "suffix": ownerResults[rowId].suffix,
-            "organization": ownerResults[rowId].organization
-        }
-    }
-    else if (type == 'lots'){
-        details = lotResults[rowId];
-    }
     else if (type == 'plots'){
-        try {
-            console.log(row)
-            
+        try {            
             const response = await fetch(`${API_BASE_URL}/lots/find/${row}`)
             if (!response.ok) {
                     if (response.status === 404) {
@@ -495,9 +422,6 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             // resultsDiv.innerHTML = '';
             console.error('Search error:', error);
         }
-    }
-    else if(type === 'burial'){
-        details = burialResults[rowId];
     }
     else{
         return;
@@ -916,22 +840,7 @@ function enableEditing() {
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
 }
 async function saveChanges(type) {
-    if(type === 'owners'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (ownerResults[rowId]){
-            ownerResults[rowId].lotOwnNumber = document.getElementById("lotNumber").value;
-            ownerResults[rowId].lotOwnId = document.getElementById("lotPortion").value;
-            ownerResults[rowId].sectionOwn = document.getElementById("section").value;
-            ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            ownerResults[rowId].suffix = document.getElementById("suffix").value;
-            ownerResults[rowId].organization = document.getElementById("org").value;
-        }
-        populateTable(ownerResults, 'owners');
-    }
-    else if (type === 'residents'){
+    if (type === 'residents'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
         const rid = popup.getAttribute("data-rid");
@@ -988,59 +897,6 @@ async function saveChanges(type) {
             // resultsDiv.innerHTML = '';
             console.error('Put error:', error);
         }
-    }
-    else if (type === 'lots'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (lotResults[rowId]){
-            lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            lotResults[rowId].lotId = document.getElementById("lotPortion").value;
-            lotResults[rowId].section = document.getElementById("section").value;
-            lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            lotResults[rowId].suffix = document.getElementById("suffix").value;
-            if(document.getElementById("dob")){ //resident
-                lotResults[rowId].dob = document.getElementById("dob").value;
-                lotResults[rowId].dod = document.getElementById("dod").value;
-                lotResults[rowId].vessel = document.getElementById("vessel").value;
-            }
-            lotResults[rowId].organization = document.getElementById("org").value;
-            if(document.getElementById("owns")){
-                lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
-                lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
-                lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
-            }
-        }
-        populateTable(lotResults, 'lots'); 
-    }
-    else if (type === 'burial'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (burialResults[rowId]){
-            burialResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            burialResults[rowId].lotId = document.getElementById("lotPartition").value;
-            burialResults[rowId].section = document.getElementById("section").value;
-            burialResults[rowId].dob = document.getElementById("dob").value;
-            burialResults[rowId].dod = document.getElementById("dod").value;
-            burialResults[rowId].vessel = document.getElementById("vessel").value;
-            //propogate to data
-            for (const key in data) {
-                const entry = data[key];
-                if (entry.buriedFirst === burialResults[rowId].buriedFirst &&
-                        entry.buriedLast === burialResults[rowId].buriedLast) {
-                            entry.lotNumber = document.getElementById("lotNumber").value;
-                            entry.lotId = document.getElementById("lotPartition").value;
-                            entry.section = document.getElementById("section").value;
-                            entry.dob = document.getElementById("dob").value;
-                            entry.dod = document.getElementById("dod").value;
-                            entry.vessel = document.getElementById("vessel").value;
-                            break;
-                }
-            }
-        }
-        window.alert(`Successfully buried ${burialResults[rowId].buriedFirst} ${burialResults[rowId].buriedLast}`);
-        closePopup();
     }
     else if (type === 'plots'){
         let oldLot = {};
@@ -1126,15 +982,6 @@ async function saveChanges(type) {
         
 }
 
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = URL.createObjectURL(file);
-        downloadLink.textContent = file.name;
-        downloadLink.style.display = "block";
-    }
-}
 
 function toggleForm() {
     const form = document.getElementById('addOwnerForm');
@@ -1179,7 +1026,6 @@ document.getElementById('newResidentForm').addEventListener('submit', function(e
         lid: portion.options[portion.selectedIndex].getAttribute("data-lid")
     }
 
-    console.log(newResident)
 
 
     fetch(`${API_BASE_URL}/residents/add`, {
