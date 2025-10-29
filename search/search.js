@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>No residents found. Try updating the name or filter parameters.</p>
                 </div>
             `;
+            statusDiv.innerHTML = '';
             return;
         }
             statusDiv.innerHTML = '';
