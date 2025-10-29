@@ -68,9 +68,6 @@ async function performLotSearch() {
         if (section) queryParams.append("section", section);
         if (lot) queryParams.append("lot", lot);
 
-        console.log(section)
-
-
         const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
 
         if (!response.ok) {
@@ -86,7 +83,6 @@ async function performLotSearch() {
         }
 
         const lots = await response.json();
-        console.log(lots);
 
         // Example: store results and display them
         lotResults = lots;
@@ -124,7 +120,6 @@ async function performLotSearch2() {
         if (section) queryParams.append("section", section);
         if (lot) queryParams.append("lot", lot);
 
-        console.log(section)
 
 
         const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
@@ -144,7 +139,6 @@ async function performLotSearch2() {
         }
 
         const lots = await response.json();
-        console.log(lots);
 
         // Example: store results and display them
         plotResults = lots;
@@ -179,7 +173,6 @@ function performPlotSearch() {
     fetch('http://localhost:8080/owners/all')
         .then(response => response.json())
         .then(serverData => {
-            console.log(serverData[0])
             let results = Object.values(serverData).filter(entry => {
                 if (section && lot && entry.lot.sectionName && entry.lot.sectionName.toLowerCase() === section && entry.lot.number && entry.lot.number.toLowerCase() === lot) {
                     return true;
@@ -210,7 +203,6 @@ function populateTable(filteredData, type) {
         }
 
         filteredData.forEach((entry, index) => {
-            console.log(entry['firstName'])
             const row = document.createElement("tr");
             row.dataset.rid = entry.rid; 
 
@@ -250,7 +242,6 @@ function populateTable(filteredData, type) {
 
         // Populate table
         flattenedResidents.forEach((resident, index) => {
-            console.log(resident)
             const row = document.createElement("tr");
 
             row.innerHTML = `
@@ -280,7 +271,6 @@ function populateTable(filteredData, type) {
         }
 
         filteredData.forEach((entry, index) => {
-            console.log(entry)
             const row = document.createElement("tr");
             row.dataset.lid = entry.lot.lid; 
 
@@ -305,7 +295,6 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     if(type === 'resident'){
         // details = residentResults[rowId];
         try {
-            console.log(row)
             const response = await fetch(`${API_BASE_URL}/residents/find/${row}`)
             if (!response.ok) {
                     if (response.status === 404) {
@@ -320,11 +309,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             }
 
             const residents = await response.json();
-            // statusDiv.innerHTML = '';
-            //send call to display results with filtered data and name entered
-            // displaySearchResults(residents, name);
-            console.log(residents)
-            // residentResults = residents;
+
             details = residents;
             id = residents.rid;
             
@@ -351,11 +336,7 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             }
 
             const lots = await response.json();
-            // statusDiv.innerHTML = '';
-            //send call to display results with filtered data and name entered
-            // displaySearchResults(residents, name);
-            console.log(lots)
-            // residentResults = residents;
+
             details = lots;
             id = lots.lid;
             
@@ -688,9 +669,7 @@ async function saveChanges(type) {
         let oldLot = {};
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
 
-        try {
-            console.log(rowId)
-            
+        try {            
             const response = await fetch(`${API_BASE_URL}/lots/find/${rowId}`)
             if (!response.ok) {
                     if (response.status === 404) {
@@ -708,7 +687,6 @@ async function saveChanges(type) {
             // statusDiv.innerHTML = '';
             //send call to display results with filtered data and name entered
             // displaySearchResults(residents, name);
-            console.log(lots)
             oldLot = lots;
             
         } catch (error) {
@@ -726,7 +704,6 @@ async function saveChanges(type) {
             mapYCord: oldLot.mapYCord,
             sid: getSectionId(document.getElementById('sectionNumber').value,)
         }
-        console.log(lot);
         const data = JSON.stringify(lot);
         try {
             const response = await fetch(`${API_BASE_URL}/lots/update`,  {
@@ -1003,7 +980,6 @@ sectionSelect.addEventListener("change", () => {
   fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
     .then(res => res.json())
     .then(data => {
-        // console.log(data)
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
       data.forEach(lot => {
         const opt = document.createElement("option");
