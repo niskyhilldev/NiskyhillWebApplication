@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Error while searching. Please try a different name or spelling.`);
 
             allResidents = await response.json(); //store ALL results
+            if (!allResidents || allResidents.length === 0) {
+            resultsDiv.innerHTML = `
+                <div style="text-align: center; color: #666; padding: 20px;">
+                    <p>No residents found. Try updating the name or filter parameters.</p>
+                </div>
+            `;
+            return;
+        }
             statusDiv.innerHTML = '';
             displaySearchResults(); //display first page
 
