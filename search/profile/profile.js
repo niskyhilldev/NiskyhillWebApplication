@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const qParam  = searchParams.get("q");
   const latParam = parseFloat(searchParams.get("lat"));
   const lngParam = parseFloat(searchParams.get("lng"));
-  const API_BASE_URL = 'https://www.niskyhill.org';
+  const API_BASE_URL = 'https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com';
 
   // ===== Map state =====
   let map;
