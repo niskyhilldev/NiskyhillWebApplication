@@ -155,8 +155,13 @@ public class Server {
             UpdateUserPasswordDTO updateUserPasswordDTO = ctx.bodyAsClass(UpdateUserPasswordDTO.class);
             if (UserService.setPassword(currentUserId, updateUserPasswordDTO.password(), database)){
                 Cookie cookie = new Cookie("token", "");
-                cookie.setMaxAge(0);    // Deletes the cookie
+                cookie.setDomain(".niskyhill.org");  // clear cookie across subdomains
+                cookie.setPath("/");
+                cookie.setMaxAge(0);                 // delete immediately
                 cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setSameSite(SameSite.LAX);
+                
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Password Updated Successfully"));
             }
