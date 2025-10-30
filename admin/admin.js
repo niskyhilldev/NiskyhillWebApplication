@@ -973,10 +973,17 @@ document.getElementById("closeLotFormBtn").addEventListener("click", function ()
 
 
 
+
+
+
+
+
+
+
+
 // --------- Nav Bar and Session Tracking Logic------------------>
 
 document.addEventListener("DOMContentLoaded", () => { 
-    const API_BASE_URL = 'https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com';
 
     const profileIcon = document.getElementById('profileIcon');
     const profileDropdown = document.getElementById('profileDropdown');
