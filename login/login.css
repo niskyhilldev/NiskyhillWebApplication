@@ -133,3 +133,11 @@ a {
   margin-top: 0;
   padding-top: 0;
 }
+
+
+/* ===== Placeholder Styling ===== */
+.login-container input::placeholder {
+    font-family: Inria Serif; /* match your input font */
+    font-size: 1rem;           /* same size as input text */
+    color: #ccc;               /* light gray for readability */
+}
