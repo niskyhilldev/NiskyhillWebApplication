@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Call the backend login API
             const response = await fetch(`${API_BASE_URL}/auth/password/update`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
