@@ -1,5 +1,6 @@
 package moravians.niskyhill.server;
 
+import java.util.List;
 import java.util.Map;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -46,20 +47,35 @@ public class Server {
             });
         });
 
+        // Allowed Origins for CORS
+        List<String> allowedOrigins = List.of(
+            "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com",
+            "https://www.niskyhill.org",
+            "https://www.niskyhill.com",
+            "http://localhost:8080" // for local dev
+        );
+
         /* Enable CORS for all requests */
         app.before(ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com/*"); 
+            String origin = ctx.header("Origin");
+            if (origin != null && allowedOrigins.contains(origin)) {
+                ctx.header("Access-Control-Allow-Origin", origin);
+            }
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         });
 
         /* Handle preflight requests */
         app.options("/*", ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com/*"); 
+            String origin = ctx.header("Origin");
+            if (origin != null && allowedOrigins.contains(origin)) {
+                ctx.header("Access-Control-Allow-Origin", origin);
+            }
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             ctx.status(204);
         });
+
 
         /* Require authentication for all admin resources */
         app.before("/admin/*", ctx -> {
