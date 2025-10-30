@@ -7,3 +7,4 @@ CREATE TABLE users (
     last_name VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL
 );
+
