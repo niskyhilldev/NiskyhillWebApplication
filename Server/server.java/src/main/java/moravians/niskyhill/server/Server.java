@@ -48,14 +48,14 @@ public class Server {
 
         /* Enable CORS for all requests */
         app.before(ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed origin address 
+            ctx.header("Access-Control-Allow-Origin", "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com"); 
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         });
 
         /* Handle preflight requests */
         app.options("/*", ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "*"); // TODO: replace * with allowed origin address
+            ctx.header("Access-Control-Allow-Origin", "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com"); 
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             ctx.status(204);
