@@ -20,6 +20,7 @@ import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
 import io.javalin.http.Cookie;
 import io.javalin.http.SameSite;
+import io.javalin.http.HttpStatus;
 
 
 /**
@@ -48,10 +49,21 @@ public class Server {
             });
         });
 
-        // Allowed Origins for CORS
+
+        /* Redirect niskyhill.com to www.niskyhill.org */
+        app.before(ctx -> {
+            String host = ctx.header("Host");
+            if (host != null && host.equals("niskyhill.com")) {
+                String redirectUrl = "https://www.niskyhill.org" + ctx.fullUrl().replaceFirst("https?://[^/]+", "");
+                ctx.redirect(redirectUrl, HttpStatus.MOVED_PERMANENTLY);
+                return;
+            }
+        });
+
+        /* Allowed Origins for CORS */
         List<String> allowedOrigins = List.of(
             "https://www.niskyhill.org",  
-            "http://localhost:8080"       // Local dev
+            "http://localhost:8080" // for Local dev
         );
 
         /* Enable CORS */
@@ -88,6 +100,8 @@ public class Server {
             AuthHandler.requirePageAuth(ctx);
         });
 
+
+
         /* HTTP ROUTES */
 
         // Login to the system (generates session token and sets it in the cookie)
@@ -114,7 +128,7 @@ public class Server {
             }
         });
 
-        // Route to Logout of the system (Delete Cookie with session key fro the users brower)
+        // Route to Logout of the system (Delete Cookie with session key from the users brower)
         app.post("/auth/logout", ctx -> {
             // Create a cookie with the same name and set MaxAge to 0 to delete it
             Cookie cookie = new Cookie("token", "");
@@ -161,7 +175,7 @@ public class Server {
                 cookie.setHttpOnly(true);
                 cookie.setSecure(true);
                 cookie.setSameSite(SameSite.LAX);
-                
+
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Password Updated Successfully"));
             }
