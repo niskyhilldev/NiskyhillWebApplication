@@ -55,24 +55,31 @@ public class Server {
             "http://localhost:8080" // for local dev
         );
 
-        /* Enable CORS for all requests */
+        /* Enable CORS */
         app.before(ctx -> {
             String origin = ctx.header("Origin");
-            if (origin != null && allowedOrigins.contains(origin)) {
-                ctx.header("Access-Control-Allow-Origin", origin);
-            }
+
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
+            ctx.header("Access-Control-Allow-Credentials", "true"); 
+
+            if (origin != null && allowedOrigins.contains(origin)) {
+                ctx.header("Access-Control-Allow-Origin", origin); 
+            }
         });
 
-        /* Handle preflight requests */
+        /* Enable Pre-Flight Requests */
         app.options("/*", ctx -> {
             String origin = ctx.header("Origin");
+
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
+            ctx.header("Access-Control-Allow-Credentials", "true"); 
+
             if (origin != null && allowedOrigins.contains(origin)) {
                 ctx.header("Access-Control-Allow-Origin", origin);
             }
-            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
+
             ctx.status(204);
         });
 
