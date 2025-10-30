@@ -9,9 +9,111 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wdth,wght@0,90,300;1,90,300&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
     <title>Nisky Hill Cemetery - History - Bethlehem, Pennsylvania</title>
+    <style>
+      /* Hover effect for images */
+      .media {
+        overflow: visible !important;
+      }
+      
+      .media img {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .media img:hover {
+        transform: scale(1.03);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+      
+      /* Special parallax window effect for middle image */
+      .parallax-window {
+        overflow: hidden !important;
+        position: relative;
+        height: 500px; /* Adjust as needed */
+      }
+      
+      .parallax-window img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1.2);
+        width: 100%;
+        height: auto;
+        min-height: 100%;
+        object-fit: cover;
+        cursor: default;
+        transition: none;
+      }
+      
+      .parallax-window img:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+        box-shadow: none;
+        z-index: 1;
+      }
+      
+      /* Expanded image overlay */
+      .image-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      .image-overlay.active {
+        display: flex;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      .image-overlay img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        animation: zoomIn 0.3s ease;
+      }
+      
+      @keyframes zoomIn {
+        from { transform: scale(0.8); }
+        to { transform: scale(1); }
+      }
+      
+      /* Close button */
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 40px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        background: none;
+        border: none;
+        z-index: 10000;
+        transition: color 0.3s ease;
+        padding: 10px;
+        line-height: 1;
+      }
+      
+      .close-btn:hover {
+        color: #ccc;
+      }
+    </style>
   </head>
   <body>
-    <!-- NAV (unchanged) -->
+    <!-- NAV -->
     <nav class="navBar">
       <div class="navLogo">
         <span class="topText"><a href="../index.html">Nisky Hill</a></span>
@@ -63,15 +165,15 @@
       <!-- NISKY HILL (image left, text right) -->
       <section class="block image-left bg-white">
         <figure class="media">
-          <img src="img/nisky.JPG" alt="Nisky Hill Cemetery landscape">
+          <img src="img/nisky.JPG" alt="Nisky Hill Cemetery landscape" class="expandable-image">
         </figure>
         <div class="content">
           <h2 class="aboutHeader">Nisky Hill Cemetery</h2>
           <p class="aboutInfo">
-            Nisky Hill Cemetery, located in Bethlehem, Pennsylvania, is one of the region’s most historically significant burial grounds. Established in the mid-19th century, the cemetery reflects Bethlehem’s deep-rooted Moravian heritage and serves as the final resting place for many prominent figures from the area’s past. The name "Nisky" is believed to be derived from "Niesky," a town in Germany that was closely connected to the Moravian Church. The cemetery was originally created to accommodate the growing population of Bethlehem and to provide a space distinct from the traditional Moravian burial ground, God’s Acre, which had strict burial customs. Unlike God’s Acre, where all gravestones are flat and uniform to reflect the Moravian belief in equality in death, Nisky Hill allowed for more individualized markers and monuments.
+            Nisky Hill Cemetery, located in Bethlehem, Pennsylvania, is one of the region's most historically significant burial grounds. Established in the mid-19th century, the cemetery reflects Bethlehem's deep-rooted Moravian heritage and serves as the final resting place for many prominent figures from the area's past. The name "Nisky" is believed to be derived from "Niesky," a town in Germany that was closely connected to the Moravian Church. The cemetery was originally created to accommodate the growing population of Bethlehem and to provide a space distinct from the traditional Moravian burial ground, God's Acre, which had strict burial customs. Unlike God's Acre, where all gravestones are flat and uniform to reflect the Moravian belief in equality in death, Nisky Hill allowed for more individualized markers and monuments.
           </p>
           <p class="aboutInfo">
-            During the 19th and early 20th centuries, Nisky Hill Cemetery became the resting place for many notable residents, including influential industrialists, clergy, and civic leaders. Many individuals who played key roles in the rise of Bethlehem Steel, one of America’s largest steel producers, are buried here. The cemetery also contains graves of veterans from multiple wars, including the Civil War, World War I, and World War II. Over time, the cemetery expanded, adding sections to accommodate different religious and ethnic groups, reflecting Bethlehem’s diverse population.
+            During the 19th and early 20th centuries, Nisky Hill Cemetery became the resting place for many notable residents, including influential industrialists, clergy, and civic leaders. Many individuals who played key roles in the rise of Bethlehem Steel, one of America's largest steel producers, are buried here. The cemetery also contains graves of veterans from multiple wars, including the Civil War, World War I, and World War II. Over time, the cemetery expanded, adding sections to accommodate different religious and ethnic groups, reflecting Bethlehem's diverse population.
           </p>
         </div>
       </section>
@@ -80,18 +182,18 @@
       <section class="block image-right bg-blue compact">
         <div class="content">
           <p class="aboutInfo">
-            The cemetery’s landscape features rolling hills, mature trees, and winding pathways, creating a serene and reflective atmosphere. Many of its older headstones and mausoleums display intricate carvings and elaborate designs, showcasing artistic and architectural trends from different time periods. Among its most famous burials are local politicians, business leaders, and Moravian clergy who helped shape the development of Bethlehem. Today, Nisky Hill remains an important historical and cultural landmark, attracting genealogists, historians, and visitors interested in exploring Bethlehem’s rich past. Despite the passage of time, it continues to serve as a symbol of the city’s heritage, preserving the stories of those who contributed to its growth and legacy.
+            The cemetery's landscape features rolling hills, mature trees, and winding pathways, creating a serene and reflective atmosphere. Many of its older headstones and mausoleums display intricate carvings and elaborate designs, showcasing artistic and architectural trends from different time periods. Among its most famous burials are local politicians, business leaders, and Moravian clergy who helped shape the development of Bethlehem. Today, Nisky Hill remains an important historical and cultural landmark, attracting genealogists, historians, and visitors interested in exploring Bethlehem's rich past. Despite the passage of time, it continues to serve as a symbol of the city's heritage, preserving the stories of those who contributed to its growth and legacy.
           </p>
         </div>
-        <figure class="media">
-          <img src="img/cannon.JPG" alt="Historic cannon on the grounds of Nisky Hill Cemetery">
+        <figure class="media parallax-window">
+          <img src="img/cannon.JPG" alt="Historic cannon on the grounds of Nisky Hill Cemetery" id="parallaxImage">
         </figure>
       </section>
 
       <!-- MORAVIANS (image left, text right) -->
       <section class="block image-left bg-white">
         <figure class="media">
-          <img src="img/moravians_1.jpeg" alt="Oil painting of Moravians by Václav Malý">
+          <img src="img/moravians_1.jpeg" alt="Oil painting of Moravians by Václav Malý" class="expandable-image">
         </figure>
         <div class="content">
           <h2 class="aboutHeader">The Moravians</h2>
@@ -115,14 +217,19 @@
           </p>
         </div>
         <figure class="media">
-          <img src="img/moravians_2.jpeg" alt="Modern-day Moravian community gathering">
+          <img src="img/moravians_2.jpeg" alt="Modern-day Moravian community gathering" class="expandable-image">
         </figure>
       </section>
 
-
     </main>
 
-    <!-- FOOTER (unchanged) -->
+    <!-- Image Overlay -->
+    <div id="imageOverlay" class="image-overlay">
+      <button class="close-btn" onclick="closeImage()" aria-label="Close expanded image">&times;</button>
+      <img id="expandedImage" src="" alt="">
+    </div>
+
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="navLogoFooter">
         <span class="topText">Nisky Hill</span>
@@ -139,8 +246,8 @@
       </div>
     </footer>
 
-    <!-- Dropdown script -->
     <script>
+      // Dropdown menu
       function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
       }
@@ -155,6 +262,61 @@
           }
         }
       }
+
+      // Image expansion functionality
+      const expandableImages = document.querySelectorAll('.expandable-image');
+      const overlay = document.getElementById('imageOverlay');
+      const expandedImage = document.getElementById('expandedImage');
+
+      expandableImages.forEach(img => {
+        img.addEventListener('click', function() {
+          expandedImage.src = this.src;
+          expandedImage.alt = this.alt;
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+      });
+
+      function closeImage() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+
+      // Close on overlay click (not on image)
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          closeImage();
+        }
+      });
+
+      // Close on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+          closeImage();
+        }
+      });
+      
+      // Parallax scroll effect for middle image
+      const parallaxImage = document.getElementById('parallaxImage');
+      const parallaxWindow = parallaxImage.parentElement;
+      
+      function updateParallax() {
+        const rect = parallaxWindow.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Calculate how much of the element is visible
+        const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
+        
+        // Move image vertically as we scroll (range from -20% to 20%)
+        const translateY = (scrollProgress - 0.5) * 40;
+        
+        parallaxImage.style.transform = `translate(-50%, calc(-50% + ${translateY}%)) scale(1.2)`;
+      }
+      
+      // Update on scroll and resize
+      window.addEventListener('scroll', updateParallax);
+      window.addEventListener('resize', updateParallax);
+      updateParallax(); // Initial call
     </script>
   </body>
 </html>
