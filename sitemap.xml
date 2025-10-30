@@ -51,4 +51,21 @@
     <priority>0.6</priority>
   </url>
 
+
+<!-- Search Page -->
+  <url>
+    <loc>https://www.niskyhill.org/search/search.html</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+<!-- Profile Page -->
+  <url>
+    <loc>https://www.niskyhill.org/search/profile/profile.html</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
