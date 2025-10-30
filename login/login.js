@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Call the backend login API
-            const response = await fetch('http://localhost:8080/auth/login', {
+            const response = await fetch('https://www.niskyhill.org/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
