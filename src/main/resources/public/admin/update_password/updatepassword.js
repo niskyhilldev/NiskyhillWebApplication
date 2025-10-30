@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    API_BASE_URL = 'https://www.niskyhill.org';
+    API_BASE_URL = 'https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com';
 
     checkSessionAndSetRedirect()
 
