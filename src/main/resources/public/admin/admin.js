@@ -1,171 +1,160 @@
-const data = {
-    "0": { lotOwnNumber: "123", lotOwnId: "Northern Half", sectionOwn: "1",lotNumber: "123", lotId: "Northern Half", section: "1", buriedFirst: "John", buriedMiddle: "Michael", buriedLast: "Doe", suffix:"Jr", dob: "1990-01-01", dod: "2020-06-15", vessel: "casket", owns: true },
-    "1": { lotNumber: "456", lotId: "B", section: "2", buriedFirst: "Jane", buriedMiddle: "Elizabeth", buriedLast: "Smith", dob: "1985-02-10", dod: "2019-08-21", vessel: "urn", owns: false },
-    "2": { lotOwnNumber: "456", lotOwnId: "B", sectionOwn: "2", organization: "Nisky Hill", owns: true },
-    "3": { lotOwnNumber: "4", lotOwnId: "Northern Half", sectionOwn: "B", buriedFirst: "Matthew", buriedLast: "Bergin", owns: true}
-};
-const plotsData = {
-    "0": { lotNumber: "123", section: "1", lotPartition: "Northern Half", owner: "John Doe" },
-    "1": { lotNumber: "456", section: "2", lotPartition: "Southern Third", owner: "Jane Smith" },
-    "2": { lotNumber: "789", section: "3", lotPartition: "Western Half of Northern Half", owner: "Nisky Hill Organization" },
-    "3": { lotNumber: "101", section: "4", lotPartition: "Eastern Quarter", owner: "Alice Johnson" },
-    "4": { lotNumber: "202", section: "5", lotPartition: "Southwestern Sixth", owner: "Robert Brown" },
-    "5": { lotNumber: "303", section: "6", lotPartition: "Northern Third of Eastern Half", owner: "Emily Davis" }
-};
-const sections = [
-    { name: "A", file: null },
-    { name: "B", file: null },
-    { name: "C", file: null }
-];
+const data = {};
+const plotsData = {};
+let sections = [];
+
 let currentRow;
-let ownerResults, burialResults, residentResults, lotResults, plotResults, plotPeopleResults;
+let residentResults, lotResults, plotResults;
 
-function performOwnerSearch() {
-    let lastName = document.getElementById("searchLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchOrg").value.trim().toLowerCase();
+API_BASE_URL = 'https://www.niskyhill.org';
 
-    let results = Object.values(data).filter(entry => {
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
+async function performResidentSearch() {
+    //Call the api to get all the residents based off the name entered and display them
+    let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/residents/search?name=${name}`)
+        if (!response.ok) {
+                if (response.status === 404) {
+                    const residents = [];
+                    residentResults = residents;
+                    populateTable(residents, 'residents');
+                    throw new Error(`Resident not found`);
+                } else if (response.status === 400) {
+                    throw new Error('Invalid Resident ID format');
+                } else if (response.status === 500) {
+                    throw new Error('Server error occurred');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+        }
+
+        const residents = await response.json();
+        // statusDiv.innerHTML = '';
+        //send call to display results with filtered data and name entered
+        // displaySearchResults(residents, name);
+        residentResults = residents;
+        populateTable(residents, 'residents');
+            
+            //network error
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
+        }
+}
+async function performLotSearch() {
+    //Call the api to get all the residents based off the lot/section entered and display them
+    const section = document.getElementById("searchSectionRes").value.trim();
+    const lot = document.getElementById("searchLotRes").value.trim();
+
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            return false;
         }
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
-            return true;
-        }
-        return false;
-    });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
+        const lots = await response.json();
+
+        // Example: store results and display them
+        lotResults = lots;
+        populateTable(lots, 'lots');
+
+    } catch (error) {
+        // statusDiv.innerHTML = `Error searching: ${error.message}`;
+        const tableBody = document.getElementById("resLotTableBody");
+
+        // Clear any previous rows
+        tableBody.innerHTML = "";
+
+        // Create a row
+        const row = document.createElement("tr");
+
+        // Create a single cell that spans all columns
+        const cell = document.createElement("td");
+        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
+        cell.textContent = "No results found";
+        cell.style.textAlign = "center"; // optional: center the text
+
+        // Append the cell to the row, and row to the table body
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        console.error('Search error:', error);
     }
-    ownerResults = results;
-    populateTable(results, 'owners');
 }
-function performBurialSearch() {
-    let lastName = document.getElementById("searchOwnLast").value.trim().toLowerCase();
-    let organization = document.getElementById("searchOwnOrg").value.trim().toLowerCase();
+async function performLotSearch2() {
+    //Call the api to get all the plots based off the name entered and display them
+    const section = document.getElementById("searchSection").value.trim();
+    const lot = document.getElementById("searchLotPlots").value.trim();
 
-    let results = Object.values(data).filter(entry => {
-        if(entry.dob){
-            return false;
-        }
-        if(lastName && organization){
-            if(entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod && entry.organization && entry.organization.toLowerCase() === organization){
-                return true;
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                // throw new Error('No lots found matching search criteria');
+                populateTable([], 'plots');
+                return;
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            return false;
         }
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.owns) {
-            return true;
-        }
-        if (organization && entry.organization && entry.organization.toLowerCase() === organization && entry.owns) {
-            return true;
-        }
-        return false;
-    });
 
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
+        const lots = await response.json();
+
+        // Example: store results and display them
+        plotResults = lots;
+        populateTable(lots, 'plots');
+
+    } catch (error) {
+        // statusDiv.innerHTML = `Error searching: ${error.message}`;
+        const tableBody = document.getElementById("resLotTableBody");
+
+        // Clear any previous rows
+        tableBody.innerHTML = "";
+
+        // Create a row
+        const row = document.createElement("tr");
+
+        // Create a single cell that spans all columns
+        const cell = document.createElement("td");
+        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
+        cell.textContent = "No results found";
+        cell.style.textAlign = "center"; // optional: center the text
+
+        // Append the cell to the row, and row to the table body
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        console.error('Search error:', error);
     }
-    burialResults = results;
-    populateTable(results, 'burial');
-}
-function performResidentSearch() {
-    let lastName = document.getElementById("searchResidentLast").value.trim().toLowerCase();
-
-    let results = Object.values(data).filter(entry => {
-        if (lastName && entry.buriedLast && entry.buriedLast.toLowerCase() === lastName && entry.dod) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    residentResults = results;
-    populateTable(results, 'residents');
-}
-function performLotSearch() {
-    let section = document.getElementById("searchSection").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLot").value.trim().toLowerCase();
-
-    let results = Object.values(data).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        if (section && lot && entry.sectionOwn && entry.sectionOwn.toLowerCase() === section && entry.lotOwnNumber && entry.lotOwnNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    lotResults = results;
-    populateTable(results, 'lots');
-}
-function performPlotSearch() {
-    let section = document.getElementById("searchSectionPlots").value.trim().toLowerCase();
-    let lot = document.getElementById("searchLotPlots").value.trim().toLowerCase();
-
-    let results = Object.values(plotsData).filter(entry => {
-        if (section && lot && entry.section && entry.section.toLowerCase() === section && entry.lotNumber && entry.lotNumber.toLowerCase() === lot) {
-            return true;
-        }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
-    }
-    plotResults = results;
-    populateTable(results, 'plots');
 }
 function populateTable(filteredData, type) {
-    if(type === 'owners'){
-        const tableBody = document.getElementById("ownerTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'owners')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'owners')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    else if(type === 'residents'){
+    //Actually display the data passed in the corresponding table
+    if(type === 'residents'){
         const tableBody = document.getElementById("residentTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
@@ -176,775 +165,808 @@ function populateTable(filteredData, type) {
 
         filteredData.forEach((entry, index) => {
             const row = document.createElement("tr");
+            row.dataset.rid = entry.rid; 
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
+                <td>${entry.firstName || ""}</td>
+                <td>${entry.middleName || ""}</td>
+                <td>${entry.lastName || ""}</td>
+                <td>${entry.burialDate || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'resident')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
+                    <button onclick="viewMore('${entry.firstName || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate}', '${entry.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${entry.rid}', 'residents')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
     }
     else if(type === 'lots'){
-        const tableBody = document.getElementById("lotTableBody");
+        //residents based off lots
+        const tableBody = document.getElementById("resLotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
-        if (filteredData.length === 0) {
+        // Flatten the data: one entry per resident
+        const flattenedResidents = [];
+        filteredData.forEach(entry => {
+            const lot = entry.lot; // if you need lot info later
+            entry.residents.forEach(resident => {
+                flattenedResidents.push({
+                    ...resident,
+                    lotInfo: lot // optional, store lot if needed
+                });
+            });
+        });
+
+        if (flattenedResidents.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
-        filteredData.forEach((entry, index) => {
+        // Populate table
+        flattenedResidents.forEach((resident, index) => {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
+                <td>${resident.firstName || ""}</td>
+                <td>${resident.middleName || ""}</td>
+                <td>${resident.lastName || ""}</td>
+                <td>${resident.burialDate || ""}</td>
+                <td>${resident.lotInfo.section.name || ""}</td>
+                <td>${resident.lotInfo.number || ""}</td>
+                <td>${resident.lotInfo.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'lots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'lots')">Delete</button>
+                    <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate || ""}', '${resident.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${index}', 'residents')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
-    }
-    if(type === 'burial'){
-        const tableBody = document.getElementById("burialTableBody");
-        tableBody.innerHTML = ""; // Clear previous content
 
-        if (filteredData.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
-            return;
-        }
-
-        filteredData.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${entry.buriedFirst || ""}</td>
-                <td>${entry.buriedMiddle || ""}</td>
-                <td>${entry.buriedLast || ""}</td>
-                <td>${entry.suffix || ""}</td>
-                <td>${entry.organization || ""}</td>
-                <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'burial')">Bury</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
     }
     else if(type === 'plots'){
-        const tableBody = document.getElementById("plotTableBody");
+        //plots/lots
+        const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
-
         if (filteredData.length === 0) {
+            
             tableBody.innerHTML = "<tr><td colspan='4'>No results found</td></tr>";
             return;
         }
 
         filteredData.forEach((entry, index) => {
             const row = document.createElement("tr");
+            row.dataset.lid = entry.lot.lid; 
 
             row.innerHTML = `
-                <td>${entry.section || ""}</td>
-                <td>${entry.lotNumber || ""}</td>
-                <td>${entry.lotPartition || ""}</td>
+                <td>${entry.lot.section.name || ""}</td>
+                <td>${entry.lot.number || ""}</td>
+                <td>${entry.lot.descriptor || ""}</td>
                 <td>
-                    <button onclick="viewMore('${entry.buriedFirst || ""}', '${entry.buriedMiddle || ""}', '${entry.buriedLast || ""}', '${index}', 'plots')">View More</button>
-                    <button onclick="deleteEntry('${index}', 'plots')">Delete</button>
+                    <button onclick="viewMore('${entry || ""}', '${entry.middleName || ""}', '${entry.lastName || ""}', '${entry.burialDate || ""}', '${entry.lot.lid}', 'plots')">View More</button>
+                    <button onclick="deleteEntry('${entry.lot.lid}', 'plots')">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
     }
 }
-
-function viewMore(firstname, middleName, lastName, row, type) {
+async function viewMore(firstname, middleName, lastName, suffix, row, type) {
+    //get all the data for a popup
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
     let details; 
+    id = 0;
     if(type === 'resident'){
-        details = residentResults[rowId];
-    }
-    else if(type == 'owners') {
-        details = ownerResults[rowId];
-    }
-    else if (type == 'lots'){
-        details = lotResults[rowId];
+        try {
+            const response = await fetch(`${API_BASE_URL}/residents/find/${row}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const residents = await response.json();
+
+            details = residents;
+            id = residents.rid;
+            
+            //network error
+        } catch (error) {
+            console.error('Search error:', error);
+        }
     }
     else if (type == 'plots'){
-        details = plotResults[rowId];
-    }
-    else if(type === 'burial'){
-        details = burialResults[rowId];
+        try {            
+            const response = await fetch(`${API_BASE_URL}/lots/find/${row}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const lots = await response.json();
+
+            details = lots;
+            id = lots.lid;
+            
+            //network error
+            
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
+        }
     }
     else{
         return;
     }
     currentRow = document.getElementById(rowId);
-    createPopup(details, rowId, type);
+    createPopup(details, rowId, type, id);
 }
-
 function closePopup() {
+    //close out of the popup
     const popupContainer = document.getElementById("popupContainer");
     if (popupContainer) {
         popupContainer.remove();
     }
 }
-function createPopup(details, rowId, type) {
+async function getLotInfo(section, lot, partition){
+    //search for all information on a given plot (partition)
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        for(let i = 0; i < lots.length; i++){
+            if (lots[i]['lot'].descriptor === partition){
+                return(lots[i]['lot']);
+            }
+        }
+
+    } catch (error) {
+        console.error('Search error:', error);
+    }
+}
+function createPopup(details, rowId, type, id) {
+    //Create the popup with the given information
     //Remove existing popup if it exists
     closePopup();
     let popupHTML;
     if(type === 'resident'){
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
+        <div class="popup" id="popup" data-row-id="${rowId}" data-rid="${id}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
+            <label for="sectionNumber">Section:</label>
+            <select id="sectionNumber" required>
+                <option value=${details.lot.section.name || ''}>${details.lot.section.name || ''}</option>
+            </select>
+            <label for="lotNumber">Lot Number:</label>
+            <select id="lotNumber" required>
+                <option value=${details.lot.number || ''}>${details.lot.number || ''}</option>
+            </select>
+
+            <label for="lotPortion">Lot Portion:</label>
+            <select id="lotPortion" required>
+                <option value=${details.lot.descriptor || ''}>${details.lot.descriptor || ''}</option>
+            </select>
+            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.firstName || ''}"></label>
+            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.middleName || ''}"></label>
+            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.lastName || ''}"></label>
+            <label>Date of Birth: <input type="date" id="dob" disabled value="${details.birthDate || ''}"></label>
+            <label>Burial Date: <input type="date" id="burialDate" disabled value="${details.burialDate || ''}"></label>
+            <label>Date of Death: <input type="date" id="dod" disabled value="${details.deathDate || ''}"></label>
             <label>Vessel: 
                 <select id="vessel" disabled>
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
+                    <option value="urn" ${details.capsule === 'urn' ? 'selected' : ''}>Urn</option>
+                    <option value="casket" ${details.capsule === 'casket' ? 'selected' : ''}>Casket</option>
+                    <option value="Unknown" ${details.capsule !== 'casket' && details.capsule !== 'urn' ? 'selected' : ''}>Unknown</option>
                 </select>
             </label>
-            <label>Public: <input type="checkbox" id="public" disabled ${details.valid ? 'checked' : ''}></label>
+            <label>Marker: <input type="checkbox" id="marker" disabled ${details.marker ? 'checked' : ''}></label>
+            <label>Foundation: <input type="checkbox" id="foundation" disabled ${details.foundation ? 'checked' : ''}></label>
+            <label>Public: <input type="checkbox" id="public" disabled ${details.publicViewable ? 'checked' : ''}></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('residents')">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
     `;
     }
-    else if (type === 'owners'){
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-            <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotOwnId || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.sectionOwn || ''}"></label>
-            <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-            <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-            <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-            <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-            <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-            <label>
-                Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="enableEditing()">Edit</button>
-            <button onclick="saveChanges('owners')">Save</button>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
-    else if (type === 'lots'){
-        if(details.owns && !details.dod){ //owner
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else if (details.owns){ //owner and resident
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>Owned Lot Number: <input type="text" id="lotOwnNumber" disabled value="${details.lotOwnNumber || ''}"></label>
-                <label>Owned Lot Portion: <input type="text" id="lotOwnPortion" disabled value="${details.lotOwnId || ''}"></label>
-                <label>Owned Section: <input type="text" id="sectionOwn" disabled value="${details.sectionOwn || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Suffix: <input type="text" id="suffix" disabled value="${details.suffix || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-        else{
-            popupHTML = `
-            <div class="overlay" id="overlay" onclick="closePopup()"></div>
-            <div class="popup" id="popup" data-row-id="${rowId}">
-                <h3>Details</h3>
-                <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-                <label>Lot Portion: <input type="text" id="lotPortion" disabled value="${details.lotId || ''}"></label>
-                <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
-                <label>First Name: <input type="text" id="buriedFirst" disabled value="${details.buriedFirst || ''}"></label>
-                <label>Middle Name: <input type="text" id="buriedMiddle" disabled value="${details.buriedMiddle || ''}"></label>
-                <label>Last Name: <input type="text" id="buriedLast" disabled value="${details.buriedLast || ''}"></label>
-                <label>Organization: <input type="text" id="org" disabled value="${details.organization || ''}"></label>
-                <label>Date of Birth: <input type="date" id="dob" disabled value="${details.dob || ''}"></label>
-                <label>Date of Death: <input type="date" id="dod" disabled value="${details.dod || ''}"></label>
-                <label>Vessel: 
-                    <select id="vessel" disabled>
-                        <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                        <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                    </select>
-                </label>
-                <label>
-                    Notes: <input type="file" id="notes" disabled onchange="handleFileUpload(event)">
-                    <a id="downloadLink" style="display:none;" download>Download File</a>
-                </label>
-                <button onclick="enableEditing()">Edit</button>
-                <button onclick="saveChanges('lots')">Save</button>
-                <button onclick="closePopup()">Close</button>
-            </div>
-            `;
-        }
-    }
     else if (type === 'plots') {
         popupHTML = `
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
+        <div class="popup" id="popup" data-row-id="${details.lid}">
             <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.lotNumber || ''}"></label>
-            <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.lotPartition || ''}"></label>
-            <label>Section: <input type="text" id="section" disabled value="${details.section || ''}"></label>
+            <label for="sectionNumber">Section:</label>
+            <select id="sectionNumber" required disabled>
+                <option value=${details.section.name || ''}>${details.section.name || ''}</option>
+            </select>
+            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.number || ''}"></label>
+            <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.descriptor || ''}"></label>
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
-            <label>Internment Records: <input type="file" id="internmentRecords" disabled onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="viewPlots('${details.section || ''}', '${details.lotNumber || ''}', '${details.lotPartition || ''}')">View Plots</button>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
             <button onclick="closePopup()">Close</button>
         </div>
         `;
     }
-    else if (type === 'burial') {
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>Details</h3>
-            <label>Lot Number: <input type="text" id="lotNumber" value="${details.lotNumber || ''}"></label>
-            <label>Lot Partition: <input type="text" id="lotPartition" value="${details.lotPartition || ''}"></label>
-            <label>Section: <input type="text" id="section" value="${details.section || ''}"></label>
-            <label>Date of Birth: <input type="date" id="dob" value="${details.dob || ''}"></label>
-            <label>Date of Death: <input type="date" id="dod" value="${details.dod || ''}"></label>
-            <label>Vessel: 
-                <select id="vessel">
-                    <option value="urn" ${details.vessel === 'urn' ? 'selected' : ''}>Urn</option>
-                    <option value="casket" ${details.vessel === 'casket' ? 'selected' : ''}>Casket</option>
-                </select>
-            </label>
-            <label>Internment Records: <input type="file" id="internmentRecords" onchange="handleFileUpload(event)">
-                <a id="downloadLink" style="display:none;" download>Download File</a>
-            </label>
-            <button onclick="saveChanges('burial')">Save</button>
-            <button onclick="closePopup()">Cancel</button>
-        </div>
-        `;
-    }
-    else if (type === 'plotPeople') {
-        const peopleList = [];
     
-        Object.values(details).forEach(person => {
-            if (person.buriedFirst && person.buriedLast) {
-                peopleList.push(`${person.buriedFirst} ${person.buriedMiddle || ""} ${person.buriedLast}`.trim());
-            }
-        });
-    
-        if (peopleList.length === 0) {
-            peopleList.push('No records available');
-        }
-    
-        popupHTML = `
-        <div class="overlay" id="overlay" onclick="closePopup()"></div>
-        <div class="popup" id="popup" data-row-id="${rowId}">
-            <h3>People in Lot</h3>
-            <p>${peopleList.join('<br>')}</p>
-            <button onclick="closePopup()">Close</button>
-        </div>
-        `;
-    }
-    
-    
-
     // Create a container div and insert the popup HTML
     const popupContainer = document.createElement("div");
     popupContainer.id = "popupContainer";
     popupContainer.innerHTML = popupHTML;
     document.body.appendChild(popupContainer);
-}
-function enableEditing() {
-    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
-}
-function saveChanges(type) {
-    if(type === 'owners'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (ownerResults[rowId]){
-            ownerResults[rowId].lotOwnNumber = document.getElementById("lotNumber").value;
-            ownerResults[rowId].lotOwnId = document.getElementById("lotPortion").value;
-            ownerResults[rowId].sectionOwn = document.getElementById("section").value;
-            ownerResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            ownerResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            ownerResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            ownerResults[rowId].suffix = document.getElementById("suffix").value;
-            ownerResults[rowId].organization = document.getElementById("org").value;
-        }
-        populateTable(ownerResults, 'owners');
-    }
-    else if (type === 'residents'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (residentResults[rowId]){
-            residentResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            residentResults[rowId].lotId = document.getElementById("lotPortion").value;
-            residentResults[rowId].section = document.getElementById("section").value;
-            residentResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            residentResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            residentResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            residentResults[rowId].suffix = document.getElementById("suffix").value;
-            residentResults[rowId].dob = document.getElementById("dob").value;
-            residentResults[rowId].dod = document.getElementById("dod").value;
-            residentResults[rowId].vessel = document.getElementById("vessel").value;
-            residentResults[rowId].organization = document.getElementById("org").value;
-            residentResults[rowId].valid = document.getElementById("public").checked;
-        }
-        console.log(document.getElementById("public").checked);
-        populateTable(residentResults, 'residents'); 
-    }
-    else if (type === 'lots'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (lotResults[rowId]){
-            lotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            lotResults[rowId].lotId = document.getElementById("lotPortion").value;
-            lotResults[rowId].section = document.getElementById("section").value;
-            lotResults[rowId].buriedFirst = document.getElementById("buriedFirst").value;
-            lotResults[rowId].buriedMiddle = document.getElementById("buriedMiddle").value;
-            lotResults[rowId].buriedLast = document.getElementById("buriedLast").value;
-            lotResults[rowId].suffix = document.getElementById("suffix").value;
-            if(document.getElementById("dob")){ //resident
-                lotResults[rowId].dob = document.getElementById("dob").value;
-                lotResults[rowId].dod = document.getElementById("dod").value;
-                lotResults[rowId].vessel = document.getElementById("vessel").value;
-            }
-            lotResults[rowId].organization = document.getElementById("org").value;
-            if(document.getElementById("owns")){
-                lotResults[rowId].lotOwnNumber = document.getElementById("lotOwnNumber").value;
-                lotResults[rowId].lotOwnId = document.getElementById("lotOwnPortion").value;
-                lotResults[rowId].sectionOwn = document.getElementById("sectionOwn").value;
-            }
-        }
-        populateTable(lotResults, 'lots'); 
-    }
-    else if (type === 'burial'){
-        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
-        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (burialResults[rowId]){
-            burialResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            burialResults[rowId].lotId = document.getElementById("lotPartition").value;
-            burialResults[rowId].section = document.getElementById("section").value;
-            burialResults[rowId].dob = document.getElementById("dob").value;
-            burialResults[rowId].dod = document.getElementById("dod").value;
-            burialResults[rowId].vessel = document.getElementById("vessel").value;
-            //propogate to data
-            for (const key in data) {
-                const entry = data[key];
-                if (entry.buriedFirst === burialResults[rowId].buriedFirst &&
-                        entry.buriedLast === burialResults[rowId].buriedLast) {
-                            entry.lotNumber = document.getElementById("lotNumber").value;
-                            entry.lotId = document.getElementById("lotPartition").value;
-                            entry.section = document.getElementById("section").value;
-                            entry.dob = document.getElementById("dob").value;
-                            entry.dod = document.getElementById("dod").value;
-                            entry.vessel = document.getElementById("vessel").value;
-                            break;
+
+    if(type == 'resident'){
+        const sectionSelector = document.getElementById("sectionNumber");
+        const lotSelector = document.getElementById("lotNumber");
+        const portionSelector = document.getElementById("lotPortion");
+        let sectionId = sectionSelector.value;
+        let lotId = lotSelector.value;
+        //Get sections and update dropdowns
+        fetch(API_BASE_URL + "/sections/all")
+        .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then(data => {
+            // selesectionSelectorctEl.innerHTML = '<option value="">Select a section</option>';
+            data.forEach(section => {
+                if(section.name !== sectionSelector.value){
+                    const option = document.createElement("option");
+                    option.value = section.name;
+                    option.textContent = section.name;
+                    sectionSelector.appendChild(option);
                 }
+                
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching sections:", error);
+            selectEl.innerHTML = '<option value="">Error loading sections</option>';
+        });
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+                .then(res => res.json())
+                .then(data => {
+                data.forEach(lot => {
+                    if(lot.lot.number !== lotSelector.value){
+                        const opt = document.createElement("option");
+                        opt.value = lot.lot.number;
+                        opt.textContent = lot.lot.number;
+                        lotSelector.appendChild(opt);
+                    }
+                });
+                lotSelector.disabled = false;
+                })
+                .catch(err => {
+                console.error(err);
+                lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+                });
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+            .then(res => res.json())
+            .then(data => {
+            data.forEach(portion => {
+                if(portion.lot.descriptor !== portionSelector.value){
+                    const opt = document.createElement("option");
+                    opt.value = portion.lot.descriptor;
+                    opt.textContent = portion.lot.descriptor;
+                    opt.setAttribute('data-lid', portion.lot.lid);
+                    portionSelector.appendChild(opt);
+                }
+            });
+            portionSelector.disabled = false;
+            })
+            .catch(err => {
+                console.error(err);
+                portionSelector.innerHTML = '<option value="">Error loading portions</option>';
+            });
+        sectionSelector.addEventListener("change", () => {
+            const sectionId = sectionSelector.value;
+            lotSelector.innerHTML = '<option value="">Loading lots...</option>';
+            lotSelector.disabled = true;
+            portionSelector.innerHTML = '<option value="">Select a lot first</option>';
+            portionSelector.disabled = true;
+
+            if (!sectionId) {
+                lotSelect.innerHTML = '<option value="">Select a section first</option>';
+                return;
             }
+
+            fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+                .then(res => res.json())
+                .then(data => {
+                lotSelector.innerHTML = '<option value="">Select a lot</option>';
+                data.forEach(lot => {
+                    const opt = document.createElement("option");
+                    opt.value = lot.lot.number;
+                    opt.textContent = lot.lot.number;
+                    lotSelector.appendChild(opt);
+                });
+                lotSelector.disabled = false;
+                })
+                .catch(err => {
+                console.error(err);
+                lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+                });
+        });
+
+        // --- When Lot Changes, Load Portions ---
+        lotSelector.addEventListener("change", () => {
+        const lotId = lotSelector.value;
+        const sectionId = sectionSelector.value;
+        portionSelector.innerHTML = '<option value="">Loading portions...</option>';
+        portionSelector.disabled = true;
+
+        if (!lotId) {
+            portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+            return;
         }
-        window.alert(`Successfully buried ${burialResults[rowId].buriedFirst} ${burialResults[rowId].buriedLast}`);
-        closePopup();
+
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+            .then(res => res.json())
+            .then(data => {
+            portionSelector.innerHTML = '<option value="">Select a portion</option>';
+            data.forEach(portion => {
+                const opt = document.createElement("option");
+                opt.value = portion.lot.descriptor;
+                opt.textContent = portion.lot.descriptor;
+                opt.setAttribute('data-lid', portion.lot.lid);
+                portionSelector.appendChild(opt);
+            });
+            portionSelector.disabled = false;
+            })
+            .catch(err => {
+                console.error(err);
+                portionSelector.innerHTML = '<option value="">Error loading portions</option>';
+            });
+        });
     }
     else if (type === 'plots'){
+        const sectionSelector = document.getElementById("sectionNumber");
+
+        sections.forEach(section => {
+            if(section.name !== sectionSelector.value){
+                const option = document.createElement("option");
+                option.value = section.name;
+                option.textContent = section.name;
+                sectionSelector.appendChild(option);
+            }
+            
+        });
+    }
+}
+function enableEditing() {
+    //enable fields in the form
+    document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
+}
+async function saveChanges(type) {
+    //save changes to db and display
+    if (type === 'residents'){
         document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
         const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
-        if (plotResults[rowId]){
-            plotResults[rowId].lotNumber = document.getElementById("lotNumber").value;
-            plotResults[rowId].section = document.getElementById("section").value;
-            plotResults[rowId].lotPartition = document.getElementById("lotPartition").value;
-            plotResults[rowId].owner = document.getElementById("lotOwner").value;
+        const rid = popup.getAttribute("data-rid");
+        const lotInfo = await getLotInfo(document.getElementById("sectionNumber").value, document.getElementById("lotNumber").value, document.getElementById("lotPortion").value) 
+        resident = {
+            'rid': rid,
+            "firstName": document.getElementById("buriedFirst").value,
+            "middleName": document.getElementById("buriedMiddle").value,
+            "lastName": document.getElementById("buriedLast").value,
+            "birthDate": document.getElementById("dob").value,
+            "burialDate": document.getElementById("dod").value,
+            "deathDate": document.getElementById("burialDate").value,
+            "capsule": document.getElementById("vessel").value,
+            "marker": false,
+            "foundation": false,
+            "publicViewable": document.getElementById("public").checked,
+            "lid": lotInfo.lid
         }
-        populateTable(plotResults, 'plots'); 
+        const data = JSON.stringify(resident);
+        try {
+            const response = await fetch(`${API_BASE_URL}/residents/update`,  {
+                method:'PUT',
+                headers: {
+                    'Content-Type': 'application/json', // Indicate that the request body contains JSON data
+                },
+                body: data,
+            })
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const element = document.querySelectorAll(`tr[data-rid="${rid}"]`)[0];
+            element.innerHTML = `
+                <td>${resident.firstName || ""}</td>
+                <td>${resident.middleName || ""}</td>
+                <td>${resident.lastName || ""}</td>
+                <td>${resident.burialDate || ""}</td>
+                <td>
+                    <button onclick="viewMore('${resident.firstName || ""}', '${resident.middleName || ""}', '${resident.lastName || ""}', '${resident.burialDate}', '${resident.rid}', 'resident')">View More</button>
+                    <button onclick="deleteEntry('${rid}', 'residents')">Delete</button>
+                </td>
+            `;
+            const responseData = await response.text();
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Put error:', error);
+        }
     }
-        
-}
+    else if (type === 'plots'){
+        let oldLot = {};
+        const rowId = popup.getAttribute("data-row-id"); // Get stored rowId
 
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = URL.createObjectURL(file);
-        downloadLink.textContent = file.name;
-        downloadLink.style.display = "block";
+        try {            
+            const response = await fetch(`${API_BASE_URL}/lots/find/${rowId}`)
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${residentResults[rowId].rid} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const lots = await response.json();
+            // statusDiv.innerHTML = '';
+            //send call to display results with filtered data and name entered
+            // displaySearchResults(residents, name);
+            oldLot = lots;
+            
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Search error:', error);
+        }
+        document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = true);
+        const lot = {
+            lid: rowId,
+            number: document.getElementById('lotNumber').value,
+            descriptor: document.getElementById('lotPartition').value,
+            owner: document.getElementById('lotOwner').value,
+            mapXCord: oldLot.mapXCord,
+            mapYCord: oldLot.mapYCord,
+            sid: getSectionId(document.getElementById('sectionNumber').value,)
+        }
+        const data = JSON.stringify(lot);
+        try {
+            const response = await fetch(`${API_BASE_URL}/lots/update`,  {
+                method:'PUT',
+                headers: {
+                    'Content-Type': 'application/json', // Indicate that the request body contains JSON data
+                },
+                body: data,
+            })
+            if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Resident with ID ${rowId} not found`);
+                    } else if (response.status === 400) {
+                        throw new Error('Invalid Resident ID format');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error occurred');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+            }
+
+            const element = document.querySelectorAll(`tr[data-lid="${rowId}"]`)[0];
+            element.innerHTML = `
+                <td>${getSectionName(lot.sid) || ""}</td>
+                <td>${lot.number || ""}</td>
+                <td>${lot.descriptor || ""}</td>
+                <td>
+                    <button onclick="viewMore('${lot || ""}', '${lot.middleName || ""}', '${lot.lastName || ""}', '${lot.burialDate || ""}', '${lot.lid}', 'plots')">View More</button>
+                    <button onclick="deleteEntry('${lot.lid}', 'plots')">Delete</button>
+                </td>
+            `;
+            const responseData = await response.text();
+        } catch (error) {
+            // statusDiv.innerHTML = `Error searching: ${error.message}`;
+            // resultsDiv.innerHTML = '';
+            console.error('Put error:', error);
+        }
     }
 }
-
-function toggleForm() {
-    const form = document.getElementById('addOwnerForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleResForm() {
-    const form = document.getElementById('addResidentForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleLotForm() {
-    const form = document.getElementById('addLotForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleSectionForm() {
-    const form = document.getElementById('addSectionForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-function toggleFileForm() {
-    const form = document.getElementById('addFileForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-document.getElementById('newOwnerForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const firstName = document.getElementById('firstName').value;
-    const middleName = document.getElementById('middleName').value;
-    const lastName = document.getElementById('lastName').value;
-    const lotNumber = document.getElementById('lotNum').value;
-    const lotPortion = document.getElementById('portion').value;
-    const section = document.getElementById('cemSection').value;
-    const notes = document.getElementById('note').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('organization').value;
-    
-    // Add new entry to the data object
-    data[newId] = {
-        lotOwnNumber: lotNumber,
-        lotOwnId: lotPortion,
-        sectionOwn: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        owns: true,
-        notes: notes,
-        organization: organization
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newOwnerForm').reset();
-
-    toggleForm(); // Hide the form after submission
-});
 document.getElementById('newResidentForm').addEventListener('submit', function(event) {
+    //submit new resident form
     event.preventDefault();
     
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(data).length > 0 
-        ? Math.max(...Object.keys(data).map(Number)) + 1 
-        : 0;
+   
+    const portion = document.getElementById('resPortion')
 
-    // Get all the values from the form
-    const firstName = document.getElementById('fName').value;
-    const middleName = document.getElementById('mName').value;
-    const lastName = document.getElementById('lName').value;
-    const lotNumber = document.getElementById('resLotNum').value;
-    const lotPortion = document.getElementById('resPortion').value;
-    const section = document.getElementById('resCemSection').value;
-    // const notes = document.getElementById('resNote').files[0] ? document.getElementById('note').files[0].name : '';
-    const organization = document.getElementById('resOrganization').value;
-    const dob = document.getElementById('dofb').value;
-    const dod = document.getElementById('dofd').value;
-    const vessel = document.getElementById('vesselType').value;
-    const valid = document.getElementById('valid').checked;
-    
-    // Add new entry to the data object
-    data[newId] = {
-        lotNumber: lotNumber,
-        lotId: lotPortion,
-        section: section,
-        buriedFirst: firstName,
-        buriedMiddle: middleName,
-        buriedLast: lastName,
-        dob: dob,
-        dod: dod,
-        vessel: vessel,
-        valid: valid,
-        owns: false,
-        // notes: notes,
-        organization: organization
-    };
+    newResident = {
+        firstName: document.getElementById('fName').value,
+        middleName: document.getElementById('mName').value,
+        lastName: document.getElementById('lName').value,
+        birthDate: document.getElementById('dofb').value,
+        burialDate: document.getElementById('burialDate').value,
+        deathDate: document.getElementById('dofd').value,
+        capsule: document.getElementById('vesselType').value,
+        marker: document.getElementById('marker').checked,
+        foundation: document.getElementById('foundation').checked,
+        publicViewable: document.getElementById('valid').checked,
+        lid: portion.options[portion.selectedIndex].getAttribute("data-lid")
+    }
+
+
+
+    fetch(`${API_BASE_URL}/residents/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newResident) 
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        }
+    );
 
     
     // Clear the form fields
     document.getElementById('newResidentForm').reset();
 
-    toggleResForm(); // Hide the form after submission
+    document.getElementById("addResidentForm").style.display = "none";   // hide form
+    document.getElementById("showResidentFormBtn").style.display = "block";    // show +
 });
 document.getElementById('newLotForm').addEventListener('submit', function(event) {
+    //submit new lot form
     event.preventDefault();
     
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
+    // const sectionId = sections[document.getElementById('sectionId').value]
+    const sectionName = document.getElementById('sectionId').value;
+    let sectionId = null;
+    for(let i = 0; i < sections.length; i++){
+        if (sections[i]['name'] === sectionName){
+            sectionId = sections[i]['sid'];
+            break;
+        }
+    }
 
-    // Get all the values from the form
-    const lotNumber = document.getElementById('addLotNumber').value;
-    const lotPortion = document.getElementById('addLotPortion').value;
-    const section = document.getElementById('sectionId').value;
-    const ownerFirst = document.getElementById('ownerFirst').value;
-    const ownerMiddle = document.getElementById('ownerMiddle').value;
-    const ownerLast = document.getElementById('ownerLast').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    plotsData[newId] = {
-        lotNumber: lotNumber,
-        lotPartition: lotPortion,
-        section: section,
-        owner: `${ownerFirst || ""} ${ownerMiddle || ""} ${ownerLast || ""}`,
-        internmentRecord: record,
-    };
+    newLot = {
+        number: document.getElementById('addLotNumber').value,
+        descriptor: document.getElementById('addLotPortion').value,
+        owner: document.getElementById('ownerFirst').value,
+        mapXCord: null,
+        mapYCord: null,
+        sid: sectionId
+    }
+
+    console.log(newLot)
+
+
+    fetch(`${API_BASE_URL}/lots/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newLot) 
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        }
+    );
+
 
     
     // Clear the form fields
     document.getElementById('newLotForm').reset();
 
-    toggleLotForm(); // Hide the form after submission
+    document.getElementById("addLotForm").style.display = "none";   // hide form
+    document.getElementById("showLotFormBtn").style.display = "block";    // show +
 });
-document.getElementById('newSectionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Generate a new unique ID based on the highest existing key in data
-    const newId = Object.keys(plotsData).length > 0 
-        ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-        : 0;
-
-    // Get all the values from the form
-    const section = document.getElementById('addSectionId').value;
-    const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // Add new entry to the data object
-    sections[newId] = {
-        section: section,
-        internmentRecord: record,
-    };
-
-    
-    // Clear the form fields
-    document.getElementById('newSectionForm').reset();
-
-    toggleSectionForm(); // Hide the form after submission
+document.getElementById("showLotFormBtn").addEventListener("click", () => {
+    //open lot form
+    document.getElementById("addLotForm").style.display = "block";   // show form
+    document.getElementById("showLotFormBtn").style.display = "none";    // hide +
 });
-document.getElementById('newFileForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // // Generate a new unique ID based on the highest existing key in data
-    // const newId = Object.keys(plotsData).length > 0 
-    //     ? Math.max(...Object.keys(plotsData).map(Number)) + 1 
-    //     : 0;
-
-    // // Get all the values from the form
-    // const section = document.getElementById('addSectionId').value;
-    // const record = document.getElementById('record').files[0] ? document.getElementById('note').files[0].name : '';
-    
-    // // Add new entry to the data object
-    // sections[newId] = {
-    //     section: section,
-    //     internmentRecord: record,
-    // };
-
-    
-    // Clear the form fields
-    document.getElementById('newFileForm').reset();
-
-    toggleFileForm(); // Hide the form after submission
+document.getElementById("showResidentFormBtn").addEventListener("click", () => {
+    //open resident form
+    document.getElementById("addResidentForm").style.display = "block";   // show form
+    document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
 });
-
 function deleteEntry(id, type) {
+    //delete an entry from the db and display
     if(type === 'residents'){
-        residentResults[id] = null;
-        populateTable(residentResults, 'residents');
-    }
-    else if(type === 'owners'){
-        ownerResults[id] = null;
-        populateTable(ownerResults, 'owners');
-    }
-    else if(type === 'lots'){
-        lotResults[id] = null;
-        populateTable(lotResults, 'lots');
+        const confirmed = window.confirm("Are you sure you want to delete this resident?");
+        if (!confirmed) return; // Stop execution if the user cancels
+        fetch(`${API_BASE_URL}/residents/delete/${id}`, {
+            method: "DELETE",
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("Success:", result);
+            })
+            .catch(error => {
+                window.alert("Error deleting resident" + error);
+        });
+        const row = document.querySelector(`tr[data-rid="${id}"]`);
+        row.remove();
     }
     else if(type === 'plots'){
-        plotResults[id] = null;
-        populateTable(plotResults, 'plots');
+        const confirmed = window.confirm("Are you sure you want to delete this lot? It will also delete all residents associated with it!");
+        if (!confirmed) return; // Stop execution if the user cancels
+        fetch(`${API_BASE_URL}/lots/delete/${id}`, {
+            method: "DELETE",
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log("Success:", result);
+            })
+            .catch(error => {
+                window.alert("Error deleting resident" + error);
+        });
+        const row = document.querySelector(`tr[data-lid="${id}"]`);
+        row.remove();
     }
 }
-function viewPlots(section, lotNumber, lotPartition){
-    let results = Object.values(data).filter(entry => {
-        console.log(entry);
-        
-        if (section && lotNumber && lotPartition && entry.section && entry.section.toLowerCase() === section.toLowerCase() 
-        && entry.lotNumber && entry.lotNumber.toLowerCase() === lotNumber.toLowerCase() 
-        && entry.lotId && entry.lotId.toLowerCase() === lotPartition.toLowerCase()) {
-            return true;
+function getSectionId(name){
+    //get sid from section name
+    for(let i = 0; i < sections.length; i++){
+        if(sections[i]['name'] === name){
+            return sections[i]['sid'];
         }
-        return false;
-    });
-
-    if (results.length > 0) {
-        console.log("Search Results:", results);
-    } else {
-        console.log("No matching results found.");
     }
-    plotPeopleResults = results;
-    createPopup(results, 0, 'plotPeople');
+    return null;
 }
-function showEditor() {
-    const editor = document.getElementById("sectionEditor");
-    editor.style.display = "block";
+function getSectionName(id){
+    //get name from sid
+    for(let i = 0; i < sections.length; i++){
+        if(sections[i]['sid'] === id){
+            return sections[i]['name'];
+        }
+    }
+    return null;
+}
 
-    const tableBody = document.getElementById("sectionTableBody");
-    tableBody.innerHTML = ""; // Clear existing rows
-
-    sections.forEach((section, index) => {
-        const row = document.createElement("tr");
-
-        // Editable section name
-        const nameCell = document.createElement("td");
-        const nameInput = document.createElement("input");
-        nameInput.type = "text";
-        nameInput.value = section.name;
-        nameInput.oninput = (e) => sections[index].name = e.target.value;
-        nameCell.appendChild(nameInput);
-
-        // File upload
-        const fileCell = document.createElement("td");
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.onchange = (e) => sections[index].file = e.target.files[0];
-        fileCell.appendChild(fileInput);
-
-        row.appendChild(nameCell);
-        row.appendChild(fileCell);
-        tableBody.appendChild(row);
+//Get sections and update dropdowns
+fetch(API_BASE_URL + "/sections/all")
+  .then(response => {
+    if (!response.ok) throw new Error("Network response was not ok");
+    return response.json();
+  })
+  .then(data => {
+    sections = data;
+    selectEl = document.getElementById("resCemSection");
+    selectEl.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl.appendChild(option);
     });
-}
-
-function saveSections() {
-    const tableBody = document.getElementById("sectionTableBody");
-    
-    // Clear existing rows to update them
-    tableBody.innerHTML = "";
-
-    sections.forEach((section) => {
-        const row = document.createElement("tr");
-
-        // Non-editable section name
-        const nameCell = document.createElement("td");
-        nameCell.textContent = section.name;
-
-        // Non-editable file information
-        const fileCell = document.createElement("td");
-        fileCell.textContent = section.file ? section.file.name : "No file available";
-
-        row.appendChild(nameCell);
-        row.appendChild(fileCell);
-        tableBody.appendChild(row);
+    selectEl2 = document.getElementById("sectionId");
+    selectEl2.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl2.appendChild(option);
     });
-}
+  })
+  .catch(error => {
+    console.error("Error fetching sections:", error);
+    selectEl.innerHTML = '<option value="">Error loading sections</option>';
+  });
 
-function performFileSearch() {
-    const fileTableBody = document.getElementById("fileTableBody");
-    
-    // Clear existing table content
-    fileTableBody.innerHTML = "";
+  // --- When Section Changes, Load Lots --
+const sectionSelect = document.getElementById("resCemSection");
+const lotSelect = document.getElementById("resLotNum");
+const portionSelect = document.getElementById("resPortion");
+sectionSelect.addEventListener("change", () => {
+  const sectionId = sectionSelect.value;
+  lotSelect.innerHTML = '<option value="">Loading lots...</option>';
+  lotSelect.disabled = true;
+  portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+  portionSelect.disabled = true;
 
-    // Temporary file data
-    const tempFiles = [
-        { partition: "Northern Half", name: "File1.pdf", action: "Download" },
-        { partition: "Southern Half", name: "File2.docx", action: "Download" }
-    ];
+  if (!sectionId) {
+    lotSelect.innerHTML = '<option value="">Select a section first</option>';
+    return;
+  }
 
-    // Populate the table with temporary files
-    tempFiles.forEach(file => {
-        const row = document.createElement("tr");
-
-        const fileCell = document.createElement("td");
-        fileCell.textContent = file.name;
-
-        const partitionCell = document.createElement("td");
-        partitionCell.textContent = file.partition;
-
-        const actionCell = document.createElement("td");
-        const actionButton = document.createElement("button");
-        actionButton.textContent = file.action;
-        actionButton.onclick = () => alert(`Downloading ${file.name}`);
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.style.marginLeft = "10px"; 
-        deleteButton.onclick = (event) => {
-            const rowIndex = event.target.parentNode.parentNode.rowIndex; // Get row index
-            document.querySelector("table").deleteRow(rowIndex); // Delete row from the table
-        };
-
-        actionCell.appendChild(actionButton);
-        actionCell.appendChild(deleteButton);
-        row.appendChild(partitionCell);
-        row.appendChild(fileCell);
-        row.appendChild(actionCell);
-
-        fileTableBody.appendChild(row);
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+    .then(res => res.json())
+    .then(data => {
+      lotSelect.innerHTML = '<option value="">Select a lot</option>';
+      data.forEach(lot => {
+        const opt = document.createElement("option");
+        opt.value = lot.lot.number;
+        opt.textContent = lot.lot.number;
+        lotSelect.appendChild(opt);
+      });
+      lotSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      lotSelect.innerHTML = '<option value="">Error loading lots</option>';
     });
-}
+});
+
+// --- When Lot Changes, Load Portions ---
+lotSelect.addEventListener("change", () => {
+  const lotId = lotSelect.value;
+  const sectionId = sectionSelect.value;
+  portionSelect.innerHTML = '<option value="">Loading portions...</option>';
+  portionSelect.disabled = true;
+
+  if (!lotId) {
+    portionSelect.innerHTML = '<option value="">Select a lot first</option>';
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+    .then(res => res.json())
+    .then(data => {
+      portionSelect.innerHTML = '<option value="">Select a portion</option>';
+      data.forEach(portion => {
+        const opt = document.createElement("option");
+        opt.value = portion.lot.descriptor;
+        opt.textContent = portion.lot.descriptor;
+        opt.setAttribute('data-lid', portion.lot.lid);
+        portionSelect.appendChild(opt);
+      });
+      portionSelect.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      portionSelect.innerHTML = '<option value="">Error loading portions</option>';
+    });
+});
+
+document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
+    //close the resident form
+    document.getElementById("addResidentForm").style.display = "none";
+    document.getElementById('showResidentFormBtn').style.display = "block";
+});
+document.getElementById("closeLotFormBtn").addEventListener("click", function () {
+    //close the lot form
+    document.getElementById("addLotForm").style.display = "none";
+    document.getElementById('showLotFormBtn').style.display = "block";
+});

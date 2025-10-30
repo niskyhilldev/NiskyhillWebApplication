@@ -3,24 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="form.css" />
+    <script type="text/javascript" src="admin.js" defer></script>
+    <script type="text/javascript" src="navBar.js" defer></script>
     <link rel="icon" type="image/x-icon" href="../img/logo.jpg">
 </head>
 <body>
-    <div class="container">
-        <h2>Administration Dashboard</h2>
-        <a class="button" href="add_owner.html">Add an Owner</a>
-        <a class="button" href="search_owner.html">Search for an Owner</a>
-        <a class="button" href="add_resident.html">Add a Resident</a>
-        <a class="button" href="search_resident_name.html">Search for a Resident by Name</a>
-        <a class="button" href="search_resident_lot.html">Search for a Resident by Lot</a>
-        <a class="button" href="add_lot.html">Add a Lot</a>
-        <a class="button" href="search_lot.html">Search for a Lot</a>
-        <a class="button" href="add_section.html">Add a Section</a>
-        <a class="button" href="edit_section.html">Edit a Section</a>
-        <a class="button" href="add_file.html">Add a File</a>
-        <a class="button" href="view_files_lot.html">View Files Associated with a Lot</a>
+
+    <nav class='navBar'>
+        <div class="navLogo">
+            <span class="topText"><a href="../index.html">Nisky Hill</a></span>
+            <span class="bottomText"><a href="../index.html">Cemetery</a></span>
+        </div>
+
+        <div class="headerContainer">
+            <h1 class="adminHeader">Administration</h1>
+        </div>
+
+        <div class="profile-wrapper" id="profileWrapper">
+            <div class="profile-icon" id="profileIcon">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="13" r="12" fill="#0d2543"/>
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#af8c30"/>
+                </svg>
+            </div>
+
+            <div class="profile-dropdown" id="profileDropdown">
+                <p><strong id="userName"></strong></p>
+                <p id="userEmail"></p>
+                <p class="role" id="userRole"></p>
+                <hr>
+                <a href="#" class="reset-link" id="resetPasswordLink">Reset Password</a>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+                <p id="logoutErrorText" class="logoutError"></p>
+            </div>
+        </div>
+    </nav>
+
+
+    <h1>Lots</h1>
+    <h2 style="text-align:center;">Search for a Lot</h2>
+    <div class="search-container">
+        <label for="searchSection">Section:</label>
+        <input type="text" id="searchSection" placeholder="Search section">
+        <label for="searchLotPlots">Lot:</label>
+        <input type="text" id="searchLotPlots" placeholder="Search lot">
+        <button onclick="performLotSearch2()">Search</button>
     </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Section Name</th>
+                <th>Lot Number</th>
+                <th>Lot Partition</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="lotTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+    <h2 style="text-align:center;">Add a Lot</h2>
+    <button id="showLotFormBtn" class="showButton">+</button>
+    <div id="addLotForm" style="display: None;">
+        <form id="newLotForm">   
+            <button type="button" class="close-btn" id="closeLotFormBtn">&times;</button>
+            
+            <label for="sectionId">Section*:</label>
+            <select id="sectionId" required>
+                <option value="">Loading...</option>
+            </select>
+
+            <label for="addLotNumber">Lot Number*:</label>
+            <input type="text" id="addLotNumber" required>
+            
+            <label for="addLotPortion">Lot Portion*:</label>
+            <input type="text" id="addLotPortion" required>
+            
+            <label for="ownerFirst">Owner:</label>
+            <input type="text" id="ownerFirst">
+
+            <button type="submit">Add Entry</button>
+        </form>
+        
+    </div>
+    
+
+    <h1>Residents</h1>
+    <h2 style="text-align:center;">Search for an Resident</h2>
+    <div class="search-container">
+        <label for="searchLast">Name:</label>
+        <input type="text" id="searchResidentLast" placeholder="Search last name">
+        <button onclick="performResidentSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Burial Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="residentTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <div class="search-container">
+        <label for="searchSectionRes">Section:</label>
+        <input type="text" id="searchSectionRes" placeholder="Search section">
+        <label for="searchLotRes">Lot:</label>
+        <input type="text" id="searchLotRes" placeholder="Search lot">
+        <button onclick="performLotSearch()">Search</button>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Burial Date</th>
+                <th>Section</th>
+                <th>Lot</th>
+                <th>Descriptor</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="resLotTableBody">
+            <!-- Table content will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <h2 style="text-align:center;">Add a Resident</h2>
+    <button id="showResidentFormBtn" class="showButton">+</button>
+    <div id="addResidentForm" style="display: none; position: relative;">
+
+        <form id="newResidentForm">
+            <button type="button" class="close-btn" id="closeResidentFormBtn">&times;</button>
+
+            <label for="fName">First Name*:</label>
+            <input type="text" id="fName" required>
+            
+            <label for="mName">Middle Name:</label>
+            <input type="text" id="mName">
+            
+            <label for="lName">Last Name*:</label>
+            <input type="text" id="lName" required>
+
+            <label for="resCemSection">Section*:</label>
+            <select id="resCemSection" required>
+                <option value="">Loading...</option>
+            </select>
+            
+            <label for="resLotNum">Lot Number*:</label>
+            <select id="resLotNum" required disabled>
+                <option value="">Select a section first</option>
+            </select>
+
+            <label for="resPortion">Lot Portion*:</label>
+            <select id="resPortion" required disabled>
+                <option value="">Select a lot first</option>
+            </select>
+
+            <label for="dofb">Date of Birth:</label>
+            <input type="date" id="dofb">
+            
+            <label for="dofd">Date of Death:</label>
+            <input type="date" id="dofd">
+
+            <label for="burialDate">Burial Date:</label>
+            <input type="date" id="burialDate">
+            
+            <label for="vesselType">Vessel:</label>
+            <select id="vesselType">
+                <option value="urn">Urn</option>
+                <option value="casket">Casket</option>
+            </select>
+
+            <div>
+                <label for="marker">Marker:</label>
+                <input type="checkbox" id="marker" checked>
+            </div>
+
+             <div>
+                <label for="foundation">Foundation:</label>
+                <input type="checkbox" id="foundation" checked>
+            </div>
+
+            <div>
+                <label for="valid">Public:</label>
+                <input type="checkbox" id="valid" checked>
+            </div>
+            
+            <button type="submit">Add Entry</button>
+        </form>
+    </div>
+  
 </body>
-</html>

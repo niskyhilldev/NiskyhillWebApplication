@@ -1,3 +1,227 @@
+/* ===== YOUR ORIGINAL STYLES (kept) ===== */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.headerTitle {
+  color: white;
+  font-weight: 700; 
+  font-size: 50px;
+  height: 59vh;
+  background-repeat: no-repeat; 
+  background-position: bottom center;
+  background-size: cover; 
+  background-image: url('img/niskyHomepage.JPG');
+  width: 100%; 
+  margin: 0 auto; 
+  padding: 100px; 
+  opacity: 0.8; 
+  font-family: Instrument Sans; 
+  font-weight: bold; 
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.headerSmallText {
+  font-size: 30px;
+  font-weight: 400; 
+  margin-top: 175px;
+}
+
+.headerLargeText {
+  font-size: 60px;
+  font-weight: 700;
+}
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.featuresBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: #0d2543;
+  width: 100%;
+  margin: 0;  
+  padding: 20px; 
+  height: 170px;
+  align-items: center;
+}
+
+.featureContainer {
+  display: inline-block; 
+  text-align: center; 
+  margin: 10px;
+}
+
+.imageWrapper {
+  display: inline-block; 
+  margin: 0 auto; 
+}
+
+.featureText {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.featureTextBottom {
+  color: white;
+  font-size: 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+
+.learnMoreButton {
+    width: 154px; 
+    height: 40px; 
+    background: #0d2543; 
+    background: #af8c30; 
+    border-radius: 19px;
+    border-style: solid;
+    border-color: #af8c30;
+    color: white;
+    font-weight: 700; 
+    font-family: Instrument Sans;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.learnMoreButton:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.learnMoreButtonAltColor {
+  width: 154px; 
+  height: 40px; 
+  background: #0d2543; 
+  background: #0d2543; 
+  border-radius: 19px;
+  border-style: solid;
+  border-color: #0d2543;
+  color: white;
+  font-weight: 700; 
+  font-family: Instrument Sans;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+.learnMoreButtonAltColor2 {
+  width: 200px; 
+  height: 40px; 
+  background: #0d2543; 
+  background: #0d2543; 
+  border-radius: 19px;
+  border-style: solid;
+  border-color: #0d2543;
+  color: white;
+  font-weight: 700; 
+  font-family: Instrument Sans;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.learnMoreButtonAltColor2:hover {
+  color: black;
+  background: white;
+  border-color: black;
+}
+
+  .googleMap{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+@media (max-width: 600px){
+  .featuresBar{
+    display: none;
+  }
+}
+
+@media (max-width: 900px){
+  .featuresBar{
+    height: 200px;
+  }
+    .googleMap{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+  .featureContainer{
+    margin-right: 30px;
+  }
+  .headerTitle {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  html, body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .navBar {
   display: flex;
   flex-direction: row;
@@ -32,56 +256,36 @@
   margin-top: 8px;
 }
 
-.topText a {
-  color: white;
-  text-decoration: none;
-}
+.topText a,
+.bottomText a { color: white; text-decoration: none; }
 
-.bottomText a {
-  color: white;
-  text-decoration: none;
-}
+.navBar li { list-style: none; }
 
-.navBar li {
-  list-style: none;
-}
-
-.navLogo {
+.navLogo, .navLogoFooter {
   display: flex;
-  flex-direction: column; /* Stack text vertically */
+  flex-direction: column;
   color: white;
   font-family: 'Instrument Sans', sans-serif;
   font-weight: bold;
   letter-spacing: 1.5px;
-  line-height: 1; /* Reduce spacing between lines */
-  text-align: center;
-}
-
-.navLogoFooter{
-  display: flex;
-  flex-direction: column; /* Stack text vertically */
-  color: white;
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  line-height: 1; /* Reduce spacing between lines */
+  line-height: 1;
   text-align: center;
 }
 
 .navItems {
   display: flex;
   flex-direction: row;
-  gap: 40px; /* Adds space between menu items */
+  gap: 40px;
   list-style: none;
   align-items: center;
   text-align: center;
 }
 
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%; /* Ensures body does not exceed viewport */ 
-    overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .menuOption {
@@ -110,7 +314,7 @@ html, body {
   display: inline-block;
 }
 
-/* #4: https://prismic.io/blog/css-hover-effects */
+/* underline hover */
 .navOption::after,
 .navOption::before {
   content: '';
@@ -124,263 +328,343 @@ html, body {
   transform-origin: right;
   transition: transform 0.4s ease-out;
 }
-
-.navOption::before {
-  top: -5px;
-  transform-origin: left;
-}
-
+.navOption::before { top: -5px; transform-origin: left; }
 .navOption:hover::after,
-.navOption:hover::before {
-  transform: scaleX(1);
-}
+.navOption:hover::before { transform: scaleX(1); }
 
-
-a {
-  text-decoration: none;
-}
-
-.navOption a {
-  color: white;  /* white color for all links inside navOption */
-  text-decoration: none; /* Remove underline */
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-}
+a { text-decoration: none; }
+.navOption a { color: white; text-decoration: none; display: block; text-align: center; white-space: nowrap; }
 
 .findAGraveButton {
-  width: 154px; 
-  height: 40px; 
-  background: #af8c30; 
-  border-radius: 19px;
-  border-style: solid;
-  border-color: #af8c30;
-  color: white;
-  font-weight: 700; 
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.3s ease;
+  width: 154px; height: 40px; background: #af8c30; border-radius: 19px;
+  border-style: solid; border-color: #af8c30; color: white;
+  font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s ease;
 }
+.findAGraveButton:hover { color: black; background: white; border-color: black; }
 
-.findAGraveButton:hover {
-  color: black;
-  background: white;
-  border-color: black;
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
 }
-
-* {
-  margin: 0;
-  padding: 0;
-}
-
 
 .aboutHeader {
-    color: black;
-    font-size: 32px;
-    font-family: Instrument Sans;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-
-
-.aboutSection{
-  width: 50%;
-}
-
-
-.aboutSectionSpacing {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  margin: 2.5rem;
-}
-
-
-
-
-.footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: #af8c30;
-  width: 100%;
-  margin: 0;  
-  padding: 20px; 
-  height: 90px;
-  align-items: center;
-}
-
-.footerColumns {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.footerTop {
-  color: white;
-  font-size: 20px;
-  font-family: Inria Serif;
-  font-weight: 500;
-  word-wrap: break-word;
-  margin-left: 40px;
-  text-align: center;
-  text-decoration: none;
-}
-
-.footerTopTitle {
-  color: white;
-  font-size: 30px;
-  font-family: Inria Serif;
-  font-weight: 500;
-  word-wrap: break-word;
-  margin-left: 40px;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.footerBottom {
-  color: white;
-  font-size: 20px;
-  font-family: Inria Serif;
-  line-height: 15.86px;
-  font-weight: 500;
-  word-wrap: break-word;
-  text-align: center;
-  margin-left: 40px;
-  text-align: center;
-}
-
-.historyHeader {
   color: black;
-  font-size: 3.125rem;
+  font-size: 32px;
   font-family: Instrument Sans;
   font-weight: 600;
-  margin-top: 1.775rem;
+  margin-bottom: 5px;
+}
+.aboutSection{ width: 50%; }
+
+.aboutSectionSpacing {
+  display: flex; flex-direction: row; justify-content: space-around; align-items: center; margin: 2.5rem;
+}
+
+/* Hero section with parallax background */
+.bg-hero {
+  position: relative;
+  background: url("img/nisky.JPG") center/cover no-repeat; 
+  color: #fff;
+  min-height: 45vh;   /* adjust height (70% of viewport) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+}
+
+/* dark overlay for readability */
+.bg-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* darker overlay for better text contrast */
+}
+
+/* content sits above overlay */
+.bg-hero .content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+
+/* tighter spacing for this hero */
+.bg-hero .historyHeader {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.bg-hero .historyInfo {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  color: #fff;
+}
+
+
+  .footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: #af8c30;
+    width: 100%;
+    margin: 0;  
+    padding: 20px; 
+    height: 90px;
+    align-items: center;
+    box-sizing: content-box;
   }
 
-  .historyInfo {
-    color: black;
+
+.footerColumns { display: flex; flex-direction: column; }
+
+  .footerTop {
+    color: white;
+    font-size: 20px;
+    font-family: Inria Serif;
+    font-weight: 500;
+    word-wrap: break-word;
+    margin-left: 40px;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .footerTopTitle {
+    color: white;
     font-size: 30px;
     font-family: Inria Serif;
-    font-weight: 400;
+    font-weight: 500;
     word-wrap: break-word;
-    margin-bottom: 20px;
+    margin-left: 40px;
+    margin-bottom: 10px;
     text-align: center;
   }
   
-
-  .aboutInfo {
-    color: black;
-    font-size: 16px;
-    font-family: Instrument Sans;
-    font-weight: 400;
+  .footerBottom {
+    color: white;
+    font-size: 20px;
+    font-family: Inria Serif;
+    line-height: 15.86px;
+    font-weight: 500;
     word-wrap: break-word;
-    margin-bottom: 10px;
-  }
-
-
-/* Dropdown Button */
-/* credit: https://www.w3schools.com/howto/howto_js_dropdown.asp */
-.dropbtn {
-  background-color: #0d2543;
-  color: white;
-  padding: 16px;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
-  display: none;
-  font-size: 20px; 
-  font-family: Inria Serif; 
-  transition: 0.3s ease;
-}
-
-/* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #0d2543;
-}
-
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  position: relative;
-  display: none;
-}
-
-.dropdown{
-  color: white; 
-  font-size: 18px; 
-  font-family: Inria Serif; 
-  font-weight: 700; 
-  line-height: 14.64px; 
-  letter-spacing: 3.60px; 
-  list-style: none;
-  text-align: center;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  color: #0d2543;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
-
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display:block;}
-
-@media (max-width: 1000px){
-  .aboutSectionSpacing{
-    flex-direction: column;
-    margin: 0.5rem;
-  }
-  .aboutSection {
-    width: 100%;
-    align-items: center;
+    text-align: center;
+    margin-left: 40px;
     text-align: center;
   }
-  .historyImages {
-    width: auto;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 60px;
-    margin-bottom: 20px;
-  }
-  .navOption, .findAGraveButton{
-    display: none;
-  }
-  .dropbtn{
-    display: block;
-  }
-  .dropdown{
-    display: inline-block;
-  }
-  .navLogo {
-    width: 50%;
-  }
-  .navLogoFooter{
-    display: none;
-  }
-  .footerColumns {
-    width: 50%;
-  }
+
+.historyHeader {
+  color: black; font-size: 3.125rem; font-family: Instrument Sans; font-weight: 600; margin-top: 1.775rem; text-align: center;
+}
+.historyInfo {
+  color: black; font-size: 30px; font-family: Inria Serif; font-weight: 400; word-wrap: break-word; margin-bottom: 20px; text-align: center;
+}
+.aboutInfo {
+  color: black; font-size: 16px; font-family: Instrument Sans; font-weight: 400; word-wrap: break-word; margin-bottom: 10px;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  min-width: 0;
 }
 
+/* Dropdown */
+.dropbtn {
+  background-color: #0d2543; color: white; padding: 16px; font-size: 20px; border: none; cursor: pointer; display: none; font-family: Inria Serif; transition: 0.3s ease;
+}
+.dropbtn:hover, .dropbtn:focus { background-color: #0d2543; }
+.dropdown { position: relative; display: none; color: white; font-size: 18px; font-family: Inria Serif; font-weight: 700; line-height: 14.64px; letter-spacing: 3.60px; list-style: none; text-align: center; }
+.dropdown-content {
+  display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; left: 50%; transform: translateX(-50%);
+}
+.dropdown-content a { color: #0d2543; padding: 12px 16px; text-decoration: none; display: block; }
+.dropdown-content a:hover { background-color: #ddd; }
+.show { display: block; }
 
+/* mobile tweaks for your original layout */
+@media (max-width: 1000px){
+  .aboutSectionSpacing{ flex-direction: column; margin: 0.5rem; }
+  .aboutSection { width: 100%; align-items: center; text-align: center; }
+  .historyImages {
+    width: auto; height: auto; display: flex; flex-direction: column; align-items: center; margin-top: 60px; margin-bottom: 20px;
+  }
+  .navOption, .findAGraveButton{ display: none; }
+  .dropbtn{ display: block; }
+  .dropdown{ display: inline-block; }
+  .navLogo { width: 50%; }
+  .navLogoFooter{ display: none; }
+  .footerColumns { width: 50%; }
+  .footerTop, .footerBottom, .footerTopTitle{ font-size: 1.2rem; }
+}
+
+/* ===== NEW EASTON-STYLE BLOCK LAYOUT (Moravian colors) ===== */
+:root{
+  --nh-navy:#0d2543;
+  --nh-gold:#af8c30;
+  --nh-white:#ffffff;
+  --panel-pad: clamp(2.5rem, 4vw, 6rem);
+  --content-max: 1100px;
+  --section-min: clamp(340px, 44vh, 560px);
+  --measure: 65ch; /* ideal paragraph width */
+}
+
+/* full-width panels - FIXED */
+.block{
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* Fixed with minmax */
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 2rem);
+  padding: var(--panel-pad) clamp(1rem, 4vw, 4rem);
+  width:100%;
+  max-width: 100%;
+  overflow:hidden;
+  box-sizing: border-box;
+}
+
+/* color variants (Moravian palette) */
+.bg-blue  { background: var(--nh-navy); color:#fff; }
+.bg-gold  { background: var(--nh-gold); color:#fff; }
+.bg-white { background: var(--nh-white); color: var(--nh-navy); }
+
+/* ensure type color flips nicely */
+.bg-blue .aboutHeader,
+.bg-blue .aboutInfo,
+.bg-blue .historyInfo,
+.bg-gold .aboutHeader,
+.bg-gold .aboutInfo,
+.bg-gold .historyInfo { color:#fff; }
+
+.bg-white .aboutHeader,
+.bg-white .aboutInfo,
+.bg-white .historyInfo { color: var(--nh-navy); }
+
+/* media + content - FIXED */
+.block .content{
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 1rem;
+  align-self: center;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.block .media{
+  position:relative;
+  min-height: 340px;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.block .media img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  border-radius: 8px;
+}
+
+/* direction control */
+.block.image-right .media{ order:2; }
+.block.image-right .content{ order:1; }
+
+/* centered panels */
+.block.center{ grid-template-columns: 1fr; text-align:center; }
+.block .narrow{ max-width: 800px; margin: 0 auto; }
+
+/* CTA button */
+.btn-outline{
+  display:inline-block;
+  margin-top: 1rem;
+  padding: .8rem 1.4rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  text-decoration:none;
+  font-weight:700;
+  letter-spacing:.08em;
+  transition: transform .08s ease, background .25s ease, color .25s ease, border-color .25s ease;
+}
+.btn-outline:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+
+/* refine headings in panels */
+.aboutHeader{
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  margin-bottom: .75rem;
+}
+.aboutInfo{
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.7;
+}
+.block .aboutInfo + .aboutInfo{ margin-top: .75rem; }
+
+/* make older wrappers inert on this page */
+.aboutSectionSpacing{ margin:0; }
+.aboutSection{ width:100%; }
+
+/* responsive stacking */
+@media (max-width: 1000px){
+  .block{
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: clamp(2rem, 5vw, 3rem) 1rem;
+  }
+  .block .media{ min-height: 240px; }
+  .block .media img{ border-radius: 6px; }
+  .block.image-right .media,
+  .block.image-right .content{ order: initial; }
+  .historyHeader{ font-size: 2.25rem; }
+  .historyInfo{ font-size: 1.25rem; }
+}
+
+/* subtle separators when same color repeats */
+.bg-blue + .bg-blue,
+.bg-gold + .bg-gold,
+.bg-white + .bg-white{
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+/* optional entrance animation */
+@keyframes fadeUp { from{opacity:0; transform: translateY(12px);} to{opacity:1; transform:none;} }
+.block{ animation: fadeUp .5s ease both; }
+
+
+/* Compact variant: shrink overall box + image height for short blurbs */
+.block.compact{
+  /* trim vertical padding */
+  padding-top: clamp(.75rem, 2.5vw, 2rem);
+  padding-bottom: clamp(.75rem, 2.5vw, 2rem);
+
+  /* drop the panel min-height only for this section */
+  --section-min: clamp(220px, 28vh, 380px);
+}
+
+/* Make content top-align (instead of centered) so it feels intentional */
+.block.compact .content{
+  align-content: start;     /* top */
+  gap: .6rem;               /* slightly tighter spacing */
+}
+
+/* Keep the image from towering over the short text */
+.block.compact .media{
+  min-height: clamp(220px, 28vh, 360px);
+}
+
+/* Slightly narrower text for a tighter look */
+.block.compact .aboutInfo{
+  max-width: 58ch;
+}
+
+/* On mobile, let it flow naturally */
+@media (max-width: 1000px){
+  .block.compact{
+    padding-top: clamp(1rem, 3vw, 1.5rem);
+    padding-bottom: clamp(1rem, 3vw, 1.5rem);
+  }
+  .block.compact .content,
+  .block.compact .media{
+    min-height: auto;
+  }
+  .block.compact .aboutInfo{
+    max-width: 100%;
+  }
+}

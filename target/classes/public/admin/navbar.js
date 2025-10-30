@@ -1,65 +1,127 @@
-class NavbarElement extends HTMLElement {
-    constructor() {
-        super();
+// --------- Nav Bar and Session Tracking Logic------------------>
 
-        // Attach a shadow DOM
-        const shadow = this.attachShadow({ mode: 'open' });
+document.addEventListener("DOMContentLoaded", () => { 
+    const API_BASE_URL = 'https://www.niskyhill.org';
 
-        const styles = document.createElement('link');
-        styles.setAttribute('rel', 'stylesheet');
-        styles.setAttribute('href', './admin.css');
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileWrapper = document.getElementById('profileWrapper');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const resetPasswordLink = document.getElementById('resetPasswordLink');
+    const logoutError = document.getElementById('logoutErrorText');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userRole  = document.getElementById('userRole');
 
-        const extraStyles = document.createElement('link');
-        extraStyles.setAttribute('rel', 'stylesheet');
-        extraStyles.setAttribute('href', './form.css');
 
-        // Add the navbar structure
-        shadow.innerHTML = `
-            <div class="navbar">
-                <div class="dropdown">
-                   <a href="dashboard.html"><button>Home</button></a>
-                </div>
-                <div class="dropdown">
-                    <button>Owners</button>
-                    <div class="dropdown-content">
-                        <a href="add_owner.html">Add Owner</a>
-                        <a href="search_owner.html">Search Owner</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button>Residents</button>
-                    <div class="dropdown-content">
-                        <a href="add_resident.html">Add Resident</a>
-                        <a href="search_resident_name.html">Search Resident by Name</a>
-                        <a href="search_resident_lot.html">Search Resident by Lot</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button>Lots</button>
-                    <div class="dropdown-content">
-                        <a href="add_lot.html">Add Lot</a>
-                        <a href="search_lot.html">Search Lot</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button>Sections</button>
-                    <div class="dropdown-content">
-                        <a href="add_section.html">Add Section</a>
-                        <a href="edit_section.html">Edit Section</a>
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <button>Files</button>
-                    <div class="dropdown-content">
-                        <a href="add_file.html">Add File</a>
-                        <a href="view_files_lot.html">View Files for Lot</a>
-                    </div>
-                </div>
-            </div>
-        `;
+    // Track session timeout
+    checkSessionAndSetRedirect();
 
-        shadow.appendChild(styles);
-        shadow.appendChild(extraStyles);
+    // click on the Person Icon
+    profileIcon.addEventListener('click', () => {
+        logoutError.textContent = "";
+        profileDropdown.style.display = 
+        profileDropdown.style.display === 'block' ? 'none' : 'block';
+        setCurrentUserInfo(userName, userEmail, userRole, logoutError)
+    });
+
+    // Click off the person icon
+    document.addEventListener('click', (e) => {
+        if (!profileWrapper.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+        }
+    });
+
+    // click the logout button
+    logoutBtn.addEventListener('click', () => {
+        handleLogout(logoutError);
+    });
+
+    // click the reset password text
+    resetPasswordLink.addEventListener('click', (e) => {
+        window.location.href = "/admin/update_password/updatepassword.html"; // redirect to the reset password page
+    });
+});
+
+
+
+async function handleLogout(logoutError) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, { 
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      window.location.href = './admin/dashboard.html'; // redirect after successful logout
+    } else {
+      logoutError.textContent = "Error Logging Out";
+    }
+  } catch (err) {
+    logoutError.textContent = "Error Logging Out";
+  }
+}
+
+
+async function setCurrentUserInfo(userName, userEmail, userRole, logoutError){
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/user`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok){
+            const data = await response.json();
+            userName.textContent = `${data.firstName} ${data.lastName}`;
+            userEmail.textContent = data.email;
+            userRole.textContent = data.role;
+        } else {
+            logoutError.textContent = "Error Displaying User Information";
+        }
+
+    } catch (err) {
+        logoutError.textContent = "Error Displaying User Information";
     }
 }
-customElements.define('custom-navbar', NavbarElement);
+
+
+/**
+ * Calls /auth/user/status to get remaining token time and sets a timeout to redirect
+ */
+async function checkSessionAndSetRedirect() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/user/status`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const remainingMs = data.timeRemaining;
+
+            // If remaining time is already zero or negative, redirect immediately
+            if (remainingMs <= 0) {
+                window.location.href = '/login/login.html';
+            } else {
+                // Set timeout to redirect when token expires
+                setTimeout(() => {
+                    window.location.href = '/login/login.html';
+                }, remainingMs);
+            }
+        } else {
+            // API returned error (e.g., token invalid/expired)
+            window.location.href = '/login/login.html';
+        }
+    } catch (err) {
+        console.error("Error checking session status:", err);
+        window.location.href = '/login/login.html';
+    }
+}
+
