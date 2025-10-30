@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const userEmail = document.getElementById('userEmail');
     const userRole  = document.getElementById('userRole');
 
+
+    // Track session timeout
+    checkSessionAndSetRedirect();
+
     // click on the Person Icon
     profileIcon.addEventListener('click', () => {
         logoutError.textContent = "";
@@ -38,6 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/admin/update_password/updatepassword.html"; // redirect to the reset password page
     });
 });
+
+
 
 async function handleLogout(logoutError) {
   try {
@@ -83,3 +89,39 @@ async function setCurrentUserInfo(userName, userEmail, userRole, logoutError){
         logoutError.textContent = "Error Displaying User Information";
     }
 }
+
+
+/**
+ * Calls /auth/user/status to get remaining token time and sets a timeout to redirect
+ */
+async function checkSessionAndSetRedirect() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/user/status`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const remainingMs = data.timeRemaining;
+
+            // If remaining time is already zero or negative, redirect immediately
+            if (remainingMs <= 0) {
+                window.location.href = '/login/login.html';
+            } else {
+                // Set timeout to redirect when token expires
+                setTimeout(() => {
+                    window.location.href = '/login/login.html';
+                }, remainingMs);
+            }
+        } else {
+            // API returned error (e.g., token invalid/expired)
+            window.location.href = '/login/login.html';
+        }
+    } catch (err) {
+        console.error("Error checking session status:", err);
+        window.location.href = '/login/login.html';
+    }
+}
+
