@@ -1,6 +1,5 @@
 package moravians.niskyhill.server.dtos;
 
-
 public record LotDTO(
     Long lid,
     String number,

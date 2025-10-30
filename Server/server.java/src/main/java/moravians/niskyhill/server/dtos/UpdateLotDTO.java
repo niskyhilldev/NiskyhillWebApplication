@@ -8,4 +8,4 @@ public record UpdateLotDTO (
     Long mapXCord,
     Long mapYCord,
     Long sid 
-){ }
+) {  }

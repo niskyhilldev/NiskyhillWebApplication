@@ -161,15 +161,13 @@ public class AuthHandler {
 
         Long userId = validateToken(token);
         if (userId == null) {
-            redirectToLogin(ctx);
-            return null;
+            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized");
         }
 
         long expiration = getExpiration(token);
         long remaining = expiration - System.currentTimeMillis();
         if (remaining <= 0) {
-            redirectToLogin(ctx);
-            return null;
+            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized");
         }
 
         return remaining;
