@@ -105,6 +105,18 @@ public class Server {
             ctx.json(UserService.getUser(currentUserId, database));
         });
 
+        // Route to get the time remaining on a user's token
+        app.get("/auth/user/status", ctx -> {
+            Long remainingMs = AuthHandler.requireValidTokenAndGetRemaining(ctx);
+    
+            // Only return JSON if the token is valid
+            if (remainingMs != null) {
+                ctx.json(Map.of(
+                    "timeRemaining", remainingMs
+                ));
+            }
+        });
+
         // Route to update a user password (and remove session token)
         app.put("auth/password/update", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization

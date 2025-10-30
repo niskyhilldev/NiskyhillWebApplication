@@ -1,6 +1,7 @@
 package moravians.niskyhill.server.auth;
 
 import io.javalin.http.Context;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -10,43 +11,47 @@ import java.security.Key;
 import java.util.Date;
 
 /**
- * Handles authentication and authorization for the Nisky Hill server
+ * Handles authentication and authorization for the Nisky Hill server.
+ * Provides methods for token generation, validation, expiration checking,
+ * and redirecting unauthorized users to the login page.
  */
 public class AuthHandler {
-    
-    // Secret key for signing JWTs
+
+    /** Secret key used to sign JWT tokens */
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    
-    // Token expiration time (1 hour)
+
+    /** Token expiration time (1 hour) */
     private static final long EXPIRATION_MS = 1000 * 60 * 60;
 
+
     /**
-     * Creates a JWT token for a user
-     * @param email the email of the user
-     * @return the JWT token associated with the user
+     * Generates a JWT token for a given user ID.
+     *
+     * @param userId the ID of the user
+     * @return a signed JWT token string
      */
     public static String generateToken(Long userId) {
         return Jwts.builder()
-            .setSubject(userId.toString())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
-            .signWith(key)
-            .compact();
+                .setSubject(userId.toString())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
+                .signWith(key)
+                .compact();
     }
 
     /**
-     * Validates a JWT token
-     * @param token the JWT token to be validated
-     * @return userId of the user the token belongs to if valid, null otherwise
+     * Validates a JWT token and extracts the user ID.
+     *
+     * @param token the JWT token
+     * @return the user ID if valid, or null if invalid
      */
     public static Long validateToken(String token) {
         try {
             String userId = Jwts.parserBuilder()
-                        .setSigningKey(key)
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject();
-            
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
             return Long.parseLong(userId);
         } catch (Exception e) {
             return null;
@@ -54,51 +59,119 @@ public class AuthHandler {
     }
 
     /**
-     * Requires authentication for API routes
-     * Sets 401 if token is missing/invalid, stores userEmail in context if valid
-     * @param ctx the context of the server request
+     * Extracts the JWT token from the Authorization header or cookie.
+     *
+     * @param ctx the Javalin request context
+     * @return the token string, or null if not found
      */
-    public static void requireRouteAuth(Context ctx) throws HttpStatusException{
-        String token = null;
-        
-        // First try Authorization header
+    private static String extractToken(Context ctx) {
         String authHeader = ctx.header("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        } else {
-            // Fallback to cookie
-            token = ctx.cookie("token");
+            return authHeader.substring(7);
         }
+        return ctx.cookie("token");
+    }
 
+    /**
+     * Redirects the user to the login page and skips remaining handlers.
+     * Also removes the token cookie.
+     *
+     * @param ctx the Javalin request context
+     */
+    private static void redirectToLogin(Context ctx) {
+        ctx.removeCookie("token");
+        ctx.redirect("/login/login.html");
+        ctx.skipRemainingHandlers();
+    }
+
+    /**
+     * Parses the expiration timestamp from a JWT token.
+     *
+     * @param token the JWT token
+     * @return expiration time in milliseconds since epoch, or -1 if invalid
+     */
+    private static long getExpiration(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            Date exp = claims.getExpiration();
+            return exp != null ? exp.getTime() : -1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+
+    /**
+     * Ensures an API route request has a valid token.
+     * Throws 401 Unauthorized if token is missing or invalid.
+     *
+     * @param ctx the Javalin request context
+     * @throws HttpStatusException if token is invalid
+     */
+    public static void requireRouteAuth(Context ctx) throws HttpStatusException {
+        String token = extractToken(ctx);
         Long userId = validateToken(token);
         if (userId == null) {
-            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized"); // throw exception and block route access 
+            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized");
         }
     }
 
     /**
-     * Requires authentication for static page access
-     * Redirects to login page if token is missing/invalid
-     * @param ctx the context of the server request
+     * Ensures a static page request has a valid token.
+     * Redirects to login page if token is missing or invalid.
+     *
+     * @param ctx the Javalin request context
      */
     public static void requirePageAuth(Context ctx) {
-        String token = ctx.cookie("token");
+        String token = extractToken(ctx);
         Long userId = validateToken(token);
-        
         if (userId == null) {
-            ctx.redirect("/login/login.html"); // redirect to the login page
-            ctx.skipRemainingHandlers();
-            return;
+            redirectToLogin(ctx);
         }
     }
 
     /**
-     * Retrieves the authenticated user's email from the context
-     * @param ctx the context of the server request
-     * @return the authenticated user's email
+     * Retrieves the authenticated user's ID from the request context.
+     *
+     * @param ctx the Javalin request context
+     * @return user ID if token is valid, otherwise null
      */
     public static Long getAuthenticatedUserId(Context ctx) {
-        String token = ctx.cookie("token");
+        String token = extractToken(ctx);
         return validateToken(token);
+    }
+
+
+    /**
+     * Validates the token, ensures it is not expired, and returns remaining time.
+     * Redirects to login page if token is missing, invalid, or expired.
+     *
+     * @param ctx the Javalin request context
+     * @return remaining time in milliseconds, or null if redirected
+     */
+    public static Long requireValidTokenAndGetRemaining(Context ctx) throws HttpStatusException{
+        String token = extractToken(ctx);
+        if (token == null || token.isEmpty()) {
+            throw new HttpStatusException(HttpStatus.UNAUTHORIZED.value, "Unauthorized");
+        }
+
+        Long userId = validateToken(token);
+        if (userId == null) {
+            redirectToLogin(ctx);
+            return null;
+        }
+
+        long expiration = getExpiration(token);
+        long remaining = expiration - System.currentTimeMillis();
+        if (remaining <= 0) {
+            redirectToLogin(ctx);
+            return null;
+        }
+
+        return remaining;
     }
 }
