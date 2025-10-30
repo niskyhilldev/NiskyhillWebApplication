@@ -29,25 +29,30 @@ public class Database {
     private Database() {   }
 
     public static Database getDatabase() {
-        String uri = "jdbc:postgresql://c9mq4861d16jlm.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d1ijfopuv9r3fp?user=u6ajr7ir792ed7&password=p92316742813f4af72de2caaf466079cc416236769dabffbeb33a64c36685bd83";
+        // Get the database URI from environment variable
+        String uri = System.getenv("JDBC_DATABASE_URI");
+        if (uri == null || uri.isEmpty()) {
+            System.err.println("\nJDBC_DATABASE_URI environment variable is not set.");
+            return null;  // Still returns null if env variable missing
+        }
+
         Database d = new Database();
 
         try {
             d.connection = DriverManager.getConnection(uri);
             if (d.connection == null) {
-                System.err.println("\nCould Not connect To Database (Null Object Retured)");
+                System.err.println("\nCould not connect to Database (null object returned).");
                 return null;
             } else {
-                System.out.println("\nDatabase Connection Sucsessfull");
-                return d;
+                System.out.println("\nDatabase connection successful.");
+                return d;  // Returns Database object as before
             }
-
         } catch (SQLException e) {
-            System.err.printf("\nError Connecting to Database: %s\n", e.getMessage());
+            System.err.printf("\nError connecting to Database: %s\n", e.getMessage());
             return null;
         }
-
     }
+
 
     public boolean disconnect() {
         if (connection != null) {
