@@ -50,19 +50,10 @@ public class Server {
         });
 
 
-        /* Redirect niskyhill.com to www.niskyhill.org */
-        app.before(ctx -> {
-            String host = ctx.header("Host");
-            if (host != null && host.equals("niskyhill.com")) {
-                String redirectUrl = "https://www.niskyhill.org" + ctx.fullUrl().replaceFirst("https?://[^/]+", "");
-                ctx.redirect(redirectUrl, HttpStatus.MOVED_PERMANENTLY);
-                return;
-            }
-        });
-
         /* Allowed Origins for CORS */
         List<String> allowedOrigins = List.of(
-            "https://www.niskyhill.org",  
+            "https://www.niskyhill.org", 
+            "https://www.niskyhill.com",
             "http://localhost:8080" // for Local dev
         );
 
