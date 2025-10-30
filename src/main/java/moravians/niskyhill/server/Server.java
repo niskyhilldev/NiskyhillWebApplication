@@ -50,10 +50,8 @@ public class Server {
 
         // Allowed Origins for CORS
         List<String> allowedOrigins = List.of(
-            "https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com",
-            "https://www.niskyhill.org",
-            "https://www.niskyhill.com",
-            "http://localhost:8080" // for local dev
+            "https://www.niskyhill.org",  
+            "http://localhost:8080"       // Local dev
         );
 
         /* Enable CORS */
@@ -101,10 +99,13 @@ public class Server {
                 String token = AuthHandler.generateToken(userId); // generate a token for that user
 
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
-                cookie.setMaxAge(3600);  // set Cookie for one Hour
-                cookie.setHttpOnly(true);  // block access to cookie from JS files
-                cookie.setSecure(true);
-                cookie.setSameSite(SameSite.NONE);
+                cookie.setDomain(".niskyhill.org");  // works across www + api subdomains
+                cookie.setPath("/");
+                cookie.setMaxAge(3600);               // 1 hour
+                cookie.setHttpOnly(true);             // JS cannot access
+                cookie.setSecure(true);               // only over HTTPS
+                cookie.setSameSite(SameSite.LAX);    // allows cross-subdomain
+
 
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Login successful"));
@@ -117,10 +118,12 @@ public class Server {
         app.post("/auth/logout", ctx -> {
             // Create a cookie with the same name and set MaxAge to 0 to delete it
             Cookie cookie = new Cookie("token", "");
-            cookie.setMaxAge(0);    // Deletes the cookie
+            cookie.setDomain(".niskyhill.org");  // clear cookie across subdomains
+            cookie.setPath("/");
+            cookie.setMaxAge(0);                 // delete immediately
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
-            cookie.setSameSite(SameSite.NONE);
+            cookie.setSameSite(SameSite.LAX);
 
             ctx.cookie(cookie);
             ctx.json(Map.of("message", "Logged out successfully"));

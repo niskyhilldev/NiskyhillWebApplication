@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name');
     const resultsDiv = document.getElementById('searchResults');
     const statusDiv = document.getElementById('searchStatus');
-    const API_BASE_URL = 'https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com';
+    const API_BASE_URL = 'https://www.niskyhill.org';
 
     let currentPage = 1;
     const pageSize = 10; //show 10 per page
