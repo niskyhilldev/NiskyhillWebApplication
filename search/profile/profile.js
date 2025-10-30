@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const qParam  = searchParams.get("q");
   const latParam = parseFloat(searchParams.get("lat"));
   const lngParam = parseFloat(searchParams.get("lng"));
-  const API_BASE_URL = 'http://localhost:8080/residents/find';
+  const API_BASE_URL = 'https://www.niskyhill.org';
 
   // ===== Map state =====
   let map;
@@ -237,7 +237,7 @@ function extractPlotCoords(resident) {
 
   async function fetchResident() {
     try {
-      const response = await fetch(`${API_BASE_URL}/${encodeURIComponent(userID || '')}`);
+      const response = await fetch(`${API_BASE_URL}/residents/find/${encodeURIComponent(userID || '')}`);
       if (!response.ok) {
         if (response.status === 404) throw new Error(`Resident with ID ${userID} not found`);
         if (response.status === 400) throw new Error('Invalid Resident ID format');
