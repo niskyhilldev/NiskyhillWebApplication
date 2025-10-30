@@ -1,3 +1,6 @@
+API_BASE_URL = 'https://niskyhillcemetery-23a1ead2d9b1.herokuapp.com';
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
     const username = document.getElementById("username");
@@ -19,11 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Call the backend login API
-            const response = await fetch('https://www.niskyhill.org/auth/login', {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     email: username.value.trim(),
                     password: password.value

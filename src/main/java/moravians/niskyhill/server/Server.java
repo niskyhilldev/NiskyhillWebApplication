@@ -62,7 +62,7 @@ public class Server {
                 ctx.header("Access-Control-Allow-Origin", origin);
             }
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
         });
 
         /* Handle preflight requests */
@@ -72,7 +72,7 @@ public class Server {
                 ctx.header("Access-Control-Allow-Origin", origin);
             }
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
             ctx.status(204);
         });
 
@@ -95,6 +95,7 @@ public class Server {
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
                 cookie.setMaxAge(3600);  // set Cookie for one Hour
                 cookie.setHttpOnly(true);  // block access to cookie from JS files
+                cookie.setSecure(true);
 
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Login successful"));
@@ -109,6 +110,7 @@ public class Server {
             Cookie cookie = new Cookie("token", "");
             cookie.setMaxAge(0);    // Deletes the cookie
             cookie.setHttpOnly(true);
+            cookie.setSecure(true);
 
             ctx.cookie(cookie);
             ctx.json(Map.of("message", "Logged out successfully"));
