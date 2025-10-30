@@ -19,6 +19,7 @@ import moravians.niskyhill.server.services.ResidentService;
 import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
 import io.javalin.http.Cookie;
+import io.javalin.http.SameSite;
 
 
 /**
@@ -103,6 +104,7 @@ public class Server {
                 cookie.setMaxAge(3600);  // set Cookie for one Hour
                 cookie.setHttpOnly(true);  // block access to cookie from JS files
                 cookie.setSecure(true);
+                cookie.setSameSite(SameSite.NONE);
 
                 ctx.cookie(cookie);
                 ctx.json(Map.of("message", "Login successful"));
@@ -118,6 +120,7 @@ public class Server {
             cookie.setMaxAge(0);    // Deletes the cookie
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
+            cookie.setSameSite(SameSite.NONE);
 
             ctx.cookie(cookie);
             ctx.json(Map.of("message", "Logged out successfully"));
