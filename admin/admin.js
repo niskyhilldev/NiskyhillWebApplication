@@ -5,7 +5,8 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-API_BASE_URL = 'https://www.niskyhill.org';
+// API_BASE_URL = 'https://www.niskyhill.org';
+API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
@@ -18,7 +19,7 @@ async function performResidentSearch() {
                     const residents = [];
                     residentResults = residents;
                     populateTable(residents, 'residents');
-                    throw new Error(`Resident not found`);
+                    return;
                 } else if (response.status === 400) {
                     throw new Error('Invalid Resident ID format');
                 } else if (response.status === 500) {
@@ -35,11 +36,9 @@ async function performResidentSearch() {
         residentResults = residents;
         populateTable(residents, 'residents');
             
-            //network error
+        //network error
         } catch (error) {
-            // statusDiv.innerHTML = `Error searching: ${error.message}`;
-            // resultsDiv.innerHTML = '';
-            console.error('Search error:', error);
+            window.alert('Search error:', error);
         }
 }
 async function performLotSearch() {
@@ -54,10 +53,13 @@ async function performLotSearch() {
         if (lot) queryParams.append("lot", lot);
 
         const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
-
+    
         if (!response.ok) {
             if (response.status === 404) {
-                throw new Error('No lots found matching search criteria');
+                const lots = [];
+                lotsResults = lots;
+                populateTable(lots, 'lots');
+                return;
             } else if (response.status === 400) {
                 throw new Error('Invalid search parameters');
             } else if (response.status === 500) {
@@ -69,30 +71,11 @@ async function performLotSearch() {
 
         const lots = await response.json();
 
-        // Example: store results and display them
         lotResults = lots;
         populateTable(lots, 'lots');
 
     } catch (error) {
-        // statusDiv.innerHTML = `Error searching: ${error.message}`;
-        const tableBody = document.getElementById("resLotTableBody");
-
-        // Clear any previous rows
-        tableBody.innerHTML = "";
-
-        // Create a row
-        const row = document.createElement("tr");
-
-        // Create a single cell that spans all columns
-        const cell = document.createElement("td");
-        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
-        cell.textContent = "No results found";
-        cell.style.textAlign = "center"; // optional: center the text
-
-        // Append the cell to the row, and row to the table body
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-        console.error('Search error:', error);
+        window.alert('Search error:', error);
     }
 }
 async function performLotSearch2() {
@@ -131,25 +114,7 @@ async function performLotSearch2() {
         populateTable(lots, 'plots');
 
     } catch (error) {
-        // statusDiv.innerHTML = `Error searching: ${error.message}`;
-        const tableBody = document.getElementById("resLotTableBody");
-
-        // Clear any previous rows
-        tableBody.innerHTML = "";
-
-        // Create a row
-        const row = document.createElement("tr");
-
-        // Create a single cell that spans all columns
-        const cell = document.createElement("td");
-        cell.colSpan = tableBody.parentElement.querySelector("thead tr").children.length; // span all columns
-        cell.textContent = "No results found";
-        cell.style.textAlign = "center"; // optional: center the text
-
-        // Append the cell to the row, and row to the table body
-        row.appendChild(cell);
-        tableBody.appendChild(row);
-        console.error('Search error:', error);
+        window.alert('Search error:', error);
     }
 }
 function populateTable(filteredData, type) {
@@ -300,12 +265,9 @@ async function viewMore(firstname, middleName, lastName, suffix, row, type) {
             details = lots;
             id = lots.lid;
             
-            //network error
-            
+        //network error
         } catch (error) {
-            // statusDiv.innerHTML = `Error searching: ${error.message}`;
-            // resultsDiv.innerHTML = '';
-            console.error('Search error:', error);
+            window.alert('Search error:', error);
         }
     }
     else{
@@ -352,7 +314,7 @@ async function getLotInfo(section, lot, partition){
         }
 
     } catch (error) {
-        console.error('Search error:', error);
+        window.alert('Search error:', error);
     }
 }
 function createPopup(details, rowId, type, id) {
@@ -622,8 +584,6 @@ async function saveChanges(type) {
             `;
             const responseData = await response.text();
         } catch (error) {
-            // statusDiv.innerHTML = `Error searching: ${error.message}`;
-            // resultsDiv.innerHTML = '';
             console.error('Put error:', error);
         }
     }
@@ -699,8 +659,6 @@ async function saveChanges(type) {
             `;
             const responseData = await response.text();
         } catch (error) {
-            // statusDiv.innerHTML = `Error searching: ${error.message}`;
-            // resultsDiv.innerHTML = '';
             console.error('Put error:', error);
         }
     }
@@ -997,7 +955,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // Track session timeout
-    checkSessionAndSetRedirect();
+    // checkSessionAndSetRedirect();
 
     // click on the Person Icon
     profileIcon.addEventListener('click', () => {
