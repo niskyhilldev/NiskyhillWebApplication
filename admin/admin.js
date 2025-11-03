@@ -769,6 +769,10 @@ document.getElementById("showResidentFormBtn").addEventListener("click", () => {
     document.getElementById("addResidentForm").style.display = "block";   // show form
     document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
 });
+document.getElementById("showResidentFormBtn2").addEventListener("click", () => {
+    document.getElementById("addResidentForm").style.display = "block";   // show form
+    document.getElementById("showResidentFormBtn2").style.display = "none";   // hide +
+});
 function deleteEntry(id, type) {
     //delete an entry from the db and display
     if(type === 'residents'){
@@ -922,6 +926,7 @@ document.getElementById("closeResidentFormBtn").addEventListener("click", functi
     //close the resident form
     document.getElementById("addResidentForm").style.display = "none";
     document.getElementById('showResidentFormBtn').style.display = "block";
+    document.getElementById('showResidentFormBtn2').style.display = "block";
 });
 document.getElementById("closeLotFormBtn").addEventListener("click", function () {
     //close the lot form
