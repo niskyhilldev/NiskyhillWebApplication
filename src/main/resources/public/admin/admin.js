@@ -5,8 +5,7 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-// API_BASE_URL = 'https://www.niskyhill.org';
-API_BASE_URL = 'http://localhost:8080';
+API_BASE_URL = 'https://www.niskyhill.org';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
