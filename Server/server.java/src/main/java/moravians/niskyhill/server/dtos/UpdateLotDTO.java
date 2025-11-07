@@ -5,7 +5,5 @@ public record UpdateLotDTO (
     String number,
     String descriptor,
     String owner,
-    Long mapXCord,
-    Long mapYCord,
     Long sid 
 ) {  }
