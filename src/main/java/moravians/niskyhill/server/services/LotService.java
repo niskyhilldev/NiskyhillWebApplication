@@ -77,13 +77,14 @@ public class LotService {
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
         }
 
-        if (!(database.createNewLot(newLotDTO.number(), newLotDTO.descriptor(), newLotDTO.owner(), newLotDTO.mapXCord(), newLotDTO.mapYCord(), newLotDTO.sid()))){
+        if (!(database.createNewLot(newLotDTO.number(), newLotDTO.descriptor(), newLotDTO.owner(), newLotDTO.sid()))){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot");
         }
         return true;
 
     }
 
+    // NOTE: you cannot touch the pixel cords from the API, this must be done in the database
     public static boolean updateLot(UpdateLotDTO updateLotDTO, Database database) throws HttpStatusException {
         if (updateLotDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
@@ -101,7 +102,7 @@ public class LotService {
             throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Section not Found with id " + updateLotDTO.sid()); 
         }
 
-        if (!(database.updateLot(updateLotDTO.lid(), updateLotDTO.number(), updateLotDTO.descriptor(), updateLotDTO.owner(), updateLotDTO.mapXCord(), updateLotDTO.mapYCord(), updateLotDTO.sid()))){
+        if (!(database.updateLot(updateLotDTO.lid(), updateLotDTO.number(), updateLotDTO.descriptor(), updateLotDTO.owner(), updateLotDTO.sid()))){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot Criteria");
         }
         return true;

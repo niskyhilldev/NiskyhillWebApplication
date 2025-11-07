@@ -75,8 +75,10 @@ public class Database {
         final String q = """
             SELECT * 
             FROM 
-                resident JOIN lot ON resident.lot = lot.lid
-                JOIN section ON lot.section = section.sid
+                (resident JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid)
+                LEFT JOIN map_coordinates ON 
+                    (section.name = map_coordinates.section_name and lot.number = map_coordinates.lot_number)
         """;
         
         List<Resident> residents = new ArrayList<>();
@@ -124,8 +126,10 @@ public class Database {
         final String q = """
             SELECT * 
             FROM 
-                resident JOIN lot ON resident.lot = lot.lid
-                JOIN section ON lot.section = section.sid
+                (resident JOIN lot ON resident.lot = lot.lid
+                JOIN section ON lot.section = section.sid)
+                LEFT JOIN map_coordinates ON 
+                    (section.name = map_coordinates.section_name and lot.number = map_coordinates.lot_number)
             WHERE resident.rid = ?
         """;
 
@@ -175,6 +179,8 @@ public class Database {
             FROM resident r
                 JOIN lot l ON r.lot = l.lid
                 JOIN section s ON l.section = s.sid
+                LEFT JOIN map_coordinates ON 
+                    (s.name = map_coordinates.section_name and l.number = map_coordinates.lot_number)
             WHERE to_tsvector(
                     'simple',
                     COALESCE(r.firstname,'') || ' ' || COALESCE(r.middlename,'') || ' ' || COALESCE(r.lastname,'')
@@ -253,7 +259,11 @@ public class Database {
     public List<Lot> getAllLots() throws HttpStatusException {
         final String q = """
                         SELECT *
-                        FROM lot JOIN section ON lot.section = section.sid
+                        FROM 
+                            (lot JOIN section ON lot.section = section.sid)
+                            LEFT JOIN map_coordinates ON 
+                                (section.name = map_coordinates.section_name and lot.number = map_coordinates.lot_number)
+                        ORDER BY lot.number;
                 """;
 
         List<Lot> lots = new ArrayList<>();
@@ -289,6 +299,7 @@ public class Database {
         final String q = """
                     SELECT *
                     FROM section
+                    ORDER BY name;
                 """;
 
         List<Section> sections = new ArrayList<>();
@@ -316,7 +327,10 @@ public class Database {
     public Lot getLot(Long lid) throws HttpStatusException {
         final String q = """
                         SELECT *
-                        FROM lot JOIN section ON lot.section = section.sid
+                        FROM 
+                            (lot JOIN section ON lot.section = section.sid)
+                            LEFT JOIN map_coordinates ON 
+                                (section.name = map_coordinates.section_name and lot.number = map_coordinates.lot_number)
                         WHERE lot.lid = ?
                 """;
 
@@ -386,18 +400,21 @@ public class Database {
     public List<Lot> getLotDetails(String lotNumber, String sectionName) throws HttpStatusException {
         String q = """
                     SELECT *
-                    FROM lot JOIN section ON lot.section = section.sid
+                    FROM 
+                        (lot JOIN section ON lot.section = section.sid)
+                        LEFT JOIN map_coordinates ON 
+                            (section.name = map_coordinates.section_name and lot.number = map_coordinates.lot_number)
                     WHERE
                 """;
 
         List<Lot> list = new ArrayList<>();
 
         if (lotNumber == null && sectionName != null){ // get all lots in a section
-            q += " section.name = ?";
+            q += " section.name = ? ORDER BY section.name";
         }else if (lotNumber != null && sectionName == null){ // get all lots that share a number
-            q += " lot.number = ?";
+            q += " lot.number = ? ORBER BY lot.number";
         } else { // get all lots with the number in the section 
-            q += " lot.number = ? AND section.name = ?";
+            q += " lot.number = ? AND section.name = ? ORDER BY section.name, lot.number";
         }
         
         try {
@@ -670,9 +687,9 @@ public class Database {
     }
 
 
-    public boolean createNewLot(String number,String descriptor, String owner, Long mapXCord, Long mapYCord, Long sid ) throws HttpStatusException {
+    public boolean createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
-                INSERT INTO lot (number, descriptor, owner, x_pixel_cord, y_pixel_cord, section)
+                INSERT INTO lot (number, descriptor, owner, section)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
         
@@ -690,17 +707,7 @@ public class Database {
             }else {
                 ps.setString(3, owner);
             }
-            if (mapXCord == null){ // set Xcord (nullable)
-                ps.setNull(4, Types.INTEGER);
-            } else{
-                ps.setLong(4, mapXCord);
-            }
-            if (mapYCord == null) { // set yCord (nullable)
-                ps.setNull(5, Types.INTEGER);
-            } else {
-                ps.setLong(5, mapYCord);
-            }
-            ps.setLong(6, sid);
+            ps.setLong(4, sid);
 
             if (ps.executeUpdate() < 1){
                 return false;
@@ -720,15 +727,13 @@ public class Database {
     }
 
 
-    public boolean updateLot(Long lid, String number, String descriptor, String owner, Long mapXCord, Long mapYCord, Long sid ) throws HttpStatusException {
+    public boolean updateLot(Long lid, String number, String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 UPDATE lot
                 SET 
                     number = ?,
                     descriptor = ?,
                     owner = ?,
-                    x_pixel_cord = ?, 
-                    y_pixel_cord = ?, 
                     section = ?
                 WHERE lid = ?
                 """;
@@ -747,18 +752,8 @@ public class Database {
             }else {
                 ps.setString(3, owner);
             }
-            if (mapXCord == null){ // set Xcord (nullable)
-                ps.setNull(4, Types.INTEGER);
-            } else{
-                ps.setLong(4, mapXCord);
-            }
-            if (mapYCord == null) { // set yCord (nullable)
-                ps.setNull(5, Types.INTEGER);
-            } else {
-                ps.setLong(5, mapYCord);
-            }
-            ps.setLong(6, sid);
-            ps.setLong(7, lid);
+            ps.setLong(4, sid);
+            ps.setLong(5, lid);
 
             if (ps.executeUpdate() < 1){
                 return false;
