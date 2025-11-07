@@ -17,6 +17,7 @@ public class DataEntry {
             long line = 0;
             while (scanner.hasNextLine()) {
                 line++;
+                //I,Plot 1,[332,870]
                 String[] tokens = scanner.nextLine().split(",");
 
                 if(tokens.length != 4){
@@ -32,7 +33,7 @@ public class DataEntry {
                 section = tokens[0];
 
                 //get the plot
-                plot = tokens[1].replaceAll("(?i)plot", "").replaceAll("\\s+", "").trim();
+                plot = tokens[1].replaceAll("(?i)Plot", "").replaceAll("\\s+", "").trim();
 
                 //get the cords
                 xCord = Long.parseLong(tokens[2].replaceAll("[\\[\\]]", "").trim());
@@ -93,25 +94,18 @@ public class DataEntry {
         return true;
     }
 
-    public static void insertCords(String section,String lot, Long xCord, Long yCord, long fileLineNum, Connection c) {
+    public static void insertCords(String section, String lot, Long xCord, Long yCord, long fileLineNum, Connection c) {
         
-        Long sectionId = getSection(section, c);
 
-        String sql = """
-                UPDATE lot
-                SET 
-                    x_pixel_cord = ?,
-                    y_pixel_cord = ?
-                WHERE
-                    number = ? AND section = ?
-                """;
+        String sql = "INSERT INTO map_coordinates(section_name, lot_number, x_pixel_cord, y_pixel_cord) VALUES (?, ?, ?, ?)";
 
         try{
             PreparedStatement ps = c.prepareStatement(sql);
-            ps.setLong(1, xCord);
-            ps.setLong(2, yCord);
-            ps.setString(3, lot);
-            ps.setLong(4, sectionId);
+            ps.setString(1, section);
+            ps.setString(2, lot);
+            ps.setLong(3, xCord);
+            ps.setLong(4, yCord);
+
 
             if (ps.executeUpdate() < 1){
                 System.err.println("Error: Line " + fileLineNum);
@@ -125,30 +119,4 @@ public class DataEntry {
     }
 
 
-    /*
-     * Get the sid form the database, returns null if not found, -1 if there was an
-     * database error
-     */
-    public static Long getSection(String sectionName, Connection c) {
-        String sql = """
-                SELECT sid
-                FROM section
-                WHERE LOWER(name) = LOWER(?)
-                """;
-        try {
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setString(1, sectionName);
-            ResultSet rs = ps.executeQuery();
-
-            Long sectionId = null;
-            if (rs.next()) {
-                sectionId = rs.getLong("sid");
-            }
-            return sectionId;
-
-        } catch (SQLException e) {
-            return -1L;
-        }
-
-    }
 }
