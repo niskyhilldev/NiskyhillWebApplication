@@ -5,8 +5,9 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-// API_BASE_URL = 'https://www.niskyhill.org';
-API_BASE_URL = 'http://localhost:8080';
+// const API_BASE_URL = 'https://www.niskyhill.org';
+const rowsPerPage = 20;
+const API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
@@ -30,6 +31,7 @@ async function performResidentSearch() {
         }
 
         const residents = await response.json();
+        console.log(residents);
         // statusDiv.innerHTML = '';
         //send call to display results with filtered data and name entered
         // displaySearchResults(residents, name);
@@ -117,18 +119,28 @@ async function performLotSearch2() {
         window.alert('Search error:', error);
     }
 }
-function populateTable(filteredData, type) {
+function populateTable(filteredData, type, page=1) {
     //Actually display the data passed in the corresponding table
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    let paginatedData = [];
+    try{
+        paginatedData = filteredData.slice(start, end);   
+    }
+    catch(error){
+        paginatedData = filteredData;
+    }
+    
     if(type === 'residents'){
         const tableBody = document.getElementById("residentTableBody");
         tableBody.innerHTML = ""; // Clear previous content
 
-        if (filteredData.length === 0) {
+        if (paginatedData.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
             return;
         }
 
-        filteredData.forEach((entry, index) => {
+        paginatedData.forEach((entry, index) => {
             const row = document.createElement("tr");
             row.dataset.rid = entry.rid; 
 
@@ -144,6 +156,7 @@ function populateTable(filteredData, type) {
             `;
             tableBody.appendChild(row);
         });
+        renderPagination(filteredData.length, page, document.getElementById("pagination"), filteredData);
     }
     else if(type === 'lots'){
         //residents based off lots
@@ -215,6 +228,50 @@ function populateTable(filteredData, type) {
         });
     }
 }
+function renderPagination(totalRows, currentPage, paginationContainer, filteredData) {
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+    paginationContainer.innerHTML = "";
+
+    // Only show pagination if more than one page
+    if (totalPages <= 1) return;
+
+    const prevButton = document.createElement("button");
+    prevButton.textContent = "Previous";
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            populateTable(filteredData, "residents", currentPage);;
+        }
+    };
+
+    paginationContainer.appendChild(prevButton);
+
+    //show page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement("button");
+        pageButton.textContent = i;
+        if (i === currentPage) pageButton.disabled = true;
+        pageButton.onclick = () => {
+            currentPage = i;
+            populateTable(filteredData, "residents", currentPage);
+        };
+        paginationContainer.appendChild(pageButton);
+    }
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            populateTable(filteredData, "residents", currentPage);
+        }
+    };
+
+    paginationContainer.appendChild(nextButton);
+}
+
 async function viewMore(firstname, middleName, lastName, suffix, row, type) {
     //get all the data for a popup
     const rowId = parseInt(row, 10); // Ensure row is treated as a number
