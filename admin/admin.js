@@ -156,7 +156,7 @@ function populateTable(filteredData, type, page=1) {
             `;
             tableBody.appendChild(row);
         });
-        renderPagination(filteredData.length, page, document.getElementById("pagination"), filteredData);
+        renderPagination(filteredData.length, page, document.getElementById("pagination"), filteredData, "residents");
     }
     else if(type === 'lots'){
         //residents based off lots
@@ -165,7 +165,7 @@ function populateTable(filteredData, type, page=1) {
 
         // Flatten the data: one entry per resident
         const flattenedResidents = [];
-        filteredData.forEach(entry => {
+        paginatedData.forEach(entry => {
             const lot = entry.lot; // if you need lot info later
             entry.residents.forEach(resident => {
                 flattenedResidents.push({
@@ -199,19 +199,20 @@ function populateTable(filteredData, type, page=1) {
             `;
             tableBody.appendChild(row);
         });
+        renderPagination(filteredData.length, page, document.getElementById("paginationResLots"), filteredData, "lots");
 
     }
     else if(type === 'plots'){
         //plots/lots
         const tableBody = document.getElementById("lotTableBody");
         tableBody.innerHTML = ""; // Clear previous content
-        if (filteredData.length === 0) {
+        if (paginatedData.length === 0) {
             
             tableBody.innerHTML = "<tr><td colspan='4'>No results found</td></tr>";
             return;
         }
 
-        filteredData.forEach((entry, index) => {
+        paginatedData.forEach((entry, index) => {
             const row = document.createElement("tr");
             row.dataset.lid = entry.lot.lid; 
 
@@ -226,9 +227,11 @@ function populateTable(filteredData, type, page=1) {
             `;
             tableBody.appendChild(row);
         });
+        renderPagination(filteredData.length, page, document.getElementById("paginationLots"), filteredData, "plots");
+
     }
 }
-function renderPagination(totalRows, currentPage, paginationContainer, filteredData) {
+function renderPagination(totalRows, currentPage, paginationContainer, filteredData, type) {
     const totalPages = Math.ceil(totalRows / rowsPerPage);
     paginationContainer.innerHTML = "";
 
@@ -241,7 +244,7 @@ function renderPagination(totalRows, currentPage, paginationContainer, filteredD
     prevButton.onclick = () => {
         if (currentPage > 1) {
             currentPage--;
-            populateTable(filteredData, "residents", currentPage);;
+            populateTable(filteredData, type, currentPage);;
         }
     };
 
@@ -254,7 +257,7 @@ function renderPagination(totalRows, currentPage, paginationContainer, filteredD
         if (i === currentPage) pageButton.disabled = true;
         pageButton.onclick = () => {
             currentPage = i;
-            populateTable(filteredData, "residents", currentPage);
+            populateTable(filteredData, type, currentPage);
         };
         paginationContainer.appendChild(pageButton);
     }
@@ -265,7 +268,7 @@ function renderPagination(totalRows, currentPage, paginationContainer, filteredD
     nextButton.onclick = () => {
         if (currentPage < totalPages) {
             currentPage++;
-            populateTable(filteredData, "residents", currentPage);
+            populateTable(filteredData, type, currentPage);
         }
     };
 
