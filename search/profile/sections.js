@@ -60,7 +60,7 @@
       'L':  { route: sectionLRoute, outline: sectionLOutline },
       'F':  { route: sectionFRoute, outline: sectionFOutline },
       'I':  { route: sectionIRoute, outline: sectionIOutline },
-      '4':  { route: section4Route, outline: section4Outline },
+      '#4':  { route: section4Route, outline: section4Outline },
 
       'A':  { route: sectionARoute, outline: sectionAOutline },
       'A1': { route: sectionA1Route, outline: sectionA1Outline },
@@ -72,7 +72,7 @@
 
       'K':  { route: sectionKRoute, outline: sectionKOutline },
       'E':  { route: sectionERoute, outline: sectionEOutline },
-      '1':  { route: section1Route, outline: section1Outline },
+      '#1':  { route: section1Route, outline: section1Outline },
       'O':  { route: sectionORoute, outline: sectionOOutline },
       'D':  { route: sectionDRoute, outline: sectionDOutline },
       'G':  { route: sectionGRoute, outline: sectionGOutline },
