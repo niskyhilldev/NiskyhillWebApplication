@@ -690,7 +690,7 @@ public class Database {
     public boolean createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 INSERT INTO lot (number, descriptor, owner, section)
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?)
                 """;
         
         try {
