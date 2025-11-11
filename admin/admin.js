@@ -682,8 +682,6 @@ async function saveChanges(type) {
             number: document.getElementById('lotNumber').value,
             descriptor: document.getElementById('lotPartition').value,
             owner: document.getElementById('lotOwner').value,
-            mapXCord: oldLot.mapXCord,
-            mapYCord: oldLot.mapYCord,
             sid: getSectionId(document.getElementById('sectionNumber').value,)
         }
         const data = JSON.stringify(lot);
@@ -787,12 +785,9 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
         number: document.getElementById('addLotNumber').value,
         descriptor: document.getElementById('addLotPortion').value,
         owner: document.getElementById('ownerFirst').value,
-        mapXCord: null,
-        mapYCord: null,
         sid: sectionId
     }
 
-    console.log(newLot)
 
 
     fetch(`${API_BASE_URL}/lots/add`, {
