@@ -5,9 +5,9 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-const API_BASE_URL = 'https://www.niskyhill.org';
+// const API_BASE_URL = 'https://www.niskyhill.org';
 const rowsPerPage = 20;
-// const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
@@ -475,7 +475,8 @@ function createPopup(details, rowId, type, id) {
             console.error("Error fetching sections:", error);
             selectEl.innerHTML = '<option value="">Error loading sections</option>';
         });
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+        let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`;
+        fetch(url)
                 .then(res => res.json())
                 .then(data => {
                 data.forEach(lot => {
@@ -492,7 +493,7 @@ function createPopup(details, rowId, type, id) {
                 console.error(err);
                 lotSelector.innerHTML = '<option value="">Error loading lots</option>';
                 });
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
             .then(res => res.json())
             .then(data => {
             data.forEach(portion => {
@@ -609,6 +610,9 @@ async function saveChanges(type) {
             "foundation": false,
             "publicViewable": document.getElementById("public").checked,
             "lid": lotInfo.lid
+        }
+        if (resident.capsule === "Unknown"){
+            resident.capsule = null;
         }
         const data = JSON.stringify(resident);
         try {
@@ -928,7 +932,7 @@ sectionSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+  fetch(encodeURI(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`))
     .then(res => res.json())
     .then(data => {
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
