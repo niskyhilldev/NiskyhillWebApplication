@@ -248,18 +248,7 @@
     word-wrap: break-word;
     text-align: center;
     margin-left: 40px;
-    text-align: center;
   }
-  
-  .historyHeader {
-    color: black;
-    font-size: 3.1rem;
-    font-family: Instrument Sans;
-    font-weight: 600;
-    margin-top: 1.775rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    }
   
   /* Dropdown Button */
   /* credit: https://www.w3schools.com/howto/howto_js_dropdown.asp */
@@ -271,7 +260,6 @@
     border: none;
     cursor: pointer;
     display: none;
-    font-size: 20px; 
     font-family: Inria Serif; 
     transition: 0.3s ease;
   }
@@ -325,15 +313,6 @@
   .show {display:block;}
   
   @media (max-width: 1000px){
-    .aboutSectionSpacing{
-      flex-direction: column;
-      margin: 0.5rem;
-    }
-    .aboutSection {
-      width: 100%;
-      align-items: center;
-      text-align: center;
-    }
     .navOption, .findAGraveButton{
       display: none;
     }
@@ -446,16 +425,6 @@
   font-family: Instrument Sans; 
   font-weight: 600; 
   margin-top: 1.775rem; 
-  text-align: center;
-}
-
-.historyInfo {
-  color: black; 
-  font-size: 30px; 
-  font-family: Inria Serif; 
-  font-weight: 400; 
-  word-wrap: break-word; 
-  margin-bottom: 20px; 
   text-align: center;
 }
 

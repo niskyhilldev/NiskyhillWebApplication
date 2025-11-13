@@ -63,15 +63,6 @@ th {
   border: 1px solid gray;
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
 
 .search-container {
     margin-bottom: 10px;
@@ -264,7 +255,75 @@ h1 {
   margin-left: 3%;
 }
 
-.section {
-  border-bottom: 3px solid white;
-  padding-bottom: 2%;
+.section table {
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+#pagination,
+#paginationLots,
+#paginationResLots {
+    text-align: center;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2%;
+}
+
+#pagination button,
+#paginationLots button,
+#paginationResLots button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+#pagination button.active,
+#paginationLots button.active,
+#paginationResLots button.active {
+    color: #af8c30; 
+    background-color: white;
+    font-weight: bold;
+    cursor: default;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal[style*="display: block"] {
+  display: flex !important; /* Use flex when visible */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal2 {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal form {
+  max-width: 500px;
+  width: 90%; 
+  padding: 20px;
+  border-radius: 5px;
 }

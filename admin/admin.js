@@ -254,6 +254,12 @@ function renderPagination(totalRows, currentPage, paginationContainer, filteredD
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement("button");
         pageButton.textContent = i;
+
+        if (i === currentPage) {
+            pageButton.classList.add("active");
+            pageButton.disabled = true;
+        }
+        
         if (i === currentPage) pageButton.disabled = true;
         pageButton.onclick = () => {
             currentPage = i;
@@ -814,23 +820,6 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
     
     // Clear the form fields
     document.getElementById('newLotForm').reset();
-
-    document.getElementById("addLotForm").style.display = "none";   // hide form
-    document.getElementById("showLotFormBtn").style.display = "block";    // show +
-});
-document.getElementById("showLotFormBtn").addEventListener("click", () => {
-    //open lot form
-    document.getElementById("addLotForm").style.display = "block";   // show form
-    document.getElementById("showLotFormBtn").style.display = "none";    // hide +
-});
-document.getElementById("showResidentFormBtn").addEventListener("click", () => {
-    //open resident form
-    document.getElementById("addResidentForm").style.display = "block";   // show form
-    document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
-});
-document.getElementById("showResidentFormBtn2").addEventListener("click", () => {
-    document.getElementById("addResidentForm").style.display = "block";   // show form
-    document.getElementById("showResidentFormBtn2").style.display = "none";   // hide +
 });
 function deleteEntry(id, type) {
     //delete an entry from the db and display
@@ -981,17 +970,8 @@ lotSelect.addEventListener("change", () => {
     });
 });
 
-document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
-    //close the resident form
-    document.getElementById("addResidentForm").style.display = "none";
-    document.getElementById('showResidentFormBtn').style.display = "block";
-    document.getElementById('showResidentFormBtn2').style.display = "block";
-});
-document.getElementById("closeLotFormBtn").addEventListener("click", function () {
-    //close the lot form
-    document.getElementById("addLotForm").style.display = "none";
-    document.getElementById('showLotFormBtn').style.display = "block";
-});
+
+
 
 
 
@@ -1129,3 +1109,51 @@ async function checkSessionAndSetRedirect() {
     }
 }
 
+
+var lotModal = document.getElementById("addLotForm");
+var lotBtn = document.getElementById("myBtn");
+var lotCloseBtn = document.getElementById("closeLotFormBtn");
+
+var residentModal = document.getElementById("addResidentForm");
+var residentBtn = document.getElementById("showResidentFormBtn");
+var residentBtn2 = document.getElementById("showResidentFormBtn2");
+var residentCloseBtn = document.getElementById("closeResidentFormBtn");
+
+lotBtn.onclick = function() {
+  lotModal.style.display = "block";
+}
+
+lotCloseBtn.onclick = function() {
+  document.getElementById('newLotForm').reset();
+  lotModal.style.display = "none";
+}
+
+residentBtn.onclick = function() {
+  residentModal.style.display = "block";
+  residentBtn.style.display = "none";
+}
+
+residentBtn2.onclick = function() {
+  residentModal.style.display = "block";
+  residentBtn2.style.display = "none";
+}
+
+residentCloseBtn.onclick = function() {
+  document.getElementById('newResidentForm').reset();
+  residentModal.style.display = "none";
+  residentBtn.style.display = "block";
+  residentBtn2.style.display = "block";
+}
+
+window.onclick = function(event) {
+  if (event.target == lotModal) {
+    document.getElementById('newLotForm').reset();
+    lotModal.style.display = "none";
+  }
+  if (event.target == residentModal) {
+    document.getElementById('newResidentForm').reset();
+    residentModal.style.display = "none";
+    residentBtn.style.display = "block";
+    residentBtn2.style.display = "block";
+  }
+}

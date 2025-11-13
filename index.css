@@ -59,22 +59,6 @@ html, body {
   font-weight: 700;
 }
 
-.learnMoreButton {
-    width: 154px; 
-    height: 40px; 
-    background: #0d2543; 
-    background: #af8c30; 
-    border-radius: 19px;
-    border-style: solid;
-    border-color: #af8c30;
-    color: white;
-    font-weight: 700; 
-    font-family: Instrument Sans;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
 .learnMoreButton:hover {
   color: black;
   background: white;

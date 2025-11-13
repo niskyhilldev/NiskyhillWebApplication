@@ -19,6 +19,14 @@ form label {
     /* color: black; */
 }
 
+form p {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #fef5bc;
+    /* color: black; */
+}
+
 input[type="text"], input[type="file"] {
     padding: 8px;
     margin-top: 5px;
