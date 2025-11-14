@@ -12,7 +12,12 @@ const API_BASE_URL = 'http://localhost:8080';
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
     let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
-
+    const tableBody = document.getElementById("residentTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
     try {
         const response = await fetch(`${API_BASE_URL}/residents/search?name=${name}`)
         if (!response.ok) {
@@ -47,7 +52,12 @@ async function performLotSearch() {
     //Call the api to get all the residents based off the lot/section entered and display them
     const section = document.getElementById("searchSectionRes").value.trim();
     const lot = document.getElementById("searchLotRes").value.trim();
-
+    const tableBody = document.getElementById("resLotTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
     try {
         // Build query string dynamically
         const queryParams = new URLSearchParams();
@@ -84,6 +94,13 @@ async function performLotSearch2() {
     //Call the api to get all the plots based off the name entered and display them
     const section = document.getElementById("searchSection").value.trim();
     const lot = document.getElementById("searchLotPlots").value.trim();
+
+    const tableBody = document.getElementById("lotTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
 
     try {
         // Build query string dynamically
