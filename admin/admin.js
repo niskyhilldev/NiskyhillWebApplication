@@ -899,6 +899,14 @@ fetch(API_BASE_URL + "/sections/all")
       option.textContent = section.name;
       selectEl2.appendChild(option);
     });
+    selectEl3 = document.getElementById("searchSection");
+    selectEl3.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl3.appendChild(option);
+    });
   })
   .catch(error => {
     console.error("Error fetching sections:", error);

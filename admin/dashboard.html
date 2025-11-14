@@ -47,8 +47,10 @@
         <div class="search-container">
             <div class="search-inputs">
                 <div class="stack">
-                    <label for="searchSection">Section:</label>
-                    <input type="text" id="searchSection" placeholder="Search section">
+                    <label for="searchSection">Section*:</label>
+                    <select id="searchSection" required>
+                        <option value="">Loading...</option>
+                    </select>
                     <label for="searchLotPlots">Lot:</label>
                     <input type="text" id="searchLotPlots" placeholder="Search lot">
                     <button onclick="performLotSearch2()">Search</button>
