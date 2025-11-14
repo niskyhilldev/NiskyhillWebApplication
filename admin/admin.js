@@ -437,8 +437,12 @@ function createPopup(details, rowId, type, id) {
             <select id="sectionNumber" required disabled>
                 <option value=${details.section.name || ''}>${details.section.name || ''}</option>
             </select>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.number || ''}"></label>
+            <label for="lotNumber">Lot Number:</label>
+            <select id="lotNumber" required disabled>
+                <option value=${details.number || ''}>${details.number || ''}</option>
+            </select>
             <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.descriptor || ''}"></label>
+
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
@@ -580,6 +584,8 @@ function createPopup(details, rowId, type, id) {
     }
     else if (type === 'plots'){
         const sectionSelector = document.getElementById("sectionNumber");
+        const lotSelector = document.getElementById("lotNumber");
+        const val = lotSelector.value;
 
         sections.forEach(section => {
             if(section.name !== sectionSelector.value){
@@ -590,11 +596,42 @@ function createPopup(details, rowId, type, id) {
             }
             
         });
+        let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionSelector.value)}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+            data.forEach(lot => {
+                const opt = document.createElement("option");
+                opt.value = lot.lot.number;
+                opt.textContent = lot.lot.number;
+                lotSelector.appendChild(opt);
+                if (lot.lot.number === val) {
+                    opt.selected = true;
+                }
+            });
+            lotSelector.disabled = false;
+            // lotSelector.value = val;
+            // lotSelector.textContent = val;
+            })
+            .catch(err => {
+            console.error(err);
+            lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+        });
     }
 }
 function enableEditing() {
     //enable fields in the form
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
+    const selector = document.getElementById("lotNumber");
+    if (selector){
+        selector.innerHTML = "";
+        const loadingOption = document.createElement("option");
+        loadingOption.textContent = "Loading...";
+        loadingOption.disabled = true;
+        loadingOption.selected = true;
+
+        selector.appendChild(loadingOption);
+    }
 }
 async function saveChanges(type) {
     //save changes to db and display
