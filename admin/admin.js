@@ -529,7 +529,7 @@ function createPopup(details, rowId, type, id) {
                 return;
             }
 
-            fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+            fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`)
                 .then(res => res.json())
                 .then(data => {
                 lotSelector.innerHTML = '<option value="">Select a lot</option>';
@@ -559,7 +559,7 @@ function createPopup(details, rowId, type, id) {
             return;
         }
 
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
             .then(res => res.json())
             .then(data => {
             portionSelector.innerHTML = '<option value="">Select a portion</option>';
@@ -921,7 +921,7 @@ sectionSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(encodeURI(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`))
+  fetch(encodeURI(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`))
     .then(res => res.json())
     .then(data => {
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
@@ -951,7 +951,7 @@ lotSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
     .then(res => res.json())
     .then(data => {
       portionSelect.innerHTML = '<option value="">Select a portion</option>';
