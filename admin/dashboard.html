@@ -131,8 +131,10 @@
         <div class="search-container">
             <div class="search-inputs">
                 <div class="stack">
-                    <label for="searchSectionRes">Section:</label>
-                    <input type="text" id="searchSectionRes" placeholder="Search section">
+                    <label for="searchSectionRes">Section*:</label>
+                    <select id="searchSectionRes" required>
+                        <option value="">Loading...</option>
+                    </select>
                     <label for="searchLotRes">Lot:</label>
                     <input type="text" id="searchLotRes" placeholder="Search lot">
                     <button onclick="performLotSearch()">Search</button>

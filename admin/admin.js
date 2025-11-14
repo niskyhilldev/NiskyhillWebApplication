@@ -937,7 +937,7 @@ fetch(API_BASE_URL + "/sections/all")
   })
   .then(data => {
     sections = data;
-    selectEl = document.getElementById("resCemSection");
+    const selectEl = document.getElementById("resCemSection");
     selectEl.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
@@ -945,7 +945,7 @@ fetch(API_BASE_URL + "/sections/all")
       option.textContent = section.name;
       selectEl.appendChild(option);
     });
-    selectEl2 = document.getElementById("sectionId");
+    const selectEl2 = document.getElementById("sectionId");
     selectEl2.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
@@ -953,13 +953,21 @@ fetch(API_BASE_URL + "/sections/all")
       option.textContent = section.name;
       selectEl2.appendChild(option);
     });
-    selectEl3 = document.getElementById("searchSection");
+    const selectEl3 = document.getElementById("searchSection");
     selectEl3.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
       option.value = section.name;
       option.textContent = section.name;
       selectEl3.appendChild(option);
+    });
+    const selectEl4 = document.getElementById("searchSectionRes");
+    selectEl4.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl4.appendChild(option);
     });
   })
   .catch(error => {
