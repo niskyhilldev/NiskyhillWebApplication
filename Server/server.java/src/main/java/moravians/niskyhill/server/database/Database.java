@@ -412,7 +412,7 @@ public class Database {
         if (lotNumber == null && sectionName != null){ // get all lots in a section
             q += " section.name = ? ORDER BY section.name";
         }else if (lotNumber != null && sectionName == null){ // get all lots that share a number
-            q += " lot.number = ? ORBER BY lot.number";
+            q += " lot.number = ? ORDER BY lot.number";
         } else { // get all lots with the number in the section 
             q += " lot.number = ? AND section.name = ? ORDER BY section.name, lot.number";
         }
