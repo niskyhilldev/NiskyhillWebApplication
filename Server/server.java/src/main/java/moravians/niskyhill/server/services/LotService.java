@@ -14,8 +14,20 @@ import moravians.niskyhill.server.mappers.LotMapper;
 import moravians.niskyhill.server.mappers.ResidentMapper;
 import moravians.niskyhill.server.models.Lot;
 
+/**
+ * Service Layer for all operations reguarding Lots
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
+ */
 public class LotService {
 
+    /**
+     * Gets all lots
+     * 
+     * @param database a database with an established connection
+     * @return a list of lotDTO
+     * @throws HttpStatusException if no lots were found
+     */
     public static List<LotDTO> getAllLots(Database database) throws HttpStatusException {
         List<LotDTO> lotList = LotMapper.mapLotDTOList(database.getAllLots());
 
@@ -26,7 +38,14 @@ public class LotService {
         return lotList;
     }
 
-
+    /**
+     * get a single lot by id
+     * 
+     * @param lid the id of the lot 
+     * @param database a database with an established connection
+     * @return a LotDTO
+     * @throws HttpStatusException if the lot does not exist
+     */
     public static LotDTO getLot(String lid, Database database) throws HttpStatusException {
         if (lid == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "lid cannot be null");
@@ -46,7 +65,15 @@ public class LotService {
         }
     }
 
-
+    /**
+     * Gets all the residents burried in a given lot 
+     * 
+     * @param lotNumber the number identifier of the lot
+     * @param sectionName the name of the section the lot is in 
+     * @param database a database with an established connection
+     * @return a List of LotResidentsDTO
+     * @throws HttpStatusException missing params, no Lots found (invalid params)
+     */
     public static List<LotResidentsDTO> getLotResidents(String lotNumber, String sectionName, Database database) throws HttpStatusException{
         if (lotNumber == null && sectionName == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "lot number and section name cannot both be null");
@@ -67,7 +94,14 @@ public class LotService {
         return lotResidentsList;
     }
 
-
+    /**
+     * adds a new lot to the database
+     * 
+     * @param newLotDTO the information about the new lot 
+     * @param database a database with an established connection
+     * @return true if successfull (exception otherwise)
+     * @throws HttpStatusException information is missing from the DTO
+     */
     public static boolean addLot(NewLotDTO newLotDTO, Database database) throws HttpStatusException {
         if (newLotDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
@@ -84,7 +118,15 @@ public class LotService {
 
     }
 
-    // NOTE: you cannot touch the pixel cords from the API, this must be done in the database
+    /**
+     * updates a lot in the database
+     * 
+     * @param updateLotDTO the new information for the lot
+     * @param database a database with an established connection
+     * @return true if successfull (exception otherwise)
+     * @throws HttpStatusException information is invalid/missing, the lot or section does not exist
+     * Note: you cannot touch the pixel cords from the API, this must be done in the database via a sql editor
+     */
     public static boolean updateLot(UpdateLotDTO updateLotDTO, Database database) throws HttpStatusException {
         if (updateLotDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
@@ -108,7 +150,14 @@ public class LotService {
         return true;
     }
 
-
+    /**
+     * Deletes a lot from the database
+     * 
+     * @param lid the id of the lot 
+     * @param database a database with an established connection
+     * @return true if successfull (exception otherwise)
+     * @throws HttpStatusException id is missing, the lot does not exist
+     */
     public static boolean deleteLot(String lid, Database database) throws HttpStatusException{
         if (lid == null || lid.isBlank()){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot id cannot be null");

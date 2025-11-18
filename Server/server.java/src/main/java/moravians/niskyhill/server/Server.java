@@ -20,11 +20,14 @@ import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
 import io.javalin.http.Cookie;
 import io.javalin.http.SameSite;
-import io.javalin.http.HttpStatus;
 
 
 /**
  * Server for Nisky Hill Website
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
+ * This class defines the Server, its security protocals and its routes
+ * This is considered the controller later of the Server
  */
 public class Server {
     

@@ -1,5 +1,8 @@
 package moravians.niskyhill.server.exceptions;
 
+/**
+ * enum for all the possile types of status codes for HTTP requests
+ */
 public enum HttpStatus {
     OK(200),
     CREATED(201),

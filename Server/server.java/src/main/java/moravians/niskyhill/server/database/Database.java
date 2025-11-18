@@ -8,17 +8,22 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
 import moravians.niskyhill.server.models.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/** 
+ * This class wraps a connection to A database 
+ * The JDBC uri string is read through an envirmental variable on Heroku 
+ * This is the Respository / Data Layer of the Server
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
+ */
 public class Database {
     private Connection connection;
 
@@ -28,9 +33,12 @@ public class Database {
      */
     private Database() {   }
 
+    /**
+     * Method to set the connection in the Database class
+     * @return Istanciated Database Object with a connection Null if there was an issue connecting
+     */
     public static Database getDatabase() {
-        // Get the database URI from environment variable
-        String uri = System.getenv("JDBC_DATABASE_URI");
+        String uri = System.getenv("JDBC_DATABASE_URI");  // Get the database URI from environment variable
         if (uri == null || uri.isEmpty()) {
             System.err.println("\nJDBC_DATABASE_URI environment variable is not set.");
             return null;  // Still returns null if env variable missing
@@ -54,6 +62,11 @@ public class Database {
     }
 
 
+    /**
+     * Method to disconnect from the database
+     * 
+     * @return true on success, false otherwise
+     */
     public boolean disconnect() {
         if (connection != null) {
             try {
@@ -71,6 +84,12 @@ public class Database {
 
     }
 
+    /**
+     * Method to get a list of all residents from the database
+     * 
+     * @return A list of type Resident, an empty list if none found
+     * @throws HttpStatusException
+     */
     public List<Resident> getAllResidents() throws HttpStatusException {
         final String q = """
             SELECT * 
@@ -121,6 +140,13 @@ public class Database {
         return residents;
     }
 
+    /**
+     * Method to get a resident by their ID
+     * 
+     * @param rid
+     * @return A Resident object, Null if not found
+     * @throws HttpStatusException
+     */
     public Resident getResident(Long rid) throws HttpStatusException {
         
         final String q = """
@@ -173,6 +199,13 @@ public class Database {
         }
     }
 
+    /**
+     * Method to search for Residents by any combination of first, middle, and last name
+     * 
+     * @param name first and/or middle and/or last name
+     * @return A list of residents matching the critera, an empty list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Resident> searchResidents(String name) throws HttpStatusException {
         final String q = """
             SELECT *
@@ -255,7 +288,12 @@ public class Database {
     }
 
 
-
+    /**
+     * Gets all lots from the database 
+     * 
+     * @return List of Lots, emtpy list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Lot> getAllLots() throws HttpStatusException {
         final String q = """
                         SELECT *
@@ -294,7 +332,12 @@ public class Database {
         return lots;
     }
 
-
+    /**
+     * gets all sections from the database 
+     * 
+     * @return List of type section, empty list if noe found
+     * @throws HttpStatusException
+     */
     public List<Section> getAllSections() throws HttpStatusException {
         final String q = """
                     SELECT *
@@ -323,7 +366,13 @@ public class Database {
         return sections;
     }
 
-
+    /**
+     * Get a lot by its ID from the database 
+     * 
+     * @param lid the id of the lot
+     * @return A lot object, Null if not found
+     * @throws HttpStatusException
+     */
     public Lot getLot(Long lid) throws HttpStatusException {
         final String q = """
                         SELECT *
@@ -366,6 +415,13 @@ public class Database {
 
     }
 
+    /**
+     * Get a section buy its its id
+     * 
+     * @param sid the id of the section
+     * @return Section object, Null if not found
+     * @throws HttpStatusException
+     */
     public Section getSection(Long sid) throws HttpStatusException {
         final String q = """
                     SELECT *
@@ -396,7 +452,17 @@ public class Database {
         }
     }
 
-
+    /**
+     * gets lots given a combination of lotNumber and sectionName
+     * 
+     * @param lotNumber the number assoicated with a lot (ex: 42A)
+     * @param sectionName the name associted with a section (ex: #1)
+     * @return a List of a Single lot if both lotNumber and sectionName provided
+     *         a List of all lots the exist in a given section if only section provided
+     *         a List of all Lots that share the same lot number if only lot Number provided
+     *         a empty list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Lot> getLotDetails(String lotNumber, String sectionName) throws HttpStatusException {
         String q = """
                     SELECT *
@@ -414,7 +480,7 @@ public class Database {
         }else if (lotNumber != null && sectionName == null){ // get all lots that share a number
             q += " lot.number = ? ORDER BY lot.number";
         } else { // get all lots with the number in the section 
-            q += " lot.number = ? AND section.name = ? ORDER BY section.name, lot.number";
+            q += " lot.number = ? AND section.name = ? ORDER BY lot.number, section.name";
         }
         
         try {
@@ -455,6 +521,13 @@ public class Database {
         }
     }
 
+    /**
+     * Gets all residents that are buried in a lot
+     * 
+     * @param lid the id of the lot
+     * @return a list of residents, an empty list if none exist or the lot does not exist
+     * @throws HttpStatusException
+     */
     public List<Resident> getLotResidents(Long lid) throws HttpStatusException {
         final String q = """
             SELECT * 
@@ -496,6 +569,24 @@ public class Database {
 
     }
 
+    /**
+     * update a resident in the database 
+     * 
+     * @param rid the id of the resident
+     * @param firstName 
+     * @param middleName
+     * @param lastName
+     * @param birthDate
+     * @param burialDate
+     * @param deathDate
+     * @param capsule what vessle they are burried in 
+     * @param marker if there is a headstone
+     * @param foundation if there is a foundation for a headstone 
+     * @param publicViewable can it viewed by the public
+     * @param lid the id of the lot the resident is burried (or to be burried) in
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateResident(Long rid,String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
                             String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
         String q = """
@@ -586,7 +677,23 @@ public class Database {
         }
     }
 
-
+    /**
+     * add a new resident to the database
+     * 
+     * @param firstName
+     * @param middleName
+     * @param lastName
+     * @param birthDate
+     * @param burialDate
+     * @param deathDate
+     * @param capsule
+     * @param marker
+     * @param foundation
+     * @param publicViewable
+     * @param lid
+     * @return true if successfull, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
                             String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
         String q = """
@@ -664,7 +771,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * delete a resident from the database
+     * 
+     * @param rid the id of the resident
+     * @return true if successfull, false otherwise 
+     * @throws HttpStatusException
+     */
     public boolean deleteResident(Long rid) throws HttpStatusException {
         String q = """
                 DELETE FROM resident 
@@ -686,7 +799,16 @@ public class Database {
         }
     }
 
-
+    /**
+     * Create a new lot in the database 
+     * 
+     * @param number the number identifier for the lot 
+     * @param descriptor the partition of the lot
+     * @param owner the owner of the lot 
+     * @param sid the id of the section the lot is located in 
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 INSERT INTO lot (number, descriptor, owner, section)
@@ -726,7 +848,17 @@ public class Database {
         }
     }
 
-
+    /**
+     * updates a lot in the database 
+     * 
+     * @param lid the id of the lot 
+     * @param number the number identifier for the lot 
+     * @param descriptor ther partition of the lot 
+     * @param owner the owner of the lot
+     * @param sid the id of the section the lot is locsted in
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateLot(Long lid, String number, String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 UPDATE lot
@@ -766,7 +898,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * Delete a lot from the database 
+     * 
+     * @param lid the id of the lot 
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean deleteLot(Long lid) throws HttpStatusException {
         String q = """
                 DELETE FROM lot 
@@ -788,7 +926,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * get a user from the daatabse based on their unique email address 
+     *  
+     * @param email the email of the user 
+     * @return the User object on success, Null if not found
+     * @throws HttpStatusException
+     */
     public User getUser(String email) throws HttpStatusException {
         String q = """
                 SELECT *
@@ -820,6 +964,15 @@ public class Database {
         }
     }
 
+    /**
+     * updates a user password in the database
+     * 
+     * @param userId the id of the user
+     * @param password the new hashed password 
+     * @param salt the salt that was added to the password
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateUserPassword(Long userId, String password, String salt) throws HttpStatusException {
         String q = """
                 Update users
@@ -846,6 +999,13 @@ public class Database {
         }
     }
 
+    /**
+     * Get a user from the database by their id 
+     * 
+     * @param userId the id of the user 
+     * @return The User object on success, Null otherwise if not found
+     * @throws HttpStatusException
+     */
     public User getUser(Long userId) throws HttpStatusException {
         String q = """
                 SELECT *

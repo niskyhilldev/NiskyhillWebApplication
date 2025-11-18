@@ -10,8 +10,20 @@ import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.mappers.ResidentMapper;
 
+/**
+ * Service Layer for all things Resident related
+ * 
+ * @author Tedd Stabolepszy, Lehigh Univeristy '26
+ */
 public class ResidentService {
     
+    /**
+     * Get all Residents 
+     * 
+     * @param database a database with an established connection
+     * @return a list of type Resident DTO
+     * @throws HttpStatusException no residents exist
+     */
     public static List<ResidentDTO> getAllResidents(Database database) throws HttpStatusException{
         List<ResidentDTO> residentList =  ResidentMapper.mapResidentDTOList(database.getAllResidents());
 
@@ -21,7 +33,14 @@ public class ResidentService {
         return residentList;
     }
 
-
+    /**
+     * Search for residents with any combination of first, middle, and last name 
+     * 
+     * @param name any combination of first, middle, and last name 
+     * @param database a database with an established connection
+     * @return a list of type ResidentSearchDTO
+     * @throws HttpStatusException missing parameters, no residents found
+     */
     public static List<ResidentSearchDTO> searchResidents(String name, Database database) throws HttpStatusException{
         if (name == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Name Cannot Be Null");
@@ -34,7 +53,14 @@ public class ResidentService {
         return residentList;
     }
 
-
+    /**
+     * Get a resident by ID
+     * 
+     * @param rid the id of the resident 
+     * @param database  any combination of first, middle, and last name 
+     * @return a residentDTO object
+     * @throws HttpStatusException missing params, invalid id, resident does not exist 
+     */
     public static ResidentDTO getResident(String rid, Database database) throws HttpStatusException{
         if (rid == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "rid cannot be null");
@@ -54,7 +80,14 @@ public class ResidentService {
         } 
     }
 
-
+    /**
+     * update a residents information 
+     * 
+     * @param updateResidentDTO new information 
+     * @param database any combination of first, middle, and last name 
+     * @return true on success 
+     * @throws HttpStatusException missing/invalid params, invalid id for lot or resident
+     */
     public static boolean updateResident(UpdateResidentDTO updateResidentDTO, Database database) throws HttpStatusException{
         if (updateResidentDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Request Must Contain all resident information");
@@ -94,7 +127,14 @@ public class ResidentService {
         return true;
     }
 
-
+    /**
+     * Add a new resident to the system 
+     * 
+     * @param newResidentDTO new resident information 
+     * @param database  any combination of first, middle, and last name 
+     * @return true on success (exception otherwise)
+     * @throws HttpStatusException missing params, invalid lot 
+     */
     public static boolean addResident(NewResidentDTO newResidentDTO, Database database) throws HttpStatusException{
         if (newResidentDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Request Must Contain all resident information");
@@ -129,7 +169,14 @@ public class ResidentService {
         return true;
     }
 
-
+    /**
+     * remove a resident from the system 
+     * 
+     * @param rid the id of the resident 
+     * @param database
+     * @return true on success (exception otherwise)
+     * @throws HttpStatusException missing params, resident does not exist, invalid rid
+     */
     public static boolean deleteResident(String rid, Database database) throws HttpStatusException{
         if (rid == null || rid.isBlank()){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "rid cannot be null");
