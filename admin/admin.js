@@ -5,9 +5,9 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-// const API_BASE_URL = 'https://www.niskyhill.org';
+const API_BASE_URL = 'https://www.niskyhill.org';
 const rowsPerPage = 20;
-const API_BASE_URL = 'http://localhost:8080';
+// const API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
@@ -503,6 +503,7 @@ function createPopup(details, rowId, type, id) {
             selectEl.innerHTML = '<option value="">Error loading sections</option>';
         });
         let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`;
+        console.log(url)
         fetch(url)
                 .then(res => res.json())
                 .then(data => {
@@ -981,6 +982,7 @@ const lotSelect = document.getElementById("resLotNum");
 const portionSelect = document.getElementById("resPortion");
 sectionSelect.addEventListener("change", () => {
   const sectionId = sectionSelect.value;
+  console.log(sectionId)
   lotSelect.innerHTML = '<option value="">Loading lots...</option>';
   lotSelect.disabled = true;
   portionSelect.innerHTML = '<option value="">Select a lot first</option>';
@@ -990,8 +992,8 @@ sectionSelect.addEventListener("change", () => {
     lotSelect.innerHTML = '<option value="">Select a section first</option>';
     return;
   }
-
-  fetch(encodeURI(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`))
+  let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`;
+  fetch(url)
     .then(res => res.json())
     .then(data => {
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
