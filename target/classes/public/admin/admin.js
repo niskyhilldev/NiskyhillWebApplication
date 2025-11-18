@@ -5,14 +5,19 @@ let sections = [];
 let currentRow;
 let residentResults, lotResults, plotResults;
 
-const API_BASE_URL = 'https://www.niskyhill.org';
+// const API_BASE_URL = 'https://www.niskyhill.org';
 const rowsPerPage = 20;
-// const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8080';
 
 async function performResidentSearch() {
     //Call the api to get all the residents based off the name entered and display them
     let name = document.getElementById("searchResidentLast").value.trim().toLowerCase();
-
+    const tableBody = document.getElementById("residentTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
     try {
         const response = await fetch(`${API_BASE_URL}/residents/search?name=${name}`)
         if (!response.ok) {
@@ -47,7 +52,12 @@ async function performLotSearch() {
     //Call the api to get all the residents based off the lot/section entered and display them
     const section = document.getElementById("searchSectionRes").value.trim();
     const lot = document.getElementById("searchLotRes").value.trim();
-
+    const tableBody = document.getElementById("resLotTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
     try {
         // Build query string dynamically
         const queryParams = new URLSearchParams();
@@ -84,6 +94,13 @@ async function performLotSearch2() {
     //Call the api to get all the plots based off the name entered and display them
     const section = document.getElementById("searchSection").value.trim();
     const lot = document.getElementById("searchLotPlots").value.trim();
+
+    const tableBody = document.getElementById("lotTableBody");
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center;">Loading...</td>
+        </tr>
+    `;
 
     try {
         // Build query string dynamically
@@ -254,6 +271,12 @@ function renderPagination(totalRows, currentPage, paginationContainer, filteredD
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement("button");
         pageButton.textContent = i;
+
+        if (i === currentPage) {
+            pageButton.classList.add("active");
+            pageButton.disabled = true;
+        }
+        
         if (i === currentPage) pageButton.disabled = true;
         pageButton.onclick = () => {
             currentPage = i;
@@ -431,8 +454,12 @@ function createPopup(details, rowId, type, id) {
             <select id="sectionNumber" required disabled>
                 <option value=${details.section.name || ''}>${details.section.name || ''}</option>
             </select>
-            <label>Lot Number: <input type="text" id="lotNumber" disabled value="${details.number || ''}"></label>
+            <label for="lotNumber">Lot Number:</label>
+            <select id="lotNumber" required disabled>
+                <option value=${details.number || ''}>${details.number || ''}</option>
+            </select>
             <label>Lot Partition: <input type="text" id="lotPartition" disabled value="${details.descriptor || ''}"></label>
+
             <label>Owner: <input type="text" id="lotOwner" disabled value="${details.owner || ''}"></label>
             <button onclick="enableEditing()">Edit</button>
             <button onclick="saveChanges('plots')">Save</button>
@@ -475,7 +502,8 @@ function createPopup(details, rowId, type, id) {
             console.error("Error fetching sections:", error);
             selectEl.innerHTML = '<option value="">Error loading sections</option>';
         });
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+        let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`;
+        fetch(url)
                 .then(res => res.json())
                 .then(data => {
                 data.forEach(lot => {
@@ -492,7 +520,7 @@ function createPopup(details, rowId, type, id) {
                 console.error(err);
                 lotSelector.innerHTML = '<option value="">Error loading lots</option>';
                 });
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
             .then(res => res.json())
             .then(data => {
             data.forEach(portion => {
@@ -522,7 +550,7 @@ function createPopup(details, rowId, type, id) {
                 return;
             }
 
-            fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+            fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`)
                 .then(res => res.json())
                 .then(data => {
                 lotSelector.innerHTML = '<option value="">Select a lot</option>';
@@ -552,7 +580,7 @@ function createPopup(details, rowId, type, id) {
             return;
         }
 
-        fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+        fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
             .then(res => res.json())
             .then(data => {
             portionSelector.innerHTML = '<option value="">Select a portion</option>';
@@ -573,6 +601,8 @@ function createPopup(details, rowId, type, id) {
     }
     else if (type === 'plots'){
         const sectionSelector = document.getElementById("sectionNumber");
+        const lotSelector = document.getElementById("lotNumber");
+        const val = lotSelector.value;
 
         sections.forEach(section => {
             if(section.name !== sectionSelector.value){
@@ -583,11 +613,42 @@ function createPopup(details, rowId, type, id) {
             }
             
         });
+        let url = `${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionSelector.value)}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+            data.forEach(lot => {
+                const opt = document.createElement("option");
+                opt.value = lot.lot.number;
+                opt.textContent = lot.lot.number;
+                lotSelector.appendChild(opt);
+                if (lot.lot.number === val) {
+                    opt.selected = true;
+                }
+            });
+            lotSelector.disabled = false;
+            // lotSelector.value = val;
+            // lotSelector.textContent = val;
+            })
+            .catch(err => {
+            console.error(err);
+            lotSelector.innerHTML = '<option value="">Error loading lots</option>';
+        });
     }
 }
 function enableEditing() {
     //enable fields in the form
     document.querySelectorAll(".popup input, .popup select").forEach(field => field.disabled = false);
+    const selector = document.getElementById("lotNumber");
+    if (selector){
+        selector.innerHTML = "";
+        const loadingOption = document.createElement("option");
+        loadingOption.textContent = "Loading...";
+        loadingOption.disabled = true;
+        loadingOption.selected = true;
+
+        selector.appendChild(loadingOption);
+    }
 }
 async function saveChanges(type) {
     //save changes to db and display
@@ -609,6 +670,9 @@ async function saveChanges(type) {
             "foundation": false,
             "publicViewable": document.getElementById("public").checked,
             "lid": lotInfo.lid
+        }
+        if (resident.capsule === "Unknown"){
+            resident.capsule = null;
         }
         const data = JSON.stringify(resident);
         try {
@@ -810,23 +874,6 @@ document.getElementById('newLotForm').addEventListener('submit', function(event)
     
     // Clear the form fields
     document.getElementById('newLotForm').reset();
-
-    document.getElementById("addLotForm").style.display = "none";   // hide form
-    document.getElementById("showLotFormBtn").style.display = "block";    // show +
-});
-document.getElementById("showLotFormBtn").addEventListener("click", () => {
-    //open lot form
-    document.getElementById("addLotForm").style.display = "block";   // show form
-    document.getElementById("showLotFormBtn").style.display = "none";    // hide +
-});
-document.getElementById("showResidentFormBtn").addEventListener("click", () => {
-    //open resident form
-    document.getElementById("addResidentForm").style.display = "block";   // show form
-    document.getElementById("showResidentFormBtn").style.display = "none";    // hide +
-});
-document.getElementById("showResidentFormBtn2").addEventListener("click", () => {
-    document.getElementById("addResidentForm").style.display = "block";   // show form
-    document.getElementById("showResidentFormBtn2").style.display = "none";   // hide +
 });
 function deleteEntry(id, type) {
     //delete an entry from the db and display
@@ -890,7 +937,7 @@ fetch(API_BASE_URL + "/sections/all")
   })
   .then(data => {
     sections = data;
-    selectEl = document.getElementById("resCemSection");
+    const selectEl = document.getElementById("resCemSection");
     selectEl.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
@@ -898,13 +945,29 @@ fetch(API_BASE_URL + "/sections/all")
       option.textContent = section.name;
       selectEl.appendChild(option);
     });
-    selectEl2 = document.getElementById("sectionId");
+    const selectEl2 = document.getElementById("sectionId");
     selectEl2.innerHTML = '<option value="">Select a section</option>';
     data.forEach(section => {
       const option = document.createElement("option");
       option.value = section.name;
       option.textContent = section.name;
       selectEl2.appendChild(option);
+    });
+    const selectEl3 = document.getElementById("searchSection");
+    selectEl3.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl3.appendChild(option);
+    });
+    const selectEl4 = document.getElementById("searchSectionRes");
+    selectEl4.innerHTML = '<option value="">Select a section</option>';
+    data.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.name;
+      option.textContent = section.name;
+      selectEl4.appendChild(option);
     });
   })
   .catch(error => {
@@ -928,7 +991,7 @@ sectionSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}`)
+  fetch(encodeURI(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}`))
     .then(res => res.json())
     .then(data => {
       lotSelect.innerHTML = '<option value="">Select a lot</option>';
@@ -958,7 +1021,7 @@ lotSelect.addEventListener("change", () => {
     return;
   }
 
-  fetch(`${API_BASE_URL}/lots/residents/search?section=${sectionId}&lot=${lotId}`)
+  fetch(`${API_BASE_URL}/lots/residents/search?section=${encodeURIComponent(sectionId)}&lot=${lotId}`)
     .then(res => res.json())
     .then(data => {
       portionSelect.innerHTML = '<option value="">Select a portion</option>';
@@ -977,17 +1040,8 @@ lotSelect.addEventListener("change", () => {
     });
 });
 
-document.getElementById("closeResidentFormBtn").addEventListener("click", function () {
-    //close the resident form
-    document.getElementById("addResidentForm").style.display = "none";
-    document.getElementById('showResidentFormBtn').style.display = "block";
-    document.getElementById('showResidentFormBtn2').style.display = "block";
-});
-document.getElementById("closeLotFormBtn").addEventListener("click", function () {
-    //close the lot form
-    document.getElementById("addLotForm").style.display = "none";
-    document.getElementById('showLotFormBtn').style.display = "block";
-});
+
+
 
 
 
@@ -1125,3 +1179,51 @@ async function checkSessionAndSetRedirect() {
     }
 }
 
+
+var lotModal = document.getElementById("addLotForm");
+var lotBtn = document.getElementById("myBtn");
+var lotCloseBtn = document.getElementById("closeLotFormBtn");
+
+var residentModal = document.getElementById("addResidentForm");
+var residentBtn = document.getElementById("showResidentFormBtn");
+var residentBtn2 = document.getElementById("showResidentFormBtn2");
+var residentCloseBtn = document.getElementById("closeResidentFormBtn");
+
+lotBtn.onclick = function() {
+  lotModal.style.display = "block";
+}
+
+lotCloseBtn.onclick = function() {
+  document.getElementById('newLotForm').reset();
+  lotModal.style.display = "none";
+}
+
+residentBtn.onclick = function() {
+  residentModal.style.display = "block";
+  residentBtn.style.display = "none";
+}
+
+residentBtn2.onclick = function() {
+  residentModal.style.display = "block";
+  residentBtn2.style.display = "none";
+}
+
+residentCloseBtn.onclick = function() {
+  document.getElementById('newResidentForm').reset();
+  residentModal.style.display = "none";
+  residentBtn.style.display = "block";
+  residentBtn2.style.display = "block";
+}
+
+window.onclick = function(event) {
+  if (event.target == lotModal) {
+    document.getElementById('newLotForm').reset();
+    lotModal.style.display = "none";
+  }
+  if (event.target == residentModal) {
+    document.getElementById('newResidentForm').reset();
+    residentModal.style.display = "none";
+    residentBtn.style.display = "block";
+    residentBtn2.style.display = "block";
+  }
+}

@@ -47,14 +47,16 @@
         <div class="search-container">
             <div class="search-inputs">
                 <div class="stack">
-                    <label for="searchSection">Section:</label>
-                    <input type="text" id="searchSection" placeholder="Search section">
+                    <label for="searchSection">Section*:</label>
+                    <select id="searchSection" required>
+                        <option value="">Loading...</option>
+                    </select>
                     <label for="searchLotPlots">Lot:</label>
                     <input type="text" id="searchLotPlots" placeholder="Search lot">
                     <button onclick="performLotSearch2()">Search</button>
                 </div>
             </div>
-            <button id="showLotFormBtn" class="showButton">+</button>
+            <button id="myBtn" class="showButton">+</button>
         </div>
         <table>
             <thead>
@@ -70,9 +72,11 @@
             </tbody>
         </table>
         <div id="paginationLots"></div>
-        <div id="addLotForm" style="display: None;">
+        <div id="addLotForm" class="modal">
             <form id="newLotForm">   
                 <button type="button" class="close-btn" id="closeLotFormBtn">&times;</button>
+
+                <p>Add a New Lot</p>
                 
                 <label for="sectionId">Section*:</label>
                 <select id="sectionId" required>
@@ -90,7 +94,6 @@
 
                 <button type="submit">Add Entry</button>
             </form>
-            
         </div>
     </div>
     
@@ -128,8 +131,10 @@
         <div class="search-container">
             <div class="search-inputs">
                 <div class="stack">
-                    <label for="searchSectionRes">Section:</label>
-                    <input type="text" id="searchSectionRes" placeholder="Search section">
+                    <label for="searchSectionRes">Section*:</label>
+                    <select id="searchSectionRes" required>
+                        <option value="">Loading...</option>
+                    </select>
                     <label for="searchLotRes">Lot:</label>
                     <input type="text" id="searchLotRes" placeholder="Search lot">
                     <button onclick="performLotSearch()">Search</button>
@@ -156,10 +161,11 @@
             </tbody>
         </table>
         <div id="paginationResLots"></div>
-        <div id="addResidentForm" style="display: none; position: relative;">
-
+        <div class='modal' id="addResidentForm">
             <form id="newResidentForm">
                 <button type="button" class="close-btn" id="closeResidentFormBtn">&times;</button>
+
+                <p>Add a New Resident</p>
 
                 <label for="fName">First Name*:</label>
                 <input type="text" id="fName" required>
