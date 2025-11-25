@@ -26,7 +26,8 @@ The database URI is stored in an envirmental varibale and is read from the Herok
 
 
 ## Database (Development Guide / Remarks)
-This project uses a PostgreSQL database.  The database is availble through Salesforce/Heroku.  
+This project uses a PostgreSQL database.  The database is availble through Salesforce/Heroku. Developers should attain the URI through Heroku and a SQL editior (eg. DBeaver, PGAdmin4) to interact with it for development purposes
+
 * The `Create_Tables` folder shows the sql scripts used to create the data model.  
 * The `Data_Entry` folder contains the scripts that were used to enter obtained data into the database
     * This contains an error log that has line numbers that corisponds to an excel sheet (provided by the sponsor) to indicate rows that were not entered due to malformation or other error. 
@@ -35,6 +36,7 @@ This project uses a PostgreSQL database.  The database is availble through Sales
     * the `map_coordinates` table itself may seem like a major redundancy itself, see the comments in `map_coordinates.sql` for an explaination.  Just know it cointains well known lot locations that will likley never change nor will any additional lots ever be added to nisky hill
 
 
+Note: Adding users to the system is done strictly through the database, a default hashed_password and salt are automatically assigned to a new user inserted into the table by the database.  Read through the table creation files to understand how to write a query to add a new user.
 
 
 
