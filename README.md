@@ -1,4 +1,4 @@
-# BAM Niskey Hill Cemetery Web Application 
+# BAM Niskey Hill Cemetery Web Application (Server)
 In this branch you will find two folders, server and database. The server branch contains the production code for the server for the web application.  The database folder contains information on how the database was constructed and how the data was entered into it. 
 
 ** This Branch is not intended to be merged into main ** 
