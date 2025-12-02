@@ -2,7 +2,7 @@
 Codebase for the Lehigh 2025 Capstone team for Bethlehem Area Moravians - Nisky Hill Cemetery Project.     
 
 ## Remarks
-This README is a Summary of the Notes/Errata Sheet which can be requested from the sponsor (Erik Sink) which is most likely how you got the link to this repository !!!. He will need to add you as a colaborator so you can work on this project.
+This README is a Summary of the Notes/Errata Sheet which can be requested from the sponsor (Erik Sink) which is most likely how you got the link to this repository !!!. That document contains the username and password for the team GitHub account, you will need to sign in and add yourself (Personal GitHub Accounts) as collaborators. 
 
 
 ## About this Repository 
