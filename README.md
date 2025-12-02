@@ -1,4 +1,4 @@
-### BAM_Nisky_Hill
+### BAM Nisky Hill Web Application (Web)
 
 ### Project Description
 * This is the 'Web' branch of the frontend of the Nisky Hill Cemetery website project. During our semester, we used raw HTML, CSS, JS for the frontend, but you are encouraged to wrap this project in some kind of framework or library (use React.js for the easiest time). A lot of the frontend is pretty static, so I'll go over how to locally deploy and some of the backend integration in the case you're new to web-dev or thought CSE216 was as useless as we did. 
