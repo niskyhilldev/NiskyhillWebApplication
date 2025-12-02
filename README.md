@@ -38,6 +38,9 @@ This project uses a PostgreSQL database.  The database is availble through Sales
 
 Note: Adding users to the system is done strictly through the database, a default hashed_password and salt are automatically assigned to a new user inserted into the table by the database.  Read through the table creation files to understand how to write a query to add a new user.
 
+![ERD](/Database/ERD.png)
+
+![Schema](/Database/Schema.png)
 
 
 
