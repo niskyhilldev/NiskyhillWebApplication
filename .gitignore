@@ -50,6 +50,7 @@ Thumbs.db
 
 # often forgotten, but should usually be ignored
 .classpath
+.vite
 .project
 .vscode/
 .settings/
