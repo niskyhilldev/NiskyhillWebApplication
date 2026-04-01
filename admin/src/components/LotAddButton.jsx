@@ -10,20 +10,78 @@ import {
   DialogActions,
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
+import axios from "axios";
+import { API_BASE_URL } from "../api/lotApi";
 
 {/** Button should handle all actions of adding new lots */}
 
-
-
 function LotAddButton() {
   const [open, setOpen] = useState(false);
+  
+  // form state to match dto
+  const [formData, setFormData] = useState({
+    sid: "",
+    number: "",
+    descriptor: "",
+    owner: "",
+  });
+
+  const [sections, setSections] = useState([]);
+  // fetch sections for dropdown
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${API_BASE_URL}/sections/all`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log("Fetched sections:", response.data);
+        setSections(response.data);
+      } catch (err) {
+        console.error("Error fetching sections:", err);
+      }
+    };
+    fetchSections();
+  }, []);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSave = () => {
+  // handle form changes
+  const handleChange = (e) => {
+    const{name, value} = e.target;
+    setFormData(prev => ({...prev, [name]: value}));
+  };
+
+  // send to backend
+  const handleSave = async () => {
     // collect values and save to DB here
-    handleClose();
+    try{
+      const token = localStorage.getItem("token");
+
+      const payload = {
+        ...formData,
+        sid: Number(formData.sid),
+      };
+
+      await axios.post(
+        `${API_BASE_URL}/lots/add`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Lot added successfully");
+      handleClose();
+    } catch(err){
+      console.error("Error adding lot:", err);
+    }
   };
 
   return (
@@ -46,12 +104,55 @@ function LotAddButton() {
       {/** Dialog / Pop-up  for input*/}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add New Lot</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          <TextField label="Section*" variant="filled" />
-          <TextField label="Lot Number*" variant="filled" />
-          <TextField label="Lot Partition*" variant="filled" />
-          <TextField label="Owner" variant="filled" />
+        <DialogContent sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          pt: 1,
+          minWidth: 300,}}>
+
+          <TextField 
+            select
+            label="Section*"
+            name="sid"
+            value={formData.sid}
+            onChange={handleChange}
+            SelectProps={{ native: true }}
+            variant="filled"
+          >
+            <option value=""></option>
+            {sections.map((section) => (
+              <option key={section.id} value={section.id}>
+                {section.name}
+              </option>
+            ))}
+          </TextField>
+
+          <TextField
+            label="Lot Number*" 
+            name="number"
+            value={formData.number}
+            onChange={handleChange}
+            variant="filled"
+          />
+
+          <TextField
+            label="Lot Partition*"
+            name="descriptor"
+            value={formData.descriptor}
+            onChange={handleChange}
+            variant="filled"
+          />
+
+          <TextField
+            label="Owner"
+            name="owner"
+            value={formData.owner}
+            onChange={handleChange}
+            variant="filled"
+          />
         </DialogContent>
+
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button variant="contained" onClick={handleSave}>Save</Button>
