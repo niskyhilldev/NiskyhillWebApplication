@@ -71,7 +71,7 @@ function Profile() {
         <Divider />
 
         {/* Actions */}
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>Change password</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

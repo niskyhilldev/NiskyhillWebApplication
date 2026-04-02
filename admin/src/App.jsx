@@ -6,9 +6,7 @@ import {Box} from '@mui/material'
     //set page background color
     document.body.style.backgroundColor = '#0d2543';
     return(
-      <Box
-      
-      >
+      <Box>
       <NavBar />
       <LotSearch />
       <ResidentSearch />

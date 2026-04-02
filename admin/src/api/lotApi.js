@@ -3,14 +3,13 @@
 const API_BASE_URL = 'http://localhost:8080';  //Should update to env var
 
 //gets all sections, returning as list for population in jsx files
-async function fetchSections(){
+export const fetchSections = async() => {
     const response = await fetch(`${API_BASE_URL}/sections/all`)
     if (!response.ok) {
         throw new Error("Network response was not ok");
     }
 
     const data = await response.json();
-    console.log(data);
     return data; // array of section json
 }
 
@@ -33,4 +32,43 @@ async function addLot(payload){
 }
 
 
-export { fetchSections, addLot };
+export {addLot };
+
+//Currently Taken straight from old implementation
+
+
+//Utilized in Lot search                      v Section name- Not id
+export const performLotSearch = async(lot, section) => {
+    //Call the api to get all the plots based off the section NAME and lot number
+
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+        console.log(queryParams);
+
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+
+        /**Original use */
+        // // Example: store results and display them
+        // plotResults = lots;
+        // populateTable(lots, 'plots');
+        return lots;
+}
+
