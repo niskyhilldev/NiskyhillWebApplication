@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, use } from "react";
 import {
   Box,
   TextField,
@@ -10,7 +10,8 @@ import {
   DialogActions,
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
-import fetchSections from "../api/lotApi";
+import {fetchSections, addLot} from "../api/lotApi";
+import { login } from "../api/userAPI";
 
 {/** Button should handle all actions of adding new lots */}
 
@@ -24,6 +25,19 @@ function LotAddButton() {
     descriptor: "",
     owner: "",
   });
+
+  // obtain token for authorized route by login with email and password
+  useEffect(() => {
+    async function loginUser(){
+      try{
+        await login(import.meta.env.VITE_EMAIL, import.meta.env.VITE_PASSWORD);
+        console.log("Login successful");
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
+    }
+    loginUser();
+  }, []);
 
   const [sections, setSections] = useState([]);
   // fetch sections for dropdown
@@ -65,23 +79,12 @@ function LotAddButton() {
   const handleSave = async () => {
     // collect values and save to DB here
     try{
-      const token = localStorage.getItem("token");
-
       const payload = {
         ...formData,
         sid: Number(formData.sid),
       };
 
-      await axios.post(
-        `${API_BASE_URL}/lots/add`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await addLot(payload);
       console.log("Lot added successfully");
       handleClose();
     } catch(err){
@@ -127,7 +130,7 @@ function LotAddButton() {
           >
             <option value=""></option>
             {sections.map((section) => (
-              <option key={section.id} value={section.id}>
+              <option key={section.sid} value={section.sid}>
                 {section.name}
               </option>
             ))}

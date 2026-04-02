@@ -2,7 +2,6 @@
 
 const API_BASE_URL = 'http://localhost:8080';  //Should update to env var
 
-
 //gets all sections, returning as list for population in jsx files
 async function fetchSections(){
     const response = await fetch(`${API_BASE_URL}/sections/all`)
@@ -15,7 +14,23 @@ async function fetchSections(){
     return data; // array of section json
 }
 
+// post request to add lot
+async function addLot(payload){
+    const response = await fetch(`${API_BASE_URL}/lots/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include", // include cookies for session
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to add lot");
+    }
+
+    return await response.text();
+}
 
 
-
-export default fetchSections;
+export { fetchSections, addLot };
