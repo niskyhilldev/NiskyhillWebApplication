@@ -108,11 +108,16 @@ public class Server {
                 String token = AuthHandler.generateToken(userId); // generate a token for that user
 
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
-                cookie.setDomain(".niskyhill.org");  // works across www + api subdomains
+
+                // COMMENT OUT FOR LOCAL TESTING (allows cookie to work on localhost without secure flag)
+                //cookie.setDomain(".niskyhill.org");  // works across www + api subdomains
                 cookie.setPath("/");
                 cookie.setMaxAge(3600);               // 1 hour
                 cookie.setHttpOnly(true);             // JS cannot access
-                cookie.setSecure(true);               // only over HTTPS
+
+                // COMMENT OUT FOR LOCAL TESTING AND REPLACE WITH false
+                cookie.setSecure(false);               // works with localhost
+                //cookie.setSecure(true);               // only over HTTPS
                 cookie.setSameSite(SameSite.LAX);    // allows cross-subdomain
 
 
