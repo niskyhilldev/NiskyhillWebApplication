@@ -10,8 +10,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
-import { API_BASE_URL } from "../api/lotApi";
+import fetchSections from "../api/lotApi";
 
 {/** Button should handle all actions of adding new lots */}
 
@@ -29,22 +28,28 @@ function LotAddButton() {
   const [sections, setSections] = useState([]);
   // fetch sections for dropdown
   useEffect(() => {
-    const fetchSections = async () => {
+    // fetch data in async function
+    async function loadSections() {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${API_BASE_URL}/sections/all`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("Fetched sections:", response.data);
-        setSections(response.data);
+        //setDropError("");
+
+        //fetch data
+        const data = await fetchSections();
+
+        if (data.length === 0) {
+          //setDropError("No sections available.");
+        } else {
+          setSections(data);//load data in drop
+        }
+
       } catch (err) {
-        console.error("Error fetching sections:", err);
+        console.error(err);
+        //setDropError("Failed to fetch sections.");
+      } finally {
+        //setDropLoading(false);
       }
-    };
-    fetchSections();
+    }
+    loadSections();
   }, []);
 
   const handleOpen = () => setOpen(true);
