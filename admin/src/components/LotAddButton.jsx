@@ -26,10 +26,12 @@ function LotAddButton() {
     owner: "",
   });
 
+  // JUST FOR TESTING REMOVE LATER AFTER REAL LOGIN IMPLEMENTED
   // obtain token for authorized route by login with email and password
   useEffect(() => {
     async function loginUser(){
       try{
+        // import.meta.env has to be used to access environment variables in vite
         await login(import.meta.env.VITE_EMAIL, import.meta.env.VITE_PASSWORD);
         console.log("Login successful");
       } catch (err) {

@@ -13,6 +13,16 @@ export const fetchSections = async() => {
     return data; // array of section json
 }
 
+// get lots
+async function fetchLots(){
+    const response = await fetch(`${API_BASE_URL}/lots/all`)
+    if (!response.ok) {
+        throw new Error("Failed to fetch lots");
+    }
+    
+    return response.json(); // array of lot json
+}
+
 // post request to add lot
 async function addLot(payload){
     const response = await fetch(`${API_BASE_URL}/lots/add`, {
@@ -32,7 +42,7 @@ async function addLot(payload){
 }
 
 
-export {addLot };
+
 
 //Currently Taken straight from old implementation
 
@@ -72,3 +82,4 @@ export const performLotSearch = async(lot, section) => {
         return lots;
 }
 
+export { fetchLots, addLot };
