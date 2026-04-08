@@ -1,0 +1,100 @@
+{
+    "forms": [
+        {
+            "form_id": "certificate_of_ownership",
+            "display_name": "Certificate of Ownership",
+            "page_width_cm": 28,
+            "page_height_cm": 21.7,
+            "fields": [
+                {
+                    "field_id": "lot_no",
+                    "label": "Lot Number",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 13.83, "y_cm": 3.3, "w_cm": 5.52, "h_cm": 0.62,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "section",
+                    "label": "Section",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 22.55, "y_cm": 4.11, "w_cm": 1.38, "h_cm": 0.56,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "day",
+                    "label": "Day",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 7.91, "y_cm": 5.98, "w_cm": 3.24, "h_cm": 0.62,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "month",
+                    "label": "Month",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 12.11, "y_cm": 5.98, "w_cm": 2.61, "h_cm": 0.62,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "year",
+                    "label": "Year",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 15.38, "y_cm": 5.98, "w_cm": 1.01, "h_cm": 0.62,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "owner_name",
+                    "label": "Owner Name(s)",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 9.88, "y_cm": 7.01, "w_cm": 8.57, "h_cm": 0.61,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "owner_address",
+                    "label": "Owner Address (City, County, State)",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 2.12, "y_cm": 7.75, "w_cm": 16.96, "h_cm": 0.56,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "consideration_words",
+                    "label": "Consideration Amount",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 7.52, "y_cm": 8.91, "w_cm": 9.1, "h_cm": 0.56,
+                    "font_size_pt": 8
+                },
+                {
+                    "field_id": "consideration_dollars",
+                    "label": "Consideration Amount ($)",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 17.48, "y_cm": 8.91, "w_cm": 2.24, "h_cm": 0.56,
+                    "font_size_pt": 9
+                },
+                {
+                    "field_id": "deposit_words",
+                    "label": "Perpetual Care Deposit",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 10.72, "y_cm": 10.15, "w_cm": 7.76, "h_cm": 0.51,
+                    "font_size_pt": 8
+                },
+                {
+                    "field_id": "deposit_dollars",
+                    "label": "Perpetual Care Deposit ($)",
+                    "type": "text",
+                    "required": true,
+                    "x_cm": 19.05, "y_cm": 10.15, "w_cm": 1.77, "h_cm": 0.51,
+                    "font_size_pt": 9
+                }
+            ]
+        }
+    ]
+}
