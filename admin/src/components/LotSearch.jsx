@@ -9,25 +9,13 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Container
+  Container,
+  Pagination
 } from '@mui/material';
 
 import LotAddButton from "./LotAddButton";
-
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
-
-
-//Lot JSON for reference
-{/** const lot = {
-            lid: rowId,
-            number: 'lotNumber',
-            descriptor: 'lotPartition',
-            owner: 'lotOwner',
-            sid: 'sectionNumber',)
-} */}
- 
-
 
 function LotSearch() {
 
@@ -46,7 +34,17 @@ function LotSearch() {
   const [searchResults, setSearchResults] = useState([]);
   const [searchError, setSearchError] = useState(null); 
   const [searchLoading, setSearchLoading] = useState(false);
- 
+  
+  //states for Search by Lot pages
+  const [lotPage, setLotPage] = useState(0);
+  const [rowsPerLotPage, setRowsPerLotPage] = useState(20);
+
+  //determines which rows should be displayed
+  const paginatedLotResults = searchResults.slice(
+    lotPage * rowsPerLotPage,
+    lotPage * rowsPerLotPage + rowsPerLotPage
+  );
+
   //populate dropdown on page load
   useEffect(() => {
     // fetch data in async function
@@ -155,10 +153,10 @@ function LotSearch() {
           sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
             <TableRow >
               
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Section Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Lot Number</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Lot Partition</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold'}}>Actions</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Section Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot Number</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot Partition</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -167,7 +165,8 @@ function LotSearch() {
               "& td": {
                 color: "white",
                 border: "2px solid #8b6f27",
-                fontSize: "20px",
+                fontSize: "15px",
+                py: 0
               },
             }}
           >
@@ -185,8 +184,8 @@ function LotSearch() {
                 </TableCell>
               </TableRow>
             ) : (
-              searchResults.map((row, index) => (
-                <TableRow key={index}>
+              paginatedLotResults.map((row) => (
+                <TableRow key={row.lot.lid}>
                   <TableCell>{row.lot.section.name}</TableCell>
                   <TableCell>{row.lot.number}</TableCell>
                   <TableCell>{row.lot.descriptor}</TableCell>
@@ -201,6 +200,44 @@ function LotSearch() {
             )}
           </TableBody>
         </Table>
+        {/**center pagination*/}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '20px',
+            alignItems: 'center'
+          }}
+        >
+          <Pagination 
+            //pages are annoying and started at 1, not 0, so page must be one greater than the chosen page
+            //and let lot page must be 1 less than page, as pagination starts at 1
+            count={Math.ceil(searchResults.length / rowsPerLotPage)}
+            page={lotPage + 1}
+            onChange={(e, value) => setLotPage(value - 1)}
+            sx={{
+              backgroundColor: "#074582",
+              color: "white",
+
+              "& .MuiPagination-selectLabel": {
+                color: "white",
+              },
+
+              "& .MuiPaginationItem-root": {
+                color: "white",
+              },
+              "& .Mui-selected": {
+                backgroundColor: "#af8c30",
+                color: '#f6e884',
+              },
+
+              "& .MuiSvgIcon-root": {
+                color: "#af8c30",
+              },
+                border: "2px solid #8b6f27"
+            }}
+          />
+        </Box>
       </Container>
 
       
