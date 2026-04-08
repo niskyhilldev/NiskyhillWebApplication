@@ -3,10 +3,6 @@ import {
   Box,
   Typography,
   TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   Button,
   Table,
   TableHead,
@@ -14,12 +10,13 @@ import {
   TableRow,
   TableCell,
   Container,
-  TablePagination
+  Pagination
 } from '@mui/material';
 
 import ResidentAddButton from "./ResidentAddButton";
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
+import { performResidentSearch } from "../api/residentApi";
 
 
 
@@ -33,31 +30,62 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
 
      //State forsearch by lot Text box
     const [lotTextValue, setLotTextValue] = useState("");
+    const [nameTextValue, setNameTextValue] = useState("");
 
     //States for search by lot info results
     const [lotSearchResults, setLotSearchResults] = useState([]);
     const [lotSearchError, setLotSearchError] = useState(null); 
     const [lotSearchLoading, setLotSearchLoading] = useState(false);
+
+    //States for search by name info results
+    const [nameSearchResults, setNameSearchResults] = useState([]);
+    const [nameSearchError, setNameSearchError] = useState(null); 
+    const [nameSearchLoading, setNameSearchLoading] = useState(false);
     
     //states for Search by Lot pages
     const [lotPage, setLotPage] = useState(0);
-    const [rowsPerLotPage, setRowsPerLotPage] = useState(5);
+    const [rowsPerLotPage, setRowsPerLotPage] = useState(20); //currently state is static
 
-      //determines which rows should be displayed
-      const paginatedResults = lotSearchResults.slice(
-        lotPage * rowsPerLotPage,
-        lotPage * rowsPerLotPage + rowsPerLotPage
-      );
+    //states for Search by name pages
+    const [namePage, setNamePage] = useState(0);
+    const [rowsPerNamePage, setRowsPerNamePage] = useState(20); //currently state is static
+
+    //determines which rows should be displayed
+    const paginatedLotResults = lotSearchResults.slice(
+      lotPage * rowsPerLotPage,
+      lotPage * rowsPerLotPage + rowsPerLotPage
+    );
+
+    //determines which rows should be displayed
+    const paginatedNameResults = nameSearchResults.slice(
+      namePage * rowsPerNamePage,
+      namePage * rowsPerNamePage + rowsPerNamePage
+    );
 
 
 
 
-    function performNameResidentSearch(){
-      alert("Name search"); 
+    async function activateNameResidentSearch(){
+      setNamePage(0);
+      try {  
+        setNameSearchError(null); //remove error from previous search
+        setNameSearchLoading(true); 
+
+        const result = await performResidentSearch(nameTextValue);
+
+        // Flattening not nessecary, as there is not nested json
+        setNameSearchResults(result);
+        console.log(result);
+      } catch (error) {
+        setNameSearchError(error.message || "Unknown error occurred");
+        setNameSearchResults([]);
+      } finally {
+        setNameSearchLoading(false);    
+      }
     }
 
 
-    //on search by lot button press
+    //on search by lot (name) button press
     async function activateLotResidentSearch(){
       setLotPage(0);
       try {  
@@ -77,7 +105,6 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
         );
         //
         setLotSearchResults(flattenedResult);
-
         console.log(result);
       } catch (error) {
         setLotSearchError(error.message || "Unknown error occurred");
@@ -137,6 +164,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
                 label="Name"
                 variant="filled"
                 placeholder="Search Last Name"
+                onChange={(event) => setNameTextValue(event.target.value)}
                 sx={{
                 borderRadius: 1,
                 backgroundColor: '#f6e884',   // background when not focused
@@ -152,42 +180,113 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
             <Button 
                 variant="contained"
                 color="primary"
-                onClick={performNameResidentSearch}
+                onClick={activateNameResidentSearch}
                 sx={{backgroundColor:'#af8c30'}}
             >
                 Search
             </Button>
             <ResidentAddButton/>
             </Box>
-            <Table sx={{mt:'20px'}}>
-            <TableHead
-            sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
-                <TableRow >
-                
-                <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>First Name</TableCell>
-                <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Middle Name</TableCell>
-                <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Last Name</TableCell>
-                <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Burial Date</TableCell>
-                <TableCell sx={{fontSize: '20px', fontWeight: 'bold'}}>Action</TableCell>
-                </TableRow>
-            </TableHead>
+            {/**If search fails display error */}
+        {nameSearchError && (
+          <div style={{ color: "red", marginBottom: "16px" }}>
+            Error: {nameSearchError}
+          </div>
+        )}
+        {/* Table */}
+        <Table sx={{mt:'20px'}}>
+          <TableHead
+          sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
+            <TableRow >
+              
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>First Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Middle Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Last Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Burial Date</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
 
-            <TableBody
+
+
+          <TableBody
             sx={{
-                backgroundColor: "#074582",     
-                "& td": { // all cells in the body
-                color: "white",                  
+              backgroundColor: "#074582",
+              "& td": {
+                color: "white",
                 border: "2px solid #8b6f27",
-                fontSize: '20px',
-                },
-            }}>
-                <TableRow>
-                <TableCell colSpan={8} align="center">
+                fontSize: "15px",
+                py: 0
+              },
+            }}
+          >
+
+            {nameSearchLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                    Loading...
+                </TableCell>
+              </TableRow>
+            ) : nameSearchResults.length === 0 && !nameSearchError ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
                   No results
                 </TableCell>
               </TableRow>
-            </TableBody>
-            </Table>
+            ) : (
+              paginatedNameResults.map((row) => (
+                <TableRow key={row.rid}>
+                  <TableCell>{row.firstName}</TableCell>
+                  <TableCell>{row.middleName}</TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+                  <TableCell>{row.burialDate}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" size="small">
+                      Temp button
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '20px',
+            alignItems: 'center'
+          }}
+        >
+
+          <Pagination //pages are annoying and started at 1, not 0, so page must be one greater than the chosen page
+          //and let lot page must be 1 less than page, as pagination starts at 1
+            count={Math.ceil(nameSearchResults.length / rowsPerNamePage)}
+            page={namePage + 1}
+            onChange={(e, value) => setNamePage(value - 1)}
+            sx={{
+              backgroundColor: "#074582",
+              color: "white",
+
+              "& .MuiPagination-selectLabel": {
+                color: "white",
+              },
+
+              "& .MuiPaginationItem-root": {
+                color: "white",
+              },
+              "& .Mui-selected": {
+                backgroundColor: "#af8c30",
+                color: '#f6e884',
+              },
+
+              "& .MuiSvgIcon-root": {
+                color: "#af8c30",
+              },
+               border: "2px solid #8b6f27"
+            }}
+          />
+        </Box>
         </Box>
 
 
@@ -258,14 +357,14 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
           sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
             <TableRow >
               
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>First Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Middle Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Last Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Burial Date</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Section</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Lot</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27"}}>Descriptor</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold'}}>Action</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>First Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Middle Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Last Name</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Burial Date</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Section</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Descriptor</TableCell>
+              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
             </TableRow>
           </TableHead>
 
@@ -277,7 +376,8 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
               "& td": {
                 color: "white",
                 border: "2px solid #8b6f27",
-                fontSize: "20px",
+                fontSize: "15px",
+                py: 0
               },
             }}
           >
@@ -295,7 +395,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
                 </TableCell>
               </TableRow>
             ) : (
-              paginatedResults.map((row) => (
+              paginatedLotResults.map((row) => (
                 <TableRow key={row.rid}>
                   <TableCell>{row.firstName}</TableCell>
                   <TableCell>{row.middleName}</TableCell>
@@ -322,26 +422,26 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
             alignItems: 'center'
           }}
         >
-          <TablePagination
-            component="div"
-            count={lotSearchResults.length}
-            page={lotPage}
-            onPageChange={(e, newPage) => setLotPage(newPage)}
-            rowsPerPage={rowsPerLotPage}
-            onRowsPerPageChange={(e) => {
-              setRowsPerLotPage(parseInt(e.target.value, 10));
-              setLotPage(0);
-            }}
+
+          <Pagination //pages are annoying and started at 1, not 0, so page must be one greater than the chosen page
+          //and let lot page must be 1 less than page, as pagination starts at 1
+            count={Math.ceil(lotSearchResults.length / rowsPerLotPage)}
+            page={lotPage + 1}
+            onChange={(e, value) => setLotPage(value - 1)}
             sx={{
               backgroundColor: "#074582",
               color: "white",
 
-              "& .MuiTablePagination-selectLabel": {
+              "& .MuiPagination-selectLabel": {
                 color: "white",
               },
 
-              "& .MuiTablePagination-displayedRows": {
+              "& .MuiPaginationItem-root": {
                 color: "white",
+              },
+              "& .Mui-selected": {
+                backgroundColor: "#af8c30",
+                color: '#f6e884',
               },
 
               "& .MuiSvgIcon-root": {
@@ -350,6 +450,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
                border: "2px solid #8b6f27"
             }}
           />
+          
         </Box>
       </Container>
 
