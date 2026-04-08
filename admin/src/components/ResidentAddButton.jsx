@@ -111,8 +111,8 @@ function ResidentAddButton() {
     ).values(),
   ];
 
-  console.log("Selected SID:", form.sid);
-  console.log("Filtered Lots:", filteredLots);
+  //console.log("Selected SID:", form.sid);
+  //console.log("Filtered Lots:", filteredLots);
 
   const handleSave = async() => {
     try{

@@ -28,7 +28,7 @@ function LotAddButton() {
 
   // JUST FOR TESTING REMOVE LATER AFTER REAL LOGIN IMPLEMENTED
   // obtain token for authorized route by login with email and password
-  useEffect(() => {
+  /*useEffect(() => {
     async function loginUser(){
       try{
         // import.meta.env has to be used to access environment variables in vite
@@ -40,7 +40,7 @@ function LotAddButton() {
     }
     loginUser();
   }, []);
-
+*/
   const [sections, setSections] = useState([]);
   // fetch sections for dropdown
   useEffect(() => {
