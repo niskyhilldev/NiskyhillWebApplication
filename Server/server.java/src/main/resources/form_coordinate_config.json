@@ -207,6 +207,86 @@
                     "fontSizePt": 10
                 }
             ]
+        },
+        {
+            "formId": "interment_card",
+            "displayName": "Internment Card",
+            "pageWidthCm": 12.7,
+            "pageHeightCm": 7.7,
+            "fields": [
+                {
+                    "fieldId": "lastName",
+                    "label": "Last Name",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 0.22, "yCm": 0.34, "wCm": 3.89, "hCm": 0.88,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "firstName",
+                    "label": "First Name",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 4.17, "yCm": 0.34, "wCm": 1.84, "hCm": 0.88,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "disposition",
+                    "label": "Disposition (e.g. Cremated, Buried",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 7.6, "yCm": 0.34, "wCm": 4.17, "hCm": 0.88,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "Number",
+                    "label": "Number (e.g. 86 - 9 - 7)",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 0.22, "yCm": 1.32, "wCm": 2.48, "hCm": 0.82,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "date",
+                    "label": "Date of Interment",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 3.04, "yCm": 1.32, "wCm": 3.58, "hCm": 0.82,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "lotNumber",
+                    "label": "Lot Number",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 1.29, "yCm": 2.8, "wCm": 4.11, "hCm": 0.76,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "lotLocation",
+                    "label": "Lot Location",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 5.49, "yCm": 2.8, "wCm": 2.66, "hCm": 0.76,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "lotOwner",
+                    "label": "Lot Owner",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 8.26, "yCm": 2.8, "wCm": 3.85, "hCm": 1.62,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "lotCardNotes",
+                    "label": "Lot Card Notes",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 3.29, "yCm": 4.9, "wCm": 8.83, "hCm": 2.15,
+                    "fontSizePt": 9
+                }
+            ]
         }
     ]
 }
