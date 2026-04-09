@@ -1,98 +1,210 @@
 {
     "forms": [
         {
-            "form_id": "certificate_of_ownership",
-            "display_name": "Certificate of Ownership",
-            "page_width_cm": 28,
-            "page_height_cm": 21.7,
+            "formId": "certificate_of_ownership",
+            "displayName": "Certificate of Ownership",
+            "pageWidthCm": 28,
+            "pageHeightCm": 21.7,
             "fields": [
                 {
-                    "field_id": "lot_no",
+                    "fieldId": "lotNo",
                     "label": "Lot Number",
                     "type": "text",
                     "required": true,
-                    "x_cm": 13.83, "y_cm": 3.3, "w_cm": 5.52, "h_cm": 0.62,
-                    "font_size_pt": 9
+                    "xCm": 13.83, "yCm": 3.3, "wCm": 5.52, "hCm": 0.62,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "section",
+                    "fieldId": "section",
                     "label": "Section",
                     "type": "text",
                     "required": true,
-                    "x_cm": 22.55, "y_cm": 4.11, "w_cm": 1.38, "h_cm": 0.56,
-                    "font_size_pt": 9
+                    "xCm": 22.55, "yCm": 4.11, "wCm": 1.38, "hCm": 0.56,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "day",
+                    "fieldId": "day",
                     "label": "Day",
                     "type": "text",
                     "required": true,
-                    "x_cm": 7.91, "y_cm": 5.98, "w_cm": 3.24, "h_cm": 0.62,
-                    "font_size_pt": 9
+                    "xCm": 7.91, "yCm": 5.98, "wCm": 3.24, "hCm": 0.62,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "month",
+                    "fieldId": "month",
                     "label": "Month",
                     "type": "text",
                     "required": true,
-                    "x_cm": 12.11, "y_cm": 5.98, "w_cm": 2.61, "h_cm": 0.62,
-                    "font_size_pt": 9
+                    "xCm": 12.11, "yCm": 5.98, "wCm": 2.61, "hCm": 0.62,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "year",
+                    "fieldId": "year",
                     "label": "Year",
                     "type": "text",
                     "required": true,
-                    "x_cm": 15.38, "y_cm": 5.98, "w_cm": 1.01, "h_cm": 0.62,
-                    "font_size_pt": 9
+                    "xCm": 15.38, "yCm": 5.98, "wCm": 1.01, "hCm": 0.62,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "owner_name",
+                    "fieldId": "ownerName",
                     "label": "Owner Name(s)",
                     "type": "text",
                     "required": true,
-                    "x_cm": 9.88, "y_cm": 7.01, "w_cm": 8.57, "h_cm": 0.61,
-                    "font_size_pt": 9
+                    "xCm": 9.88, "yCm": 7.01, "wCm": 8.57, "hCm": 0.61,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "owner_address",
+                    "fieldId": "ownerAddress",
                     "label": "Owner Address (City, County, State)",
                     "type": "text",
                     "required": true,
-                    "x_cm": 2.12, "y_cm": 7.75, "w_cm": 16.96, "h_cm": 0.56,
-                    "font_size_pt": 9
+                    "xCm": 2.12, "yCm": 7.75, "wCm": 16.96, "hCm": 0.56,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "consideration_words",
+                    "fieldId": "considerationWords",
                     "label": "Consideration Amount",
                     "type": "text",
                     "required": true,
-                    "x_cm": 7.52, "y_cm": 8.91, "w_cm": 9.1, "h_cm": 0.56,
-                    "font_size_pt": 8
+                    "xCm": 7.52, "yCm": 8.91, "wCm": 9.1, "hCm": 0.56,
+                    "fontSizePt": 8
                 },
                 {
-                    "field_id": "consideration_dollars",
+                    "fieldId": "considerationDollars",
                     "label": "Consideration Amount ($)",
                     "type": "text",
                     "required": true,
-                    "x_cm": 17.48, "y_cm": 8.91, "w_cm": 2.24, "h_cm": 0.56,
-                    "font_size_pt": 9
+                    "xCm": 17.48, "yCm": 8.91, "wCm": 2.24, "hCm": 0.56,
+                    "fontSizePt": 9
                 },
                 {
-                    "field_id": "deposit_words",
+                    "fieldId": "depositWords",
                     "label": "Perpetual Care Deposit",
                     "type": "text",
                     "required": true,
-                    "x_cm": 10.72, "y_cm": 10.15, "w_cm": 7.76, "h_cm": 0.51,
-                    "font_size_pt": 8
+                    "xCm": 10.72, "yCm": 10.15, "wCm": 7.76, "hCm": 0.51,
+                    "fontSizePt": 8
                 },
                 {
-                    "field_id": "deposit_dollars",
+                    "fieldId": "depositDollars",
                     "label": "Perpetual Care Deposit ($)",
                     "type": "text",
                     "required": true,
-                    "x_cm": 19.05, "y_cm": 10.15, "w_cm": 1.77, "h_cm": 0.51,
-                    "font_size_pt": 9
+                    "xCm": 19.05, "yCm": 10.15, "wCm": 1.77, "hCm": 0.51,
+                    "fontSizePt": 9
+                }
+            ]
+        },
+        {
+            "formId": "internment_record",
+            "displayName": "Internment Record",
+            "pageWidthCm": 23.5,
+            "pageHeightCm": 15.2,
+            "fields": [
+                {
+                    "fieldId": "name",
+                    "label": "Full Name of Deceased",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 2.03, "yCm": 3.79, "wCm": 7.76, "hCm": 0.86,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "placeOfBirth",
+                    "label": "Place of Birth",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 4.25, "yCm": 4.78, "wCm": 5.54, "hCm": 0.8,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "lateResidence",
+                    "label": "Late Residence (Full Address)",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 4.16, "yCm": 5.58, "wCm": 18.92, "hCm": 0.82,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "dateOfBirth",
+                    "label": "Date of Birth",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 4.16, "yCm": 6.46, "wCm": 5.1, "hCm": 0.74,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "dateOfDeath",
+                    "label": "Date of Death",
+                    "type": "text",
+                    "required": true,
+                    "xCm": 13.23, "yCm": 6.46, "wCm": 9.85, "hCm": 0.74,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "sex",
+                    "label": "Sex",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 2.36, "yCm": 7.3, "wCm": 2.71, "hCm": 0.7,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "SocialSate",
+                    "label": "Social State (e.g. Married, Divorced)",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 6.87, "yCm": 7.3, "wCm": 16.21, "hCm": 0.7,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "causeOfDeath",
+                    "label": "Cause of Death",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 4.19, "yCm": 8.1, "wCm": 12.19, "hCm": 0.74,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "nearestRelative",
+                    "label": "Nearest Relative",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 3.59, "yCm": 8.96, "wCm": 6.16, "hCm": 0.76,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "relativeAddress",
+                    "label": "Address of Nearest Relative",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 13.36, "yCm": 8.96, "wCm": 9.72, "hCm": 0.76,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "timePlaceFuneral",
+                    "label": "Time and Place of Funeral",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 5.29, "yCm": 9.82, "wCm": 17.79, "hCm": 0.69,
+                    "fontSizePt": 10
+                },
+                {
+                    "fieldId": "vaultDimensions",
+                    "label": "Dimensions of Vault (L x W x H)",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 5.29, "yCm": 10.66, "wCm": 17.79, "hCm": 0.52,
+                    "fontSizePt": 9
+                },
+                {
+                    "fieldId": "funeralDirector",
+                    "label": "Funeral Director",
+                    "type": "text",
+                    "required": false,
+                    "xCm": 3.59, "yCm": 11.52, "wCm": 14.9, "hCm": 0.69,
+                    "fontSizePt": 10
                 }
             ]
         }
