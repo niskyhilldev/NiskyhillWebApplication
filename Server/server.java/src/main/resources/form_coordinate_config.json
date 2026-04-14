@@ -168,7 +168,7 @@
                 },
                 {
                     "fieldId": "nearestRelative",
-                    "label": "Nearest Relative",
+                    "label": "Nearest Relative or Friend",
                     "type": "text",
                     "required": false,
                     "xCm": 3.59, "yCm": 8.96, "wCm": 6.16, "hCm": 0.76,
@@ -192,7 +192,7 @@
                 },
                 {
                     "fieldId": "vaultDimensions",
-                    "label": "Dimensions of Vault (L x W x H)",
+                    "label": "Inside Dimensions of Vault (L x W x H)",
                     "type": "text",
                     "required": false,
                     "xCm": 5.29, "yCm": 10.66, "wCm": 17.79, "hCm": 0.52,
@@ -200,7 +200,7 @@
                 },
                 {
                     "fieldId": "funeralDirector",
-                    "label": "Funeral Director",
+                    "label": "Funeral Director or Person in Charge",
                     "type": "text",
                     "required": false,
                     "xCm": 3.59, "yCm": 11.52, "wCm": 14.9, "hCm": 0.69,
@@ -224,7 +224,7 @@
                 },
                 {
                     "fieldId": "firstName",
-                    "label": "First Name",
+                    "label": "First Name, Middle Initial, and Titles",
                     "type": "text",
                     "required": true,
                     "xCm": 4.17, "yCm": 0.34, "wCm": 1.84, "hCm": 0.88,
@@ -232,15 +232,15 @@
                 },
                 {
                     "fieldId": "disposition",
-                    "label": "Disposition (e.g. Cremated, Buried",
+                    "label": "Disposition (e.g. Cremated, Buried)",
                     "type": "text",
                     "required": false,
                     "xCm": 7.6, "yCm": 0.34, "wCm": 4.17, "hCm": 0.88,
                     "fontSizePt": 9
                 },
                 {
-                    "fieldId": "Number",
-                    "label": "Number (e.g. 86 - 9 - 7)",
+                    "fieldId": "Date",
+                    "label": "Date (e.g. 86 - 9 - 7)",
                     "type": "text",
                     "required": false,
                     "xCm": 0.22, "yCm": 1.32, "wCm": 2.48, "hCm": 0.82,
