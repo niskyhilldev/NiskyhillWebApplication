@@ -9,25 +9,42 @@ import {
   MenuItem,
   Divider
 } from '@mui/material';
+import {useNavigate} from "react-router-dom";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-
+import {logout, getCurrentUser} from "../api/userAPI";
 
 
 function Profile() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [user, setUser] = useState(false);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => {
+  const handleClick = async (event) => {
     setAnchorEl(event.currentTarget); // anchor to the icon to maintain location
+
+    // fetch user info
+    try{
+      const data = await getCurrentUser();
+      console.log("USER DATA:", data);
+      setUser(data)
+    }catch(err){
+      console.error("Failed to load user", err);
+    }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async() => {
+    try{
+      await logout();
+      //localStorage.removeItem("token");
+      window.location.href = "/login";
+    }catch(err){
+      console.error(err);
+    }
     handleClose();
   };
 
@@ -53,16 +70,18 @@ function Profile() {
         }}
       >
         {/* Menu Info */}
-        <MenuItem disabled>
+        <MenuItem sx={{ pointerEvents: "none" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="body1">
-                    <strong>User Name</strong>
+                <Typography variant="body1" sx={{color: "black"}}>
+                    <strong>{user?.firstName || "Loading..."}</strong>
+                    <strong>{" "}</strong>
+                    <strong>{user?.lastName || "Loading..."}</strong>
+                </Typography>
+                <Typography variant="body2" sx={{color: "black"}}>
+                    {user?.email || ""}
                 </Typography>
                 <Typography variant="body2">
-                    Email
-                </Typography>
-                <Typography variant="body2">
-                    Account Type
+                    {user?.role || ""}
                 </Typography>
             </Box>
        
@@ -71,14 +90,19 @@ function Profile() {
         <Divider />
 
         {/* Actions */}
-        <MenuItem onClick={handleClose}>Change password</MenuItem>
+        <MenuItem 
+          onClick={() => {
+            handleClose();
+            navigate("/reset-password");
+          }}
+        >
+          Reset Password
+        </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
   );
 }
-
-
 
 
  function NavBar() {

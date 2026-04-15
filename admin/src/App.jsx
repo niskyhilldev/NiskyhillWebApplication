@@ -2,6 +2,7 @@ import ResidentSearch from './components/ResidentSearch.jsx'
 import NavBar from './components/NavBar.jsx'
 import LotSearch from './components/LotSearch.jsx'
 import LoginForm from './components/LoginForm.jsx';
+import ResetPassword from './components/ResetPassword.jsx';
 import {Box} from '@mui/material'
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { useState } from 'react';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/admin" element={isAuthenticated ? <AdminDashboard /> : <Navigate to="/login" />} />
+        <Route path="reset-password" element={<ResetPassword />}/>
       </Routes>
     </BrowserRouter>
   )

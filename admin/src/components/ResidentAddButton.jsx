@@ -210,7 +210,7 @@ function ResidentAddButton() {
 
           <TextField
             select
-            label="Lot*"
+            label="Lot Number*"
             name="lid"
             value={form.lid || ""} 
             onChange={handleLotChange}
@@ -229,7 +229,7 @@ function ResidentAddButton() {
           {/* ADD PARTITION DROPDOWN HERE */}
           <TextField
             select
-            label="Partition"
+            label="Lot Partition"
             name="descriptor"
             value={form.descriptor || ""} 
             onChange={handleChange}
