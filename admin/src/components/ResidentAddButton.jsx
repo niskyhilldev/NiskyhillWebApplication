@@ -17,7 +17,7 @@ import {addResident} from "../api/residentApi";
 
 function ResidentAddButton() {
   const [open, setOpen] = useState(false);
-
+  const[error, setError] = useState("");
   const [sections, setSections] = useState([]);
   const [lots, setLots] = useState([]);
 
@@ -62,11 +62,13 @@ function ResidentAddButton() {
   // open / close
   const handleOpen = () => {
     setForm(initialFormState); // reset form when opening
+    setError("");
     setOpen(true);
   };
 
   const handleClose = () =>{
     setOpen(false);
+    setError("");
   };
 
   // handle input changes
@@ -123,6 +125,12 @@ function ResidentAddButton() {
           String(lot.descriptor || "") === String(form.descriptor || "")
       );
 
+      // if no lot found
+      if(!selectedLot){
+        setError("Please select a valid lot and partition");
+        return;
+      }
+
       const payload = {
         firstName: form.firstName,
         middleName: form.middleName || null, 
@@ -142,6 +150,7 @@ function ResidentAddButton() {
       console.log("Resident added successfully");
       handleClose();
     } catch (err) {
+      setError(err.message);
       console.error("Error adding resident:", err);
     }
   };
@@ -320,6 +329,12 @@ function ResidentAddButton() {
             Public Viewable
           </label>
 
+          {error && (
+            <Box sx={{ color: "red", fontSize: "0.9rem", textAlign: "center"}}>
+              {error}
+            </Box>
+          )}
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

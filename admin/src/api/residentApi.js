@@ -13,11 +13,14 @@ async function addResident(payload){
         body: JSON.stringify(payload),
     });
 
+    // retrieve backend response 
+    const text = await response.text();
+
     if (!response.ok) {
-        throw new Error("Failed to add resident");
+        throw new Error(text || "Failed to add resident");
     }
 
-    return response.text();
+    return text;
 }   
 
 export const performResidentSearch = async(name) => {
