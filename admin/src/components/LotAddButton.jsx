@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, use } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -11,13 +11,15 @@ import {
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
-import { login } from "../api/userAPI";
 
+//RESET FORM TO BLANK UPON RE ENTRY
+// ON SCREEN AND CONSOLE ERROR WHEN ADDING DUPLICATE LOT (PARTITION IS THE SAME)
 {/** Button should handle all actions of adding new lots */}
 
 function LotAddButton() {
   const [open, setOpen] = useState(false);
-  
+  const[error, setError] = useState("");
+
   // form state to match dto
   const [formData, setFormData] = useState({
     sid: "",
@@ -26,21 +28,6 @@ function LotAddButton() {
     owner: "",
   });
 
-  // JUST FOR TESTING REMOVE LATER AFTER REAL LOGIN IMPLEMENTED
-  // obtain token for authorized route by login with email and password
-  /*useEffect(() => {
-    async function loginUser(){
-      try{
-        // import.meta.env has to be used to access environment variables in vite
-        await login(import.meta.env.VITE_EMAIL, import.meta.env.VITE_PASSWORD);
-        console.log("Login successful");
-      } catch (err) {
-        console.error("Login failed:", err);
-      }
-    }
-    loginUser();
-  }, []);
-*/
   const [sections, setSections] = useState([]);
   // fetch sections for dropdown
   useEffect(() => {
@@ -68,8 +55,26 @@ function LotAddButton() {
     loadSections();
   }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // reset form function
+  const resetForm = () =>{
+    setFormData({
+      sid: "",
+      number: "",
+      descriptor: "",
+      owner: "",
+    });
+    setError("");
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+    resetForm();
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+    resetForm();
+  }
 
   // handle form changes
   const handleChange = (e) => {
@@ -81,6 +86,9 @@ function LotAddButton() {
   const handleSave = async () => {
     // collect values and save to DB here
     try{
+      // clear old errors
+      setError("");
+
       const payload = {
         ...formData,
         sid: Number(formData.sid),
@@ -90,6 +98,7 @@ function LotAddButton() {
       console.log("Lot added successfully");
       handleClose();
     } catch(err){
+      setError(err.message);
       console.error("Error adding lot:", err);
     }
   };
@@ -161,6 +170,12 @@ function LotAddButton() {
             onChange={handleChange}
             variant="filled"
           />
+
+          {error && (
+            <Box sx={{ color: "red", fontSize: "0.9rem", textAlign: "center"}}>
+              {error}
+            </Box>
+          )}
         </DialogContent>
 
         <DialogActions>
