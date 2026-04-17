@@ -98,6 +98,9 @@ function ResidentAddButton() {
     (lot) => String(lot.section?.sid) === String(form.sid)
   );
 
+  // console log lot count for checking that lot number is different for each section
+  console.log("Filtered lots count:", filteredLots.length);
+
   // get unique lot numbers by removing duplicates
   const  uniqueLotNumbers =[
     ...new Map(filteredLots.map((lot) => [lot.number, lot])).values()
@@ -238,7 +241,7 @@ function ResidentAddButton() {
           {/* ADD PARTITION DROPDOWN HERE */}
           <TextField
             select
-            label="Lot Partition"
+            label="Lot Partition*"
             name="descriptor"
             value={form.descriptor || ""} 
             onChange={handleChange}
