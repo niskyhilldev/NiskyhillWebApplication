@@ -43,7 +43,7 @@ export default function LoginForm({ onLogin }) {
                 height: "100vh",
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundImage: "url('../public/niskyHomepage.JPG')", // Optional background image
+                backgroundImage: "url('../public/niskyHomepage.JPG')", 
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

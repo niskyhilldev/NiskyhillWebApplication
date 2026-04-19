@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
@@ -105,7 +106,7 @@ function LotAddButton() {
 
   return (
     <Box>
-      {/* Actual button */}
+      {/* Floating Add Button */}
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -113,74 +114,185 @@ function LotAddButton() {
           color: "white",
           width: 60,
           height: 60,
-          borderRadius: 1,
-          "&:hover": { bgcolor: "#8b6f27" },
+          borderRadius: "12px",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            bgcolor: "#8b6f27",
+            transform: "scale(1.1)",
+          },
         }}
       >
         <AddIcon />
       </IconButton>
 
-      {/** Dialog / Pop-up  for input*/}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Lot</DialogTitle>
-        <DialogContent sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          pt: 1,
-          minWidth: 300,}}>
+      {/* Dialog */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            backgroundColor: "#0d2543",
+            color: "white",
+            p: 1,
+            minWidth: 350,
+            border: "1px solid rgba(175, 140, 48, 0.7)",
+            boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontFamily: "Inria Serif",
+            fontSize: "1.8rem",
+            letterSpacing: "1.5px",
+            color: "#af8c30",
+          }}
+        >
+          Add a New Lot
+        </DialogTitle>
 
-          <TextField 
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            pt: 1,
+          }}
+        >
+          {/* SECTION DROPDOWN */}
+          <TextField
             select
-            label="Section*"
             name="sid"
             value={formData.sid}
             onChange={handleChange}
-            SelectProps={{ native: true }}
-            variant="filled"
+            fullWidth
+            variant="outlined"
+            SelectProps={{displayEmpty: true}}
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& .MuiSelect-select": {
+                color: formData.sid ? "black" : "#777",
+              },
+            }}
           >
-            <option value=""></option>
+            <MenuItem value="" disabled>
+              Section*
+            </MenuItem>
+
             {sections.map((section) => (
-              <option key={section.sid} value={section.sid}>
+              <MenuItem key={section.sid} value={section.sid}>
                 {section.name}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
 
+          {/* LOT NUMBER */}
           <TextField
-            label="Lot Number*" 
+            placeholder="Lot Number*"
             name="number"
             value={formData.number}
             onChange={handleChange}
-            variant="filled"
+            variant="outlined"
+            fullWidth
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& input": {
+                color: "black",
+              },
+            }}
           />
 
+          {/* LOT PARTITION */}
           <TextField
-            label="Lot Partition*"
+            placeholder="Lot Partition*"
             name="descriptor"
             value={formData.descriptor}
             onChange={handleChange}
-            variant="filled"
+            variant="outlined"
+            fullWidth
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& input": {
+                color: "black",
+              },
+            }}
           />
 
+          {/* OWNER */}
           <TextField
-            label="Owner"
+            placeholder="Owner"
             name="owner"
             value={formData.owner}
             onChange={handleChange}
-            variant="filled"
+            variant="outlined"
+            fullWidth
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& input": {
+                color: "black",
+              },
+            }}
           />
 
+          {/* ERROR */}
           {error && (
-            <Box sx={{ color: "red", fontSize: "0.9rem", textAlign: "center"}}>
+            <Box
+              sx={{
+                color: "#ff6b6b",
+                fontSize: "0.9rem",
+                textAlign: "center",
+                mt: 1,
+              }}
+            >
               {error}
             </Box>
           )}
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>Save</Button>
+        <DialogActions
+          sx={{
+            justifyContent: "space-between",
+            px: 3,
+            pb: 2,
+          }}
+        >
+          <Button
+            onClick={handleClose}
+            sx={{
+              color: "white",
+              fontFamily: "Inria Serif",
+              border: "1px solid #af8c30",
+              "&:hover": {
+                backgroundColor: "rgba(175,140,48,0.1)",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              backgroundColor: "#af8c30",
+              color: "white",
+              fontFamily: "Inria Serif",
+              letterSpacing: "1px",
+              "&:hover": {
+                backgroundColor: "#8b6f27",
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
