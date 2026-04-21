@@ -41,12 +41,16 @@ public class ResidentService {
      * @return a list of type ResidentSearchDTO
      * @throws HttpStatusException missing parameters, no residents found
      */
-    public static List<ResidentSearchDTO> searchResidents(String name, Database database) throws HttpStatusException{
+
+
+    //SearchResidents was slightly modifided from its previous implementation
+    //rather than ResidentSearchDTO being used, it was switched to ResidentDTO to provide more data
+    public static List<ResidentDTO> searchResidents(String name, Database database) throws HttpStatusException{
         if (name == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Name Cannot Be Null");
         }
         
-        List<ResidentSearchDTO> residentList = ResidentMapper.mapResidentSearchDTOList(database.searchResidents(name));
+        List<ResidentDTO> residentList = ResidentMapper.mapResidentDTOList(database.searchResidents(name));
         if (residentList.size() == 0){
             throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "No Residents Found");
         }
