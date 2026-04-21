@@ -85,4 +85,84 @@ export const performLotSearch = async(lot, section) => {
         return lots;
 }
 
-export { fetchLots, addLot };
+export const deleteLot = async(id) => {
+    //delete an entry from the db
+    fetch(`${API_BASE_URL}/lots/delete/${id}`, {
+        method: "DELETE",
+        credentials: "include", // only required when localhosting
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            window.alert("Error deleting lot" + error);
+    });
+}
+
+
+//Used in resident edit to edit the assigned lot to the resident
+async function getLotInfo(section, lot, partition){
+    //search for all information on a given plot (partition)
+    try {
+        // Build query string dynamically
+        const queryParams = new URLSearchParams();
+        if (section) queryParams.append("section", section);
+        if (lot) queryParams.append("lot", lot);
+
+
+        const response = await fetch(`${API_BASE_URL}/lots/residents/search?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('No lots found matching search criteria');
+            } else if (response.status === 400) {
+                throw new Error('Invalid search parameters');
+            } else if (response.status === 500) {
+                throw new Error('Server error occurred');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+
+        const lots = await response.json();
+        for(let i = 0; i < lots.length; i++){
+            if (lots[i]['lot'].descriptor === partition){
+                return(lots[i]['lot']);
+            }
+        }
+
+    } catch (error) {
+        window.alert('Edit Error:', error);
+    }
+}
+
+export const updateLot = async(updateDTO) => {
+     const data = JSON.stringify(updateDTO);
+      try {
+        const response = await fetch(`${API_BASE_URL}/lots/update`,  {
+            method:'PUT',
+            credentials: "include", // only required when localhosting
+            headers: {
+                'Content-Type': 'application/json', // Indicate that the request body contains JSON data
+            },
+            body: data,
+        })
+        if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error(`Resident with ID ${rowId} not found`);
+                } else if (response.status === 400) {
+                    throw new Error('Invalid Resident ID format');
+                } else if (response.status === 500) {
+                    throw new Error('Server error occurred');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+        }
+    } catch (error) {
+        window.alert('Edit Error:', error);
+    }
+}
+
+
+export { fetchLots, addLot, getLotInfo };

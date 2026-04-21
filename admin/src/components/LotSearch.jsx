@@ -16,7 +16,8 @@ import {
 import LotAddButton from "./LotAddButton";
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
-
+import DeleteButton from "./DeleteButton";
+import LotEditButton from "./LotEditButton";
 function LotSearch() {
 
 
@@ -79,8 +80,12 @@ function LotSearch() {
       setSearchLoading(true); 
 
       const result = await performLotSearch(lotTextValue, selectedSection);
+      //flatten down to just lot, other info isnt needed
+      const cutResults = result.map((row) => (
+        row = row.lot
+      ))
 
-      setSearchResults(result);
+      setSearchResults( cutResults);
     } catch (error) {
       setSearchError(error.message || "Unknown error occurred");
       setSearchResults([]);
@@ -185,15 +190,38 @@ function LotSearch() {
               </TableRow>
             ) : (
               paginatedLotResults.map((row) => (
-                <TableRow key={row.lot.lid}>
-                  <TableCell>{row.lot.section.name}</TableCell>
-                  <TableCell>{row.lot.number}</TableCell>
-                  <TableCell>{row.lot.descriptor}</TableCell>
+                
+                <TableRow key={row.lid}>
+                 <TableCell>{row.sectionName ?? row.section?.name}</TableCell>
+                  <TableCell>{row.number}</TableCell>
+                  <TableCell>{row.descriptor}</TableCell>
                   <TableCell>
                     {/* temp action button */}
-                    <Button variant="contained" size="small">
-                      Temp button
-                    </Button>
+                    <DeleteButton
+                       id={row.lid}
+                       type='lot'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(lid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setSearchResults((prev) => 
+                          prev.filter((r) => String(r.lid) !== String(lid))
+                        );
+                      }}
+                    />
+
+                    <LotEditButton
+                      lot={row}
+                      onSave={(updatedLot) => {
+                        setSearchResults((prev) =>
+                          prev.map((l) =>
+                            String(l.lid) === String(updatedLot.lid)
+                              ? updatedLot
+                              : l
+                          )
+                        );
+
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))

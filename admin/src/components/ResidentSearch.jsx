@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 
 import ResidentAddButton from "./ResidentAddButton";
+import DeleteButton from "./DeleteButton";
+import ResidentEditButton from "./ResidentEditButton";
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
 import { performResidentSearch } from "../api/residentApi";
@@ -28,7 +30,7 @@ import { performResidentSearch } from "../api/residentApi";
     const [dropError, setDropError] = useState("");
     const [dropLoading, setDropLoading] = useState(true);
 
-     //State forsearch by lot Text box
+     //State for search by lot Text box
     const [lotTextValue, setLotTextValue] = useState("");
     const [nameTextValue, setNameTextValue] = useState("");
 
@@ -62,8 +64,7 @@ import { performResidentSearch } from "../api/residentApi";
       namePage * rowsPerNamePage + rowsPerNamePage
     );
 
-
-
+   
 
     async function activateNameResidentSearch(){
       setNamePage(0);
@@ -241,9 +242,42 @@ import { performResidentSearch } from "../api/residentApi";
                   <TableCell>{row.lastName}</TableCell>
                   <TableCell>{row.burialDate}</TableCell>
                   <TableCell>
-                    <Button variant="contained" size="small">
-                      Temp button
-                    </Button>
+                    <DeleteButton
+                       rid={row.rid}
+                       type='resident'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(rid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setLotSearchResults((prev) => 
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+                      }}
+                    />
+                    <ResidentEditButton
+                      resident={row}
+                      isFlattened={false}
+                      onSave={(updatedResident) => {
+                        setLotSearchResults((prev) =>
+                          prev.map((r) =>
+                            String(r.rid) === String(updatedResident.rid)
+                              ? updatedResident
+                              : r
+                          )
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.map((r) =>
+                            String(r.rid) === String(updatedResident.rid)
+                              ? updatedResident
+                              : r
+                          )
+                        );
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))
@@ -405,9 +439,42 @@ import { performResidentSearch } from "../api/residentApi";
                   <TableCell>{row.lotNumber}</TableCell>
                   <TableCell>{row.lotDescriptor}</TableCell>
                   <TableCell>
-                    <Button variant="contained" size="small">
-                      Temp button
-                    </Button>
+                    <DeleteButton
+                       rid={row.rid}
+                       type='resident'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(rid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setLotSearchResults((prev) => 
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+                      }}
+                    />
+                    <ResidentEditButton
+                      resident={row}
+                      isFlattened={true}
+                      onSave={(updatedResident) => {
+                        setLotSearchResults((prev) =>
+                          prev.map((r) =>
+                            String(r.rid) === String(updatedResident.rid)
+                              ? updatedResident
+                              : r
+                          )
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.map((r) =>
+                            String(r.rid) === String(updatedResident.rid)
+                              ? updatedResident
+                              : r
+                          )
+                        );
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))
