@@ -13,8 +13,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
 
-//RESET FORM TO BLANK UPON RE ENTRY
-// ON SCREEN AND CONSOLE ERROR WHEN ADDING DUPLICATE LOT (PARTITION IS THE SAME)
 {/** Button should handle all actions of adding new lots */}
 
 function LotAddButton() {
@@ -137,8 +135,8 @@ function LotAddButton() {
             color: "white",
             p: 1,
             minWidth: 350,
-            border: "1px solid rgba(175, 140, 48, 0.7)",
-            boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
+          border: "1px solid rgba(175, 140, 48, 0.7)",
+          boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
           },
         }}
       >

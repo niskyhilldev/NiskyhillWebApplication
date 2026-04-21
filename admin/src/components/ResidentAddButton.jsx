@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -8,7 +8,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
+import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { fetchSections, fetchLots } from "../api/lotApi";  
 import {addResident} from "../api/residentApi";
@@ -73,11 +77,10 @@ function ResidentAddButton() {
 
   // handle input changes
   const handleChange = (e) => {
-    const{name, value, type, checked} = e.target;
-
+    const { name, value, type, checked } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -99,7 +102,7 @@ function ResidentAddButton() {
   );
 
   // console log lot count for checking that lot number is different for each section
-  console.log("Filtered lots count:", filteredLots.length);
+  //console.log("Filtered lots count:", filteredLots.length);
 
   // get unique lot numbers by removing duplicates
   const  uniqueLotNumbers =[
@@ -116,15 +119,13 @@ function ResidentAddButton() {
     ).values(),
   ];
 
-  //console.log("Selected SID:", form.sid);
-  //console.log("Filtered Lots:", filteredLots);
+  const handleSave = async () => {
+    try {
+      setError("");
 
-  const handleSave = async() => {
-    try{
-      // define selected lot based on lot number and partition
       const selectedLot = filteredLots.find(
-        (lot) => 
-          String(lot.number) === String(form.lid) && 
+        (lot) =>
+          String(lot.number) === String(form.lid) &&
           String(lot.descriptor || "") === String(form.descriptor || "")
       );
 
@@ -158,9 +159,16 @@ function ResidentAddButton() {
     }
   };
 
+  // Shared white field style
+  const fieldSx = {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& input": { color: "black" },
+  };
+
   return (
     <Box>
-      {/* Actual button */}
+      {/* Add Button */}
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -168,184 +176,312 @@ function ResidentAddButton() {
           color: "white",
           width: 60,
           height: 60,
-          borderRadius: 1,
-          "&:hover": { bgcolor: "#8b6f27" },
+          borderRadius: "12px",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            bgcolor: "#8b6f27",
+            transform: "scale(1.1)",
+          },
         }}
       >
         <AddIcon />
       </IconButton>
 
-      {/* Dialog / Pop-up for input*/}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Resident</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          <TextField 
-            label="First Name*" 
-            variant="filled" 
-            name="firstName"
-            value={form.firstName}
-            onChange={handleChange}
-          />
+      {/* Dialog */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            backgroundColor: "#0d2543",
+            color: "white",
+            p: 1,
+            minWidth: 520,
+            border: "1px solid rgba(175, 140, 48, 0.7)",
+            boxShadow:
+              "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontFamily: "Inria Serif",
+            fontSize: "1.8rem",
+            letterSpacing: "1.5px",
+            color: "#af8c30",
+          }}
+        >
+          Add New Resident
+        </DialogTitle>
 
-          <TextField
-            label="Middle Name"
-            variant="filled"
-            name="middleName"
-            value={form.middleName}
-            onChange={handleChange}
-          />
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            pt: 1,
+          }}
+        >
+          {/* Name row */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              placeholder="First Name*"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              sx={fieldSx}
+            />
+            <TextField
+              placeholder="Middle Name"
+              name="middleName"
+              value={form.middleName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              sx={fieldSx}
+            />
+            <TextField
+              placeholder="Last Name*"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              sx={fieldSx}
+            />
+          </Box>
 
-          <TextField
-            label="Last Name*"
-            variant="filled"
-            name="lastName"
-            value={form.lastName}
-            onChange={handleChange}
-          />
-
+          {/* Section */}
           <TextField
             select
-            label="Section*"
             name="sid"
-            value={form.sid || ""} // ensure string
+            value={form.sid}
             onChange={handleChange}
-            SelectProps={{ native: true }}
-            variant="filled"
+            fullWidth
+            variant="outlined"
+            SelectProps={{ displayEmpty: true }}
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& .MuiSelect-select": {
+                color: form.sid ? "black" : "#777",
+              },
+            }}
           >
-            <option value=""></option>
+            <MenuItem value="" disabled>Section*</MenuItem>
             {sections.map((section) => (
-              <option key={section.sid} value={section.sid}>
+              <MenuItem key={section.sid} value={section.sid}>
                 {section.name}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
 
+          {/* Lot + Partition row */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              select
+              name="lid"
+              value={form.lid}
+              onChange={handleLotChange}
+              fullWidth
+              variant="outlined"
+              disabled={!form.sid}
+              SelectProps={{ displayEmpty: true }}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "6px",
+                "& .MuiSelect-select": {
+                  color: form.lid ? "black" : "#777",
+                },
+              }}
+            >
+              <MenuItem value="" disabled>Lot Number*</MenuItem>
+              {uniqueLotNumbers.map((lot) => (
+                <MenuItem key={lot.number} value={lot.number}>
+                  {lot.number}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              select
+              name="descriptor"
+              value={form.descriptor}
+              onChange={handleChange}
+              fullWidth
+              variant="outlined"
+              disabled={!form.lid || partitionOptions.length === 0}
+              SelectProps={{ displayEmpty: true }}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "6px",
+                "& .MuiSelect-select": {
+                  color: form.descriptor ? "black" : "#777",
+                },
+              }}
+            >
+              <MenuItem value="" disabled>Lot Partition*</MenuItem>
+              {partitionOptions.map((p, i) => (
+                <MenuItem key={i} value={p}>{p}</MenuItem>
+              ))}
+            </TextField>
+          </Box>
+
+          {/* Dates row */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+                Date of Birth
+              </Typography>
+              <TextField
+                type="date"
+                name="birthDate"
+                value={form.birthDate}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                sx={fieldSx}
+              />
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+                Date of Death
+              </Typography>
+              <TextField
+                type="date"
+                name="deathDate"
+                value={form.deathDate}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                sx={fieldSx}
+              />
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+                Burial Date
+              </Typography>
+              <TextField
+                type="date"
+                name="burialDate"
+                value={form.burialDate}
+                onChange={handleChange}
+                variant="outlined"
+                fullWidth
+                sx={fieldSx}
+              />
+            </Box>
+          </Box>
+
+          {/* Vessel */}
           <TextField
             select
-            label="Lot Number*"
-            name="lid"
-            value={form.lid || ""} 
-            onChange={handleLotChange}
-            variant="filled"
-            disabled={!form.sid} // disable until section is selected
-            SelectProps={{ native: true }}
-          >
-            <option value=""></option>
-            {uniqueLotNumbers.map((lot) => (
-              <option key={lot.number} value={lot.number}>
-                {lot.number}
-              </option>
-            ))}
-          </TextField>
-
-          {/* ADD PARTITION DROPDOWN HERE */}
-          <TextField
-            select
-            label="Lot Partition*"
-            name="descriptor"
-            value={form.descriptor || ""} 
-            onChange={handleChange}
-            variant="filled"
-            SelectProps={{native: true}}
-            disabled={!form.sid || !form.lid || partitionOptions.length === 0} // disable until lot is selected and partitions exist
-          >
-            <option value=""></option>
-            {partitionOptions.map((p, index) => (
-              <option key={index} value={p}>
-                {p}
-              </option>
-            ))}
-          </TextField>
-
-          <TextField
-            label="Date of Birth"
-            type="date"
-            name="birthDate"
-            value={form.birthDate}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            variant="filled"
-          />
-
-          <TextField
-            label="Date of Death"
-            type="date"
-            name="deathDate"
-            value={form.deathDate}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            variant="filled"
-          />
-
-          <TextField
-            label="Burial Date"
-            type="date"
-            name="burialDate"
-            value={form.burialDate}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            variant="filled"
-          />
-
-          <TextField
-            select
-            label="Vessel"
             name="capsule"
             value={form.capsule}
             onChange={handleChange}
-            variant="filled"
-            SelectProps={{ native: true }}
+            fullWidth
+            variant="outlined"
+            SelectProps={{ displayEmpty: true }}
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "6px",
+              "& .MuiSelect-select": {
+                color: form.capsule ? "black" : "#777",
+              },
+            }}
           >
-            <option value=""></option>
-            <option value="Urn">Urn</option>
-            <option value="Casket">Casket</option>
+            <MenuItem value="" disabled>Vessel</MenuItem>
+            <MenuItem value="Urn">Urn</MenuItem>
+            <MenuItem value="Casket">Casket</MenuItem>
           </TextField>
 
-          {/* Checkboxes for marker, foundation, publicViewable */}
-          <label>
-            <input
-              type="checkbox"
-              name="marker"
-              checked={form.marker}
-              onChange={handleChange}
+          {/* Checkboxes */}
+          <Box sx={{ display: "flex", gap: 3 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="marker"
+                  checked={form.marker}
+                  onChange={handleChange}
+                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                />
+              }
+              label="Marker"
+              sx={{ color: "white" }}
             />
-            Marker
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              name="foundation"
-              checked={form.foundation}
-              onChange={handleChange}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="foundation"
+                  checked={form.foundation}
+                  onChange={handleChange}
+                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                />
+              }
+              label="Foundation"
+              sx={{ color: "white" }}
             />
-            Foundation
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              name="publicViewable"
-              checked={form.publicViewable}
-              onChange={handleChange}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="publicViewable"
+                  checked={form.publicViewable}
+                  onChange={handleChange}
+                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                />
+              }
+              label="Public Viewable"
+              sx={{ color: "white" }}
             />
-            Public Viewable
-          </label>
+          </Box>
 
+          {/* Error */}
           {error && (
-            <Box sx={{ color: "red", fontSize: "0.9rem", textAlign: "center"}}>
+            <Box sx={{ color: "#ff6b6b", fontSize: "0.9rem", textAlign: "center", mt: 1 }}>
               {error}
             </Box>
           )}
-          
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>Save</Button>
+
+        <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+          <Button
+            onClick={handleClose}
+            sx={{
+              color: "white",
+              fontFamily: "Inria Serif",
+              border: "1px solid #af8c30",
+              "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              backgroundColor: "#af8c30",
+              color: "white",
+              fontFamily: "Inria Serif",
+              letterSpacing: "1px",
+              "&:hover": {
+                backgroundColor: "#8b6f27",
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
 }
 
-export default ResidentAddButton
+export default ResidentAddButton;
