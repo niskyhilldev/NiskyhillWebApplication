@@ -7,7 +7,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Divider
+  Divider,
+  Button
 } from '@mui/material';
 import {useNavigate} from "react-router-dom";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -26,7 +27,7 @@ function Profile() {
     // fetch user info
     try{
       const data = await getCurrentUser();
-      console.log("USER DATA:", data);
+      //console.log("USER DATA:", data);
       setUser(data)
     }catch(err){
       console.error("Failed to load user", err);
@@ -52,7 +53,7 @@ function Profile() {
     <>
       {/* User Icon Button */}
       <IconButton onClick={handleClick} >
-        <AccountCircle sx={{ fontSize: 80}}/>
+        <AccountCircle sx={{ fontSize: 70, color: "#0d2543"}}/>
       </IconButton>
 
       {/* Dropdown Menu */}
@@ -98,14 +99,30 @@ function Profile() {
         >
           Reset Password
         </MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem disableRipple sx={{ backgroundColor: "white", pt: 1, pb: 1 }}>
+          <Button
+            fullWidth
+            onClick={handleLogout}
+            sx={{
+              backgroundColor: "#af8c30",
+              color: "white",
+              borderRadius: "8px",
+              fontFamily: "Inria Serif",
+              fontWeight: "bold",
+              letterSpacing: "1px",
+              textTransform: "none",
+              "&:hover": {backgroundColor: "#8b6f27"}
+            }}
+          > Logout
+          </Button>
+        </MenuItem>
       </Menu>
     </>
   );
 }
 
 
- function NavBar() {
+function NavBar() {
   return (
     <AppBar position="static" elevation="4"
       sx={{
