@@ -35,12 +35,17 @@ function ResidentEditButton({ resident, onSave, isFlattened }) {
       <IconButton
         onClick={handleOpen}
         sx={{
-          bgcolor: "#af8c30",
-          color: "white",
+          bgcolor: '#D9D9D9',
+          color: '#0D2543',
           width: 60,
-          height: 60,
-          borderRadius: 1,
-          "&:hover": { bgcolor: "#8b6f27" },
+          height: 20,
+          borderRadius: "4px",
+          //boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            bgcolor: '#bfbfbf',
+           
+          },
         }}
       >
         <EditIcon />

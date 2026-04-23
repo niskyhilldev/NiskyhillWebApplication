@@ -144,38 +144,83 @@ import { performResidentSearch } from "../api/residentApi";
 
   return (
       //headers
-      <Container maxWidth="90%">
-
-        <Typography  sx={{ m: '50px 0', fontSize: 'xxx-large', color:'white' , fontWeight: 600}}>
-          Residents
+      <Box sx={{ width: "100vw" }}>
+        <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
+          RESIDENTS
         </Typography>
-        
-        <Typography  align="center" sx={{ fontSize: '1.75rem', mb: 2 , color:'white' , fontWeight: 600}}>
+        <Typography  align="center" sx={{ fontSize: '36px', mb: 2 , color:'#0D2543' , fontWeight: 700}}>
           Search for a Resident
         </Typography>
 
         {/** search by Last Name */}
 
         <Box sx={{mb: '40px' }}>
+            <Box sx={{ ml: "20px" }}>
+              <Typography sx={{ fontSize: "1.75rem", color: "#0D2543", fontWeight: 700 }}>
+                 By Name:
+              </Typography>
+            </Box>
             <Box sx={{ display: "flex", gap: 2 }}>
             
-            <Typography  sx={{ display: "flex", alignItems: 'center', justifyContent: 'center', color:'white' , fontWeight: 600 ,fontSize: '1.75rem',}}>
-                By Name:
-            </Typography>
+            
             {/* Lot Input */}
+
+            <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+                ml: "20px"
+              }}
+            >
+              Name:
+            </Typography>
             <TextField
-                label="Name"
-                variant="filled"
-                placeholder="Search Last Name"
+                //label="Name"
+                variant="outlined"
+                size="small"
+                //placeholder="Search Last Name"
                 onChange={(event) => setNameTextValue(event.target.value)}
+                
                 sx={{
-                borderRadius: 1,
-                backgroundColor: '#f6e884',   // background when not focused
-                "&:hover": {backgroundColor: "#b5ac67"},  // background on hover
-                "& .MuiInputBase-input": {color: "#8b6f27"},  // text color when not focused
-                "&.Mui-focused .MuiInputBase-input": {color: "#000000"},    // text color when focused
-                "& .MuiInputLabel-root": {color: "#8b6f27"},    // label color when not focused
-                "& .MuiInputLabel-root.Mui-focused": {color: "#8b6f27"},    // label color when focused
+                  ml: "20px",
+                  "& .MuiOutlinedInput-root": {
+                    height: 40,
+                    backgroundColor: "#D9D9D9",
+
+                    "&:hover": {
+                      backgroundColor: "#bfbfbf",
+                    },
+
+                    "&.Mui-focused": {
+                      backgroundColor: "#bfbfbf",
+                    },
+
+                    
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#0D2543",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0D2543",
+                    },
+                    },
+
+            
+                    "& .MuiOutlinedInput-input": {
+                      color: "#0D2543",
+                      padding: "10px 14px",
+                    },
+
+            
+                    "& .MuiInputLabel-root": {
+                      color: "#0D2543",
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#0D2543",
+                    },
                 }}
             />
 
@@ -183,8 +228,21 @@ import { performResidentSearch } from "../api/residentApi";
             <Button 
                 variant="contained"
                 color="primary"
+                disableElevation
                 onClick={activateNameResidentSearch}
-                sx={{backgroundColor:'#af8c30'}}
+                sx={{
+                  bgcolor: '#D9D9D9',
+                  color: '#0D2543',
+                  width: 100,
+                  height: 40,
+                  fontWeight:600,
+                  borderRadius: "4px",
+                  //boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    bgcolor: '#bfbfbf',
+                  },
+                }}
             >
                 Search
             </Button>
@@ -199,14 +257,14 @@ import { performResidentSearch } from "../api/residentApi";
         {/* Table */}
         <Table sx={{mt:'20px'}}>
           <TableHead
-          sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
+          sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
             <TableRow >
               
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>First Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Middle Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Last Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Burial Date</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
             </TableRow>
           </TableHead>
 
@@ -214,11 +272,11 @@ import { performResidentSearch } from "../api/residentApi";
 
           <TableBody
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#fbfbfb',
               "& td": {
-                color: "white",
-                border: "2px solid #8b6f27",
+                color: '#0D2543',
                 fontSize: "15px",
+                fontWeight: 600,
                 py: 0
               },
             }}
@@ -244,21 +302,7 @@ import { performResidentSearch } from "../api/residentApi";
                   <TableCell>{row.lastName}</TableCell>
                   <TableCell>{row.burialDate}</TableCell>
                   <TableCell>
-                    <DeleteButton
-                       rid={row.rid}
-                       type='resident'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(rid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setLotSearchResults((prev) => 
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
-                      }}
-                    />
                     <ResidentEditButton
                       resident={row}
                       isFlattened={false}
@@ -280,6 +324,22 @@ import { performResidentSearch } from "../api/residentApi";
                         );
                       }}
                     />
+                    <DeleteButton
+                       rid={row.rid}
+                       type='resident'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(rid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setLotSearchResults((prev) => 
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+                      }}
+                    />
+                    
                   </TableCell>
                 </TableRow>
               ))
@@ -301,7 +361,7 @@ import { performResidentSearch } from "../api/residentApi";
             page={namePage + 1}
             onChange={(e, value) => setNamePage(value - 1)}
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#0D2543',
               color: "white",
 
               "& .MuiPagination-selectLabel": {
@@ -312,14 +372,16 @@ import { performResidentSearch } from "../api/residentApi";
                 color: "white",
               },
               "& .Mui-selected": {
-                backgroundColor: "#af8c30",
-                color: '#f6e884',
+                backgroundColor: '#ececec',
+                color: '#E8AE31',
               },
 
               "& .MuiSvgIcon-root": {
-                color: "#af8c30",
+                color: '#fbfbfb',
               },
-               border: "2px solid #8b6f27"
+                border: "2px solid #0D2543",
+                borderRadius: 2
+
             }}
           />
         </Box>
@@ -336,11 +398,26 @@ import { performResidentSearch } from "../api/residentApi";
 
 
         {/**Lot search inputs */}
-        <Box sx={{ display: "flex", gap: 2 }}>
-           
-        <Typography  sx={{  display: "flex", alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', display: "flex", alignItems: 'center', justifyContent: 'center', color:'white' , fontWeight: 600}}>
+        <Box sx={{ ml: "20px" }}>
+          <Typography sx={{ fontSize: "1.75rem", color: "#0D2543", fontWeight: 700 }}>
             By Lot:
-        </Typography>
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex", gap: 2 }}>
+           <Box
+            sx={{display: "flex",alignItems: "center",ml: "20px",height: "100%"}}
+          >
+            <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+              }}
+            >
+              Section:
+            </Typography>
+          </Box>
+        
           {/* Section Dropdown */}
           <SectionDropdown 
             sections={sections}
@@ -349,22 +426,62 @@ import { performResidentSearch } from "../api/residentApi";
             error={dropError}
             loading={dropLoading}
           />
-
+          <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+              }}
+            >
+              Lot:
+            </Typography>
           {/* Lot Input */}
           <TextField
-            label="Lot"
-            variant="filled"
+            //label="Lot"
+            variant="outlined"
+            size="small"
             value={lotTextValue}
-            placeholder="Search lot"
+            //placeholder="Search lot"
             onChange={(event) => setLotTextValue(event.target.value)}
             sx={{
-              borderRadius: 1,
-              backgroundColor: '#f6e884',   // background when not focused
-              "&:hover": {backgroundColor: "#b5ac67"},  // background on hover
-              "& .MuiInputBase-input": {color: "#8b6f27"},  // text color when not focused
-              "&.Mui-focused .MuiInputBase-input": {color: "#000000"},    // text color when focused
-              "& .MuiInputLabel-root": {color: "#8b6f27"},    // label color when not focused
-              "& .MuiInputLabel-root.Mui-focused": {color: "#8b6f27"},    // label color when focused
+              
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                backgroundColor: "#D9D9D9",
+
+                "&:hover": {
+                  backgroundColor: "#bfbfbf",
+                },
+
+                "&.Mui-focused": {
+                  backgroundColor: "#bfbfbf",
+                },
+
+                
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#0D2543",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D2543",
+                },
+              },
+
+       
+              "& .MuiOutlinedInput-input": {
+                color: "#0D2543",
+                padding: "10px 14px",
+              },
+
+      
+              "& .MuiInputLabel-root": {
+                color: "#0D2543",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#0D2543",
+              },
             }}
           />
 
@@ -372,8 +489,21 @@ import { performResidentSearch } from "../api/residentApi";
           <Button
             variant="contained"
             color="primary"
+            disableElevation
             onClick={activateLotResidentSearch}
-            sx={{backgroundColor:'#af8c30'}}
+            sx={{
+              bgcolor: '#D9D9D9',
+              color: '#0D2543',
+              width: 100,
+              height: 40,
+              fontWeight:600,
+              borderRadius: "4px",
+              //boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                bgcolor: '#bfbfbf',
+              },
+            }}
           >
             Search
           </Button>
@@ -390,17 +520,17 @@ import { performResidentSearch } from "../api/residentApi";
         {/* Table */}
         <Table sx={{mt:'20px'}}>
           <TableHead
-          sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
+            sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
             <TableRow >
               
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>First Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Middle Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Last Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Burial Date</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Section</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Descriptor</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Section</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Descriptor</TableCell>
+              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
             </TableRow>
           </TableHead>
 
@@ -408,11 +538,11 @@ import { performResidentSearch } from "../api/residentApi";
 
           <TableBody
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#fbfbfb',
               "& td": {
-                color: "white",
-                border: "2px solid #8b6f27",
+                color: '#0D2543',
                 fontSize: "15px",
+                fontWeight: 600,
                 py: 0
               },
             }}
@@ -441,21 +571,7 @@ import { performResidentSearch } from "../api/residentApi";
                   <TableCell>{row.lotNumber}</TableCell>
                   <TableCell>{row.lotDescriptor}</TableCell>
                   <TableCell>
-                    <DeleteButton
-                       rid={row.rid}
-                       type='resident'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(rid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setLotSearchResults((prev) => 
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
-                      }}
-                    />
                     <ResidentEditButton
                       resident={row}
                       isFlattened={true}
@@ -477,6 +593,22 @@ import { performResidentSearch } from "../api/residentApi";
                         );
                       }}
                     />
+                    <DeleteButton
+                       rid={row.rid}
+                       type='resident'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(rid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setLotSearchResults((prev) => 
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+
+                        setNameSearchResults((prev) =>
+                          prev.filter((r) => String(r.rid) !== String(rid))
+                        );
+                      }}
+                    />
+                    
                   </TableCell>
                 </TableRow>
               ))
@@ -498,7 +630,7 @@ import { performResidentSearch } from "../api/residentApi";
             page={lotPage + 1}
             onChange={(e, value) => setLotPage(value - 1)}
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#0D2543',
               color: "white",
 
               "& .MuiPagination-selectLabel": {
@@ -509,19 +641,21 @@ import { performResidentSearch } from "../api/residentApi";
                 color: "white",
               },
               "& .Mui-selected": {
-                backgroundColor: "#af8c30",
-                color: '#f6e884',
+                backgroundColor: '#ececec',
+                color: '#E8AE31',
               },
 
               "& .MuiSvgIcon-root": {
-                color: "#af8c30",
+                color: '#fbfbfb',
               },
-               border: "2px solid #8b6f27"
+                border: "2px solid #0D2543",
+                borderRadius: 2
+
             }}
           />
           
         </Box>
-      </Container>
+      </Box>
 
       
     )

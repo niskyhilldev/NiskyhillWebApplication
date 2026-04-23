@@ -127,7 +127,7 @@ function NavBar() {
         display: 'flex',
         flexDirection: 'row'
         ,justifyContent: 'space-between',
-        backgroundColor:'#af8c30' ,
+        backgroundColor:"#0d2543" ,
         margin: '0px',
         height: '150px',
         alignItems: 'center'

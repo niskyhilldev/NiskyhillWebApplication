@@ -96,18 +96,29 @@ function LotSearch() {
 
   return (
       //headers
-      <Container maxWidth="90%">
-        {/*
-        <Typography variant="h1" sx={{ m: '50px 0', fontSize: 'xxx-large', color:'white' , fontWeight: 600}}>
-          Lots
-        </Typography>*/}
-        <Typography  align="center" sx={{ fontSize: '1.75rem', mb: 2 , color:'white' , fontWeight: 600}}>
+      <Box sx={{ width: "100vw" }}>
+        <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
+          LOTS
+        </Typography>
+        <Typography  align="center" sx={{ fontSize: '36px', mb: 2 , color:'#0D2543' , fontWeight: 700}}>
           Search for a Lot
         </Typography>
 
         {/**Lot search inputs */}
-        <Box sx={{ display: "flex", gap: 2 }}>
-
+        <Box sx={{ display: "flex", gap: 2, height: '40px' }}>
+          <Box
+            sx={{display: "flex",alignItems: "center",ml: "20px",height: "100%"}}
+          >
+            <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+              }}
+            >
+              Section:
+            </Typography>
+          </Box>
           {/* Section Dropdown */}
           <SectionDropdown 
             sections={sections}
@@ -116,22 +127,61 @@ function LotSearch() {
             error={dropError}
             loading={dropLoading}
           />
-
+          <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+              }}
+            >
+              Lot:
+            </Typography>
           {/* Lot Input */}
           <TextField
-            label="Lot"
-            variant="filled"
+            //label="Lot"
+            variant="outlined"
+            size="small"
             value={lotTextValue}
-            placeholder="Search lot"
             onChange={(event) => setLotTextValue(event.target.value)}
             sx={{
-              borderRadius: 1,
-              backgroundColor: '#f6e884',   // background when not focused
-              "&:hover": {backgroundColor: "#b5ac67"},  // background on hover
-              "& .MuiInputBase-input": {color: "#8b6f27"},  // text color when not focused
-              "&.Mui-focused .MuiInputBase-input": {color: "#000000"},    // text color when focused
-              "& .MuiInputLabel-root": {color: "#8b6f27"},    // label color when not focused
-              "& .MuiInputLabel-root.Mui-focused": {color: "#8b6f27"},    // label color when focused
+              
+              "& .MuiOutlinedInput-root": {
+                height: 40,
+                backgroundColor: "#D9D9D9",
+
+                "&:hover": {
+                  backgroundColor: "#bfbfbf",
+                },
+
+                "&.Mui-focused": {
+                  backgroundColor: "#bfbfbf",
+                },
+
+                
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#0D2543",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#0D2543",
+                },
+              },
+
+       
+              "& .MuiOutlinedInput-input": {
+                color: "#0D2543",
+                padding: "10px 14px",
+              },
+
+      
+              "& .MuiInputLabel-root": {
+                color: "#0D2543",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#0D2543",
+              },
             }}
           />
 
@@ -139,8 +189,21 @@ function LotSearch() {
           <Button
             variant="contained"
             color="primary"
+            disableElevation
             onClick={activateLotSearch}
-            sx={{backgroundColor:'#af8c30'}}
+            sx={{
+              bgcolor: '#D9D9D9',
+              color: '#0D2543',
+              width: 100,
+              height: 40,
+              fontWeight:600,
+              borderRadius: "4px",
+              //boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                bgcolor: '#bfbfbf',
+              },
+            }}
           >
             Search
           </Button>
@@ -156,22 +219,22 @@ function LotSearch() {
          {/* Table */}
         <Table sx={{mt:'20px'}}>
           <TableHead
-          sx={{backgroundColor:'#af8c30', border: "2px solid #8b6f27"}}>
+          sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
             <TableRow >
               
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Section Name</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot Number</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold',borderRight: "2px solid #8b6f27", py: 0}}>Lot Partition</TableCell>
-              <TableCell sx={{fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
+              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Section Name</TableCell>
+              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Number</TableCell>
+              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Partition</TableCell>
+              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#fbfbfb',
               "& td": {
-                color: "white",
-                border: "2px solid #8b6f27",
+                color: '#0D2543',
                 fontSize: "15px",
+                fontWeight: 600,
                 py: 0
               },
             }}
@@ -184,7 +247,7 @@ function LotSearch() {
                 </TableCell>
               </TableRow>
             ) : searchResults.length === 0 && !searchError ? (
-              <TableRow>
+              <TableRow sx={{border: "3px solid #bfbfbf",}}>
                 <TableCell colSpan={4} align="center">
                   No results
                 </TableCell>
@@ -197,19 +260,7 @@ function LotSearch() {
                   <TableCell>{row.number}</TableCell>
                   <TableCell>{row.descriptor}</TableCell>
                   <TableCell>
-                    {/* temp action button */}
-                    <DeleteButton
-                       id={row.lid}
-                       type='lot'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(lid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setSearchResults((prev) => 
-                          prev.filter((r) => String(r.lid) !== String(lid))
-                        );
-                      }}
-                    />
-
+                    
                     <LotEditButton
                       lot={row}
                       onSave={(updatedLot) => {
@@ -221,6 +272,17 @@ function LotSearch() {
                           )
                         );
 
+                      }}
+                    />
+                    <DeleteButton
+                       id={row.lid}
+                       type='lot'
+                       //onDelete removes the requested resident from the rendered results
+                       onDelete={(lid) => {
+                        //remove resident from both search results, as to not cause a conflict
+                        setSearchResults((prev) => 
+                          prev.filter((r) => String(r.lid) !== String(lid))
+                        );
                       }}
                     />
                   </TableCell>
@@ -245,7 +307,7 @@ function LotSearch() {
             page={lotPage + 1}
             onChange={(e, value) => setLotPage(value - 1)}
             sx={{
-              backgroundColor: "#074582",
+              backgroundColor: '#0D2543',
               color: "white",
 
               "& .MuiPagination-selectLabel": {
@@ -256,18 +318,20 @@ function LotSearch() {
                 color: "white",
               },
               "& .Mui-selected": {
-                backgroundColor: "#af8c30",
-                color: '#f6e884',
+                backgroundColor: '#ececec',
+                color: '#E8AE31',
               },
 
               "& .MuiSvgIcon-root": {
-                color: "#af8c30",
+                color: '#fbfbfb',
               },
-                border: "2px solid #8b6f27"
+                border: "2px solid #0D2543",
+                borderRadius: 2
+
             }}
           />
         </Box>
-      </Container>
+      </Box>
 
       
     )

@@ -59,12 +59,14 @@ function DeleteButton({ id, onDelete, type}) { //rid is the resident the button 
         <IconButton
         onClick={handleDelete}
         sx={{
-          bgcolor: "#af8c30",
-          color: "white",
+          bgcolor: '#D9D9D9',
+          color: '#0D2543',
           width: 60,
-          height: 60,
+          height: 20,
           borderRadius: 1,
-          "&:hover": { bgcolor: "#8b6f27" },
+          mr: "10px",
+          my: "4px",
+          "&:hover": { bgcolor: "#bfbfbf" },
         }}
         disabled={loading}
       >

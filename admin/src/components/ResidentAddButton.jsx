@@ -172,16 +172,16 @@ function ResidentAddButton() {
       <IconButton
         onClick={handleOpen}
         sx={{
-          bgcolor: "#af8c30",
-          color: "white",
-          width: 60,
-          height: 60,
-          borderRadius: "12px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+          bgcolor: '#D9D9D9',
+          color: '#0D2543',
+          width: 100,
+          height: 40,
+          borderRadius: "4px",
+          //boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
           transition: "all 0.2s ease",
           "&:hover": {
-            bgcolor: "#8b6f27",
-            transform: "scale(1.1)",
+            bgcolor: '#bfbfbf',
+           
           },
         }}
       >

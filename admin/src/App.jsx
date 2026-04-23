@@ -10,7 +10,7 @@ import { useState } from 'react';
 //inline admin dashboard 
 function AdminDashboard(){
   //set page background color
-  document.body.style.backgroundColor = '#0d2543';
+  document.body.style.backgroundColor = '#efefef';
 
   // tab state
   const [tab, setTab] = useState(0);
