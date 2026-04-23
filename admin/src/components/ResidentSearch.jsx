@@ -145,10 +145,11 @@ import { performResidentSearch } from "../api/residentApi";
   return (
       //headers
       <Container maxWidth="90%">
-        {/*
+
         <Typography  sx={{ m: '50px 0', fontSize: 'xxx-large', color:'white' , fontWeight: 600}}>
           Residents
-        </Typography>*/}
+        </Typography>
+        
         <Typography  align="center" sx={{ fontSize: '1.75rem', mb: 2 , color:'white' , fontWeight: 600}}>
           Search for a Resident
         </Typography>
