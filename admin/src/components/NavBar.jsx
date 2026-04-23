@@ -53,7 +53,7 @@ function Profile() {
     <>
       {/* User Icon Button */}
       <IconButton onClick={handleClick} >
-        <AccountCircle sx={{ fontSize: 70, color: "#white"}}/>
+        <AccountCircle sx={{ fontSize: 70, color:"#rgb(7, 21, 38)"}}/>
       </IconButton>
 
       {/* Dropdown Menu */}
@@ -186,7 +186,7 @@ function NavBar() {
               marginRight: '50px',
               marginLeft: '170px'
             }}>
-          <Profile/> {/**Need to come back to  */}
+          <Profile/> 
         </Box>
     </AppBar>
   );
