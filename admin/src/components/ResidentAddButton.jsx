@@ -198,7 +198,7 @@ function ResidentAddButton() {
             backgroundColor: "#0d2543",
             color: "white",
             p: 1,
-            minWidth: 520,
+            minWidth: 620,
             border: "1px solid rgba(175, 140, 48, 0.7)",
             boxShadow:
               "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
@@ -227,6 +227,10 @@ function ResidentAddButton() {
         >
           {/* Name row */}
           <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              First Name*
+            </Typography>
             <TextField
               placeholder="First Name*"
               name="firstName"
@@ -236,6 +240,12 @@ function ResidentAddButton() {
               fullWidth
               sx={fieldSx}
             />
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Middle Name
+            </Typography>
             <TextField
               placeholder="Middle Name"
               name="middleName"
@@ -245,6 +255,12 @@ function ResidentAddButton() {
               fullWidth
               sx={fieldSx}
             />
+            </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Last Name*
+          </Typography>
             <TextField
               placeholder="Last Name*"
               name="lastName"
@@ -254,9 +270,14 @@ function ResidentAddButton() {
               fullWidth
               sx={fieldSx}
             />
+            </Box>
           </Box>
 
           {/* Section */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Section*
+          </Typography>
           <TextField
             select
             name="sid"
@@ -272,7 +293,7 @@ function ResidentAddButton() {
                 color: form.sid ? "black" : "#777",
               },
             }}
-          >
+          >  
             <MenuItem value="" disabled>Section*</MenuItem>
             {sections.map((section) => (
               <MenuItem key={section.sid} value={section.sid}>
@@ -280,9 +301,14 @@ function ResidentAddButton() {
               </MenuItem>
             ))}
           </TextField>
+          </Box>
 
           {/* Lot + Partition row */}
           <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Lot #*
+            </Typography>
             <TextField
               select
               name="lid"
@@ -307,7 +333,12 @@ function ResidentAddButton() {
                 </MenuItem>
               ))}
             </TextField>
+            </Box>
 
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Lot Partition*
+          </Typography>
             <TextField
               select
               name="descriptor"
@@ -330,12 +361,13 @@ function ResidentAddButton() {
                 <MenuItem key={i} value={p}>{p}</MenuItem>
               ))}
             </TextField>
+            </Box>
           </Box>
 
           {/* Dates row */}
           <Box sx={{ display: "flex", gap: 2 }}>
             <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
                 Date of Birth
               </Typography>
               <TextField
@@ -350,7 +382,7 @@ function ResidentAddButton() {
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
                 Date of Death
               </Typography>
               <TextField
@@ -365,7 +397,7 @@ function ResidentAddButton() {
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              <Typography sx={{ color: "#af8c30", fontFamily: "Inria Serif", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
                 Burial Date
               </Typography>
               <TextField
@@ -381,6 +413,10 @@ function ResidentAddButton() {
           </Box>
 
           {/* Vessel */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Vessel
+          </Typography>
           <TextField
             select
             name="capsule"
@@ -401,6 +437,7 @@ function ResidentAddButton() {
             <MenuItem value="Urn">Urn</MenuItem>
             <MenuItem value="Casket">Casket</MenuItem>
           </TextField>
+          </Box>
 
           {/* Checkboxes */}
           <Box sx={{ display: "flex", gap: 3 }}>

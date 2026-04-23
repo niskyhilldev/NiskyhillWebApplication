@@ -53,7 +53,7 @@ function Profile() {
     <>
       {/* User Icon Button */}
       <IconButton onClick={handleClick} >
-        <AccountCircle sx={{ fontSize: 70, color: "#0d2543"}}/>
+        <AccountCircle sx={{ fontSize: 70, color: "#white"}}/>
       </IconButton>
 
       {/* Dropdown Menu */}
@@ -104,16 +104,14 @@ function Profile() {
             fullWidth
             onClick={handleLogout}
             sx={{
-              backgroundColor: "#af8c30",
+              backgroundColor: "#0d2543",
               color: "white",
               borderRadius: "8px",
               fontFamily: "Inria Serif",
-              fontWeight: "bold",
               letterSpacing: "1px",
-              textTransform: "none",
-              "&:hover": {backgroundColor: "#8b6f27"}
+              textTransform: "none"
             }}
-          > Logout
+          > LOGOUT
           </Button>
         </MenuItem>
       </Menu>

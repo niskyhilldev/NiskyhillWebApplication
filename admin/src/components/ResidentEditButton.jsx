@@ -14,6 +14,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Typography,
 
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -192,196 +193,241 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
 
   if (!formData) return null;
 
+  // field styling
+  const fieldSx = {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& input": { color: "black" },   
+  };
+
+  // dropdown styling
+  const selectSx = {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& .MuiSelect-select": { color: "black" },
+  };  
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Resident Details</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: "12px",
+          backgroundColor: "#0d2543",
+          color: "white",
+          p: 1,
+          minWidth: 620,
+          border: "1px solid rgba(175, 140, 48, 0.7)",
+          boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
+        },
+      }}
+    >
+      <DialogTitle sx={{
+        textAlign: "center",
+        fontFamily: "Inria Serif",
+        fontSize: "1.8rem",
+        letterSpacing: "1.5px",
+        color: "#af8c30",
+      }}>
+        Edit Resident
+      </DialogTitle>
 
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
 
-          <FormControl fullWidth>
-            <InputLabel>Section</InputLabel>
-            <Select
-              value={formData.sectionName || ""}
-              label="Section"
-              onChange={(e) =>
-                setFormData(prev => ({
-                  ...prev,
-                  sectionName: e.target.value,
-                  lotNumber: "",
-                  lotDescriptor: ""
-                }))
-              }
-            >
-              {sections.map((s) => (
-                <MenuItem key={s.id} value={s.name}>
-                  {s.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth>
-            <InputLabel>Lot Number</InputLabel>
-            <Select
-              value={formData.lotNumber || ""}
-              label="Lot Number"
-              onChange={(e) =>
-                setFormData(prev => ({
-                  ...prev,
-                  lotNumber: e.target.value,
-                  lotDescriptor: ""
-                }))
-              }
-            >
-              {filteredLots.map((lot) => (
-                <MenuItem key={lot.id} value={lot.number}>
-                  {lot.number}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth>
-            <InputLabel>Lot Portion</InputLabel>
-
-            <Select
-              value={formData.lotDescriptor || ""}
-              label="Lot Portion"
-              onChange={(e) =>
-                setFormData(prev => ({
-                  ...prev,
-                  lotDescriptor: e.target.value
-                }))
-              }
-            >
-              {partitions.map((p, index) => (
-                <MenuItem key={index} value={p}>
-                  {p}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
+        {/* Section / Lot / Partition row */}
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Section*
+            </Typography>
           <TextField
-            label="First Name"
+            select fullWidth variant="outlined"
+            SelectProps={{ displayEmpty: true }}
+            value={formData.sectionName || ""}
+            onChange={(e) => setFormData(prev => ({ ...prev, sectionName: e.target.value, lotNumber: "", lotDescriptor: "" }))}
+            sx={selectSx}
+          >
+            <MenuItem value="" disabled>Section</MenuItem>
+            {sections.map((s) => (
+              <MenuItem key={s.id} value={s.name}>{s.name}</MenuItem>
+            ))}
+          </TextField>
+          </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Lot #*
+          </Typography>
+          <TextField
+            select fullWidth variant="outlined"
+            SelectProps={{ displayEmpty: true }}
+            value={formData.lotNumber || ""}
+            onChange={(e) => setFormData(prev => ({ ...prev, lotNumber: e.target.value, lotDescriptor: "" }))}
+            sx={selectSx}
+          >
+            <MenuItem value="" disabled>Lot Number</MenuItem>
+            {filteredLots.map((lot) => (
+              <MenuItem key={lot.id} value={lot.number}>{lot.number}</MenuItem>
+            ))}
+          </TextField>
+          </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+             Lot Partition*
+          </Typography>
+          <TextField
+            select fullWidth variant="outlined"
+            SelectProps={{ displayEmpty: true }}
+            value={formData.lotDescriptor || ""}
+            onChange={(e) => setFormData(prev => ({ ...prev, lotDescriptor: e.target.value }))}
+            sx={selectSx}
+          >
+            <MenuItem value="" disabled>Lot Partition</MenuItem>
+            {partitions.map((p, i) => (
+              <MenuItem key={i} value={p}>{p}</MenuItem>
+            ))}
+          </TextField>
+          </Box>
+        </Box>
+
+        {/* Name row */}
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            First Name*
+          </Typography>
+          <TextField placeholder="First Name" fullWidth variant="outlined"
             value={formData.firstName || ""}
             onChange={(e) => handleChange("firstName", e.target.value)}
-            
+            sx={fieldSx}
           />
+          </Box>
 
-          <TextField
-            label="Middle Name"
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Middle Name
+          </Typography>
+          <TextField placeholder="Middle Name" fullWidth variant="outlined"
             value={formData.middleName || ""}
             onChange={(e) => handleChange("middleName", e.target.value)}
-            
+            sx={fieldSx}
           />
+          </Box>
 
-          <TextField
-            label="Last Name"
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Last Name*
+          </Typography>
+          <TextField placeholder="Last Name" fullWidth variant="outlined"
             value={formData.lastName || ""}
             onChange={(e) => handleChange("lastName", e.target.value)}
-           
+            sx={fieldSx}
           />
+          </Box>
+      </Box>
 
-          <TextField
-            label="Date of Birth"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={formData.birthDate || ""}
-            onChange={(e) => handleChange("dateOfBirth", e.target.value)}
-            
-          />
-
-          <TextField
-            label="Burial Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={formData.burialDate || ""}
-            onChange={(e) => handleChange("burialDate", e.target.value)}
-           
-          />
-
-          <TextField
-            label="Date of Death"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={formData.deathDate || ""}
-            onChange={(e) => handleChange("dateOfDeath", e.target.value)}
-            
-          />
-
-          <FormControl fullWidth>
-            <InputLabel>Vessel</InputLabel>
-            <Select
-                value={formData.capsule || ""}
-                label="Vessel"
-                onChange={(e) =>
-                  setFormData(prev => ({
-                    ...prev,
-                    capsule: e.target.value
-                  }))
-                }
-              >
-              <MenuItem key={"urn"} value={"urn"}>
-                {"urn"}
-              </MenuItem>
-              <MenuItem key={"casket"} value={"casket"}>
-                {"casket"}
-              </MenuItem>
-              <MenuItem key={"other"} value={"other"}>
-                {"other"}
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!!formData.marker}
-                onChange={(e) =>
-                  handleChange("marker", e.target.checked)
-                }
-              />
-            }
-            label="Marker"
-            
-          />
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!!formData.foundation}
-                onChange={(e) =>
-                  handleChange("foundation", e.target.checked)
-                }
-              />
-            }
-            label="Foundation"
-            
-          />
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!!formData.publicViewable}
-                onChange={(e) =>
-                  handleChange("public", e.target.checked)
-                }
-              />
-            }
-            label="Public"
-            
-          />
-
+        {/* Dates row */}
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Date of Birth
+            </Typography>
+            <TextField type="date" fullWidth variant="outlined"
+              value={formData.birthDate || ""}
+              onChange={(e) => handleChange("birthDate", e.target.value)}
+              sx={fieldSx}
+            />
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Date of Death
+            </Typography>
+            <TextField type="date" fullWidth variant="outlined"
+              value={formData.deathDate || ""}
+              onChange={(e) => handleChange("deathDate", e.target.value)}
+              sx={fieldSx}
+            />
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+              Burial Date
+            </Typography>
+            <TextField type="date" fullWidth variant="outlined"
+              value={formData.burialDate || ""}
+              onChange={(e) => handleChange("burialDate", e.target.value)}
+              sx={fieldSx}
+            />
+          </Box>
         </Box>
+
+        {/* Vessel */}
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+          Vessel
+        </Typography>
+        <TextField
+          select fullWidth variant="outlined"
+          SelectProps={{ displayEmpty: true }}
+          value={formData.capsule || ""}
+          onChange={(e) => setFormData(prev => ({ ...prev, capsule: e.target.value }))}
+          sx={selectSx}
+        >
+          <MenuItem value="" disabled>Vessel</MenuItem>
+          <MenuItem value="urn">Urn</MenuItem>
+          <MenuItem value="casket">Casket</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+        </TextField>
+        </Box>
+
+        {/* Checkboxes */}
+        <Box sx={{ display: "flex", gap: 3 }}>
+          {[
+            { field: "marker", label: "Marker" },
+            { field: "foundation", label: "Foundation" },
+            { field: "publicViewable", label: "Public Viewable" },
+          ].map(({ field, label }) => (
+            <FormControlLabel
+              key={field}
+              control={
+                <Checkbox
+                  checked={!!formData[field]}
+                  onChange={(e) => handleChange(field, e.target.checked)}
+                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                />
+              }
+              label={label}
+              sx={{ color: "white" }}
+            />
+          ))}
+        </Box>
+
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+      <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: "white",
+            fontFamily: "Inria Serif",
+            border: "1px solid #af8c30",
+            "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
+          }}
+        >
+          Cancel
+        </Button>
         <Button
           variant="contained"
           onClick={handleSave}
           disabled={loading}
+          sx={{
+            backgroundColor: "#af8c30",
+            color: "white",
+            fontFamily: "Inria Serif",
+            letterSpacing: "1px",
+            "&:hover": { backgroundColor: "#8b6f27", transform: "scale(1.05)" },
+          }}
         >
           {loading ? "Saving..." : "Save"}
         </Button>

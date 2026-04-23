@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Typography,
 
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -133,74 +134,133 @@ useEffect(() => {
 
   if (!formData) return null;
 
+  const fieldSx = {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& input": { color: "black" },
+  };
+
+  const selectSx = {
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& .MuiSelect-select": { color: "black" },
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Lot Details</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: "12px",
+          backgroundColor: "#0d2543",
+          color: "white",
+          p: 1,
+          minWidth: 450,
+          border: "1px solid rgba(175, 140, 48, 0.7)",
+          boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
+        },
+      }}
+    >
+      <DialogTitle sx={{
+        textAlign: "center",
+        fontFamily: "Inria Serif",
+        fontSize: "1.8rem",
+        letterSpacing: "1.5px",
+        color: "#af8c30",
+      }}>
+        Edit Lot
+      </DialogTitle>
 
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+      <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
 
-          <FormControl fullWidth>
-            <InputLabel>Section</InputLabel>
-            <Select
-                value={formData.sid || ""}
-                onChange={(e) => {
-                    const sid = e.target.value;
-                    const section = sections.find(s => s.sid === sid);
-
-                    setFormData(prev => ({
-                    ...prev,
-                    sid,
-                    sectionName: section?.name || ""
-                    }));
-                }}
-                >
-                {sections.map((s) => (
-                    <MenuItem key={s.sid} value={s.sid}>
-                    {s.name}
-                    </MenuItem>
-                ))}
-                </Select>
-          </FormControl>
-
-           <TextField
-            label="Lot Number"
-          
-            InputLabelProps={{ shrink: true }}
-            value={formData.number || ""}
-            onChange={(e) => handleChange("number", e.target.value)}
-            
-          />
-
-          
-           <TextField
-            label="Lot Portion"
-          
-            InputLabelProps={{ shrink: true }}
-            value={formData.descriptor || ""}
-            onChange={(e) => handleChange("descriptor", e.target.value)}
-           
-          />
-         
-          <TextField
-            label="Lot Owner"
-          
-            InputLabelProps={{ shrink: true }}
-            value={formData.owner || ""}
-            onChange={(e) => handleChange("owner", e.target.value)}
-         
-          />
-
-
+        {/* Section */}
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+          Section*
+        </Typography>
+        <TextField
+          select fullWidth variant="outlined"
+          SelectProps={{ displayEmpty: true }}
+          value={formData.sid || ""}
+          onChange={(e) => {
+            const sid = e.target.value;
+            const section = sections.find(s => s.sid === sid);
+            setFormData(prev => ({ ...prev, sid, sectionName: section?.name || "" }));
+          }}
+          sx={selectSx}
+        >
+          <MenuItem value="" disabled>Section</MenuItem>
+          {sections.map((s) => (
+            <MenuItem key={s.sid} value={s.sid}>{s.name}</MenuItem>
+          ))}
+        </TextField>
         </Box>
+
+        {/* Lot Number */}
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+          Lot #*
+        </Typography>
+        <TextField
+          placeholder="Lot Number" fullWidth variant="outlined"
+          value={formData.number || ""}
+          onChange={(e) => handleChange("number", e.target.value)}
+          sx={fieldSx}
+        />
+        </Box>
+
+        {/* Lot Partition */}
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+          Lot Partition*
+        </Typography>
+        <TextField
+          placeholder="Lot Partition" fullWidth variant="outlined"
+          value={formData.descriptor || ""}
+          onChange={(e) => handleChange("descriptor", e.target.value)}
+          sx={fieldSx}
+        />
+        </Box>
+
+        {/* Owner */}
+        <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+          Owner
+        </Typography>
+        <TextField
+          placeholder="Owner" fullWidth variant="outlined"
+          value={formData.owner || ""}
+          onChange={(e) => handleChange("owner", e.target.value)}
+          sx={fieldSx}
+        />
+        </Box>
+
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+      <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: "white",
+            fontFamily: "Inria Serif",
+            border: "1px solid #af8c30",
+            "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
+          }}
+        >
+          Cancel
+        </Button>
         <Button
           variant="contained"
           onClick={handleSave}
           disabled={loading}
+          sx={{
+            backgroundColor: "#af8c30",
+            color: "white",
+            fontFamily: "Inria Serif",
+            letterSpacing: "1px",
+            "&:hover": { backgroundColor: "#8b6f27", transform: "scale(1.05)" },
+          }}
         >
           {loading ? "Saving..." : "Save"}
         </Button>

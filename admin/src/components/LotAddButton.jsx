@@ -8,7 +8,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  MenuItem
+  MenuItem,
+  Typography,
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
@@ -161,6 +162,10 @@ function LotAddButton() {
           }}
         >
           {/* SECTION DROPDOWN */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Section*
+          </Typography>
           <TextField
             select
             name="sid"
@@ -187,8 +192,13 @@ function LotAddButton() {
               </MenuItem>
             ))}
           </TextField>
+          </Box>
 
           {/* LOT NUMBER */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Lot #*
+          </Typography>
           <TextField
             placeholder="Lot Number*"
             name="number"
@@ -204,8 +214,13 @@ function LotAddButton() {
               },
             }}
           />
+          </Box>
 
           {/* LOT PARTITION */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Lot Partition*
+          </Typography>
           <TextField
             placeholder="Lot Partition*"
             name="descriptor"
@@ -221,8 +236,13 @@ function LotAddButton() {
               },
             }}
           />
+          </Box>
 
           {/* OWNER */}
+          <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <Typography sx={{ color: "#white", fontSize: "0.85rem", mb: 0.5, ml: 0.5 }}>
+            Owner
+          </Typography>
           <TextField
             placeholder="Owner"
             name="owner"
@@ -238,6 +258,7 @@ function LotAddButton() {
               },
             }}
           />
+          </Box>
 
           {/* ERROR */}
           {error && (
