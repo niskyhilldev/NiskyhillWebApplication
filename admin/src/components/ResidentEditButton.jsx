@@ -223,7 +223,7 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
           color: "white",
           p: 1,
           minWidth: 620,
-          border: "1px solid rgba(175, 140, 48, 0.7)",
+          border: "1px solid #E8AE31",
           boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
         },
       }}
@@ -231,9 +231,10 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
       <DialogTitle sx={{
         textAlign: "center",
         fontFamily: "Inria Serif",
+        fontWeight: "600",
         fontSize: "1.8rem",
         letterSpacing: "1.5px",
-        color: "#af8c30",
+        color: "white",
       }}>
         Edit Resident
       </DialogTitle>
@@ -382,7 +383,6 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
           <MenuItem value="" disabled>Vessel</MenuItem>
           <MenuItem value="urn">Urn</MenuItem>
           <MenuItem value="casket">Casket</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
         </TextField>
         </Box>
 
@@ -399,7 +399,7 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
                 <Checkbox
                   checked={!!formData[field]}
                   onChange={(e) => handleChange(field, e.target.checked)}
-                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                  sx={{ color: "#E8AE31", "&.Mui-checked": { color: "#E8AE31" } }}
                 />
               }
               label={label}
@@ -415,8 +415,8 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
           onClick={onClose}
           sx={{
             color: "white",
-            fontFamily: "Inria Serif",
-            border: "1px solid #af8c30",
+            //fontFamily: "Inria Serif",
+            border: "1px solid #E8AE31",
             "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
           }}
         >
@@ -427,11 +427,11 @@ function ResidentEditDialog({ open, onClose, resident, onSave, isFlattened }) {
           onClick={handleSave}
           disabled={loading}
           sx={{
-            backgroundColor: "#af8c30",
+            backgroundColor: "#E8AE31",
             color: "white",
-            fontFamily: "Inria Serif",
+            //fontFamily: "Inria Serif",
             letterSpacing: "1px",
-            "&:hover": { backgroundColor: "#8b6f27", transform: "scale(1.05)" },
+            "&:hover": { backgroundColor: "#E8AE31", transform: "scale(1.05)" },
           }}
         >
           {loading ? "Saving..." : "Save"}

@@ -138,7 +138,7 @@ function NavBar() {
               display: 'flex', flexDirection: 'column', textAlign: 'left', marginLeft: '100px',
             }}>
               
-          <Link href="/App.jsx" underline="none" >
+          <Link href="https://www.niskyhill.org/" underline="none" >
             <Typography 
              sx={{
               fontFamily: 'Inria Serif',
@@ -150,7 +150,7 @@ function NavBar() {
             </Typography>
           </Link>
 
-          <Link href="/App.jsx" underline="none" >
+          <Link href="https://www.niskyhill.org/" underline="none" >
             <Typography 
             sx={{
               fontFamily: 'Inria Serif',

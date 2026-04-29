@@ -38,7 +38,7 @@ function LotSearch() {
   
   //states for Search by Lot pages
   const [lotPage, setLotPage] = useState(0);
-  const [rowsPerLotPage, setRowsPerLotPage] = useState(20);
+  const [rowsPerLotPage, setRowsPerLotPage] = useState(10);
 
   //determines which rows should be displayed
   const paginatedLotResults = searchResults.slice(
@@ -97,9 +97,13 @@ function LotSearch() {
   return (
       //headers
       <Box sx={{ width: "100vw" }}>
-        <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
+
+        {/**Removed for redundancy */}
+        {/* <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
           LOTS
-        </Typography>
+        </Typography> */}
+
+
         <Typography  align="center" sx={{ fontSize: '36px', mb: 2 , color:'#0D2543' , fontWeight: 700}}>
           Search for a Lot
         </Typography>
@@ -217,80 +221,82 @@ function LotSearch() {
           </div>
         )}
          {/* Table */}
-        <Table sx={{mt:'20px'}}>
-          <TableHead
-          sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
-            <TableRow >
-              
-              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Section Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Number</TableCell>
-              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Partition</TableCell>
-              <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody
-            sx={{
-              backgroundColor: '#fbfbfb',
-              "& td": {
-                color: '#0D2543',
-                fontSize: "15px",
-                fontWeight: 600,
-                py: 0
-              },
-            }}
-          >
-
-            {searchLoading ? (
-              <TableRow>
-                <TableCell colSpan={4} align="center">
-                    Loading...
-                </TableCell>
-              </TableRow>
-            ) : searchResults.length === 0 && !searchError ? (
-              <TableRow sx={{border: "3px solid #bfbfbf",}}>
-                <TableCell colSpan={4} align="center">
-                  No results
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedLotResults.map((row) => (
+        <Box sx={{m: 0, px: "20px"}}>
+          <Table sx={{mt:'20px'}}>
+            <TableHead
+            sx={{backgroundColor:'#0D2543', border: "1px solid #0D2543"}}>
+              <TableRow >
                 
-                <TableRow key={row.lid}>
-                 <TableCell>{row.sectionName ?? row.section?.name}</TableCell>
-                  <TableCell>{row.number}</TableCell>
-                  <TableCell>{row.descriptor}</TableCell>
-                  <TableCell>
-                    
-                    <LotEditButton
-                      lot={row}
-                      onSave={(updatedLot) => {
-                        setSearchResults((prev) =>
-                          prev.map((l) =>
-                            String(l.lid) === String(updatedLot.lid)
-                              ? updatedLot
-                              : l
-                          )
-                        );
+                <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Section Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Number</TableCell>
+                <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot Partition</TableCell>
+                <TableCell sx={{color: '#fbfbfb', fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody
+              sx={{
+                backgroundColor: '#fbfbfb',
+                "& td": {
+                  color: '#0D2543',
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  py: 0
+                },
+              }}
+            >
 
-                      }}
-                    />
-                    <DeleteButton
-                       id={row.lid}
-                       type='lot'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(lid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setSearchResults((prev) => 
-                          prev.filter((r) => String(r.lid) !== String(lid))
-                        );
-                      }}
-                    />
+              {searchLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                      Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : searchResults.length === 0 && !searchError ? (
+                <TableRow sx={{border: "1px solid #e0e0e0", borderTop: "0px"}}>
+                  <TableCell colSpan={4} align="center">
+                    No results
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedLotResults.map((row) => (
+                  
+                  <TableRow key={row.lid}>
+                  <TableCell sx={{ borderLeft: "1px solid #e0e0e0",}}>{row.sectionName ?? row.section?.name}</TableCell>
+                    <TableCell>{row.number}</TableCell>
+                    <TableCell>{row.descriptor}</TableCell>
+                    <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
+                      
+                      <LotEditButton
+                        lot={row}
+                        onSave={(updatedLot) => {
+                          setSearchResults((prev) =>
+                            prev.map((l) =>
+                              String(l.lid) === String(updatedLot.lid)
+                                ? updatedLot
+                                : l
+                            )
+                          );
+
+                        }}
+                      />
+                      <DeleteButton
+                        id={row.lid}
+                        type='lot'
+                        //onDelete removes the requested resident from the rendered results
+                        onDelete={(lid) => {
+                          //remove resident from both search results, as to not cause a conflict
+                          setSearchResults((prev) => 
+                            prev.filter((r) => String(r.lid) !== String(lid))
+                          );
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </Box>
         {/**center pagination*/}
         <Box
           sx={{

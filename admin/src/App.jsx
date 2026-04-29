@@ -20,11 +20,11 @@ function AdminDashboard(){
       <NavBar />
 
       {/* Tab Headers */}
-      <Box sx={{ backgroundColor: "#0a1d34", borderBottom: "1px solid rgba(175, 140, 48, 0.4)", px: 3, position: "relative", zIndex: 100 }}>
+      <Box sx={{ backgroundColor: "#E8AE31", borderBottom: "1px solid rgba(175, 140, 48, 0.4)", px: 3, position: "relative", zIndex: 100 }}>
         <Tabs
           value={tab}
           onChange={(e, newValue) => setTab(newValue)}
-          TabIndicatorProps={{ style: { backgroundColor: '#E8AE31' } }}
+          TabIndicatorProps={{ style: { backgroundColor:  "#0a1d34"} }}
           sx={{
             "& .MuiTab-root": {
               color: "rgba(255,255,255,0.5)",
@@ -33,7 +33,7 @@ function AdminDashboard(){
               textTransform: "none",
             },
             "& .Mui-selected": {
-              color: "#E8AE31 !important",
+              color: "white !important",
             },
           }}
         >

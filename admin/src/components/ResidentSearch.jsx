@@ -10,7 +10,10 @@ import {
   TableRow,
   TableCell,
   Container,
-  Pagination
+  Pagination,
+  FormControl,
+  Select,
+  MenuItem
 } from '@mui/material';
 
 import ResidentAddButton from "./ResidentAddButton";
@@ -46,11 +49,14 @@ import { performResidentSearch } from "../api/residentApi";
     
     //states for Search by Lot pages
     const [lotPage, setLotPage] = useState(0);
-    const [rowsPerLotPage, setRowsPerLotPage] = useState(20); //currently state is static
+    const [rowsPerLotPage, setRowsPerLotPage] = useState(10); //currently state is static
 
     //states for Search by name pages
     const [namePage, setNamePage] = useState(0);
-    const [rowsPerNamePage, setRowsPerNamePage] = useState(20); //currently state is static
+    const [rowsPerNamePage, setRowsPerNamePage] = useState(10); //currently state is static
+
+    //state for which search is rendered
+    const [searchMode, setSearchMode] = useState("name");
 
     //determines which rows should be displayed
     const paginatedLotResults = lotSearchResults.slice(
@@ -145,21 +151,78 @@ import { performResidentSearch } from "../api/residentApi";
   return (
       //headers
       <Box sx={{ width: "100vw" }}>
-        <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
+        {/**Removed for redundancy */}
+        {/* <Typography variant="h1" sx={{ m: '50px 0', fontSize: '48px', color:'white' , fontWeight: 600, backgroundColor: '#E8AE31', padding: '15px'}}>
           RESIDENTS
-        </Typography>
+        </Typography> */}
+
         <Typography  align="center" sx={{ fontSize: '36px', mb: 2 , color:'#0D2543' , fontWeight: 700}}>
           Search for a Resident
         </Typography>
+        
+        <Box sx={{ display: "flex", gap: 2 }}>
+            
+            
+            {/* Lot Input */}
 
-        {/** search by Last Name */}
+            <Typography
+              sx={{
+                fontSize: "28px",
+                color: '#0D2543',
+                fontWeight: 600,
+                ml: "20px",
+                mb: "30px"
+              }}
+            >
+              Search By:
+            </Typography>
+            <FormControl variant="standard" sx={{ minWidth: 150 }}>
+
+
+          
+                    <Select
+                      value={searchMode}
+                      label="Search Mode"
+                      onChange={(e) => setSearchMode(e.target.value)}
+                      disableUnderline
+                      sx={{
+                        height: 40,
+                        backgroundColor: "#D9D9D9",
+                        transition: "all 0.2s ease",
+                        color: "#0D2543",
+                        borderRadius:"4px",
+                        "&:hover": {
+                          bgcolor: "#bfbfbf",
+                        },
+                        "& .MuiSelect-select": {
+                          height: 40,
+                          display: "flex",
+                          alignItems: "center",
+                          padding: 0,
+                          px: 1,
+                        },
+                      }}
+                    >
+
+                  <MenuItem value="name">Name</MenuItem>
+                  <MenuItem value="lot">Lot</MenuItem>
+                  
+                </Select>
+              </FormControl>
+            </Box>
+       
+
+        {searchMode === "name" && (
+          <>             
+
 
         <Box sx={{mb: '40px' }}>
-            <Box sx={{ ml: "20px" }}>
-              <Typography sx={{ fontSize: "1.75rem", color: "#0D2543", fontWeight: 700 }}>
-                 By Name:
-              </Typography>
-            </Box>
+          
+             {/** search by Last Name */}
+            
+            
+            
+          
             <Box sx={{ display: "flex", gap: 2 }}>
             
             
@@ -183,7 +246,7 @@ import { performResidentSearch } from "../api/residentApi";
                 onChange={(event) => setNameTextValue(event.target.value)}
                 
                 sx={{
-                  ml: "20px",
+                  
                   "& .MuiOutlinedInput-root": {
                     height: 40,
                     backgroundColor: "#D9D9D9",
@@ -255,97 +318,99 @@ import { performResidentSearch } from "../api/residentApi";
           </div>
         )}
         {/* Table */}
-        <Table sx={{mt:'20px'}}>
-          <TableHead
-          sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
-            <TableRow >
-              
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-
-
-
-          <TableBody
-            sx={{
-              backgroundColor: '#fbfbfb',
-              "& td": {
-                color: '#0D2543',
-                fontSize: "15px",
-                fontWeight: 600,
-                py: 0
-              },
-            }}
-          >
-
-            {nameSearchLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                    Loading...
-                </TableCell>
+        <Box sx={{m: 0, px: "20px"}}>
+          <Table sx={{mt:'20px'}}>
+            <TableHead
+            sx={{backgroundColor:'#0D2543', border: "1px solid #0D2543"}}>
+              <TableRow >
+                
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
               </TableRow>
-            ) : nameSearchResults.length === 0 && !nameSearchError ? (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No results
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedNameResults.map((row) => (
-                <TableRow key={row.rid}>
-                  <TableCell>{row.firstName}</TableCell>
-                  <TableCell>{row.middleName}</TableCell>
-                  <TableCell>{row.lastName}</TableCell>
-                  <TableCell>{row.burialDate}</TableCell>
-                  <TableCell>
+            </TableHead>
 
-                    <ResidentEditButton
-                      resident={row}
-                      isFlattened={false}
-                      onSave={(updatedResident) => {
-                        setLotSearchResults((prev) =>
-                          prev.map((r) =>
-                            String(r.rid) === String(updatedResident.rid)
-                              ? updatedResident
-                              : r
-                          )
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.map((r) =>
-                            String(r.rid) === String(updatedResident.rid)
-                              ? updatedResident
-                              : r
-                          )
-                        );
-                      }}
-                    />
-                    <DeleteButton
-                       rid={row.rid}
-                       type='resident'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(rid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setLotSearchResults((prev) => 
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
-                      }}
-                    />
-                    
+            <TableBody
+              sx={{
+                backgroundColor: '#fbfbfb',
+                "& td": {
+                  color: '#0D2543',
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  py: 0
+                },
+              }}
+            >
+
+              {nameSearchLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                      Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : nameSearchResults.length === 0 && !nameSearchError ? (
+                <TableRow sx={{border: "1px solid #e0e0e0", borderTop: "0px"}}>
+                  <TableCell colSpan={5} align="center">
+                    No results
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedNameResults.map((row) => (
+                  <TableRow key={row.rid}>
+                    <TableCell sx={{ borderLeft: "1px solid #e0e0e0",}}>{row.firstName}</TableCell>
+                    <TableCell>{row.middleName}</TableCell>
+                    <TableCell>{row.lastName}</TableCell>
+                    <TableCell>{row.burialDate}</TableCell>
+                    <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
+
+                      <ResidentEditButton
+                        resident={row}
+                        isFlattened={false}
+                        onSave={(updatedResident) => {
+                          setLotSearchResults((prev) =>
+                            prev.map((r) =>
+                              String(r.rid) === String(updatedResident.rid)
+                                ? updatedResident
+                                : r
+                            )
+                          );
+
+                          setNameSearchResults((prev) =>
+                            prev.map((r) =>
+                              String(r.rid) === String(updatedResident.rid)
+                                ? updatedResident
+                                : r
+                            )
+                          );
+                        }}
+                      />
+                      <DeleteButton
+                        rid={row.rid}
+                        type='resident'
+                        //onDelete removes the requested resident from the rendered results
+                        onDelete={(rid) => {
+                          //remove resident from both search results, as to not cause a conflict
+                          setLotSearchResults((prev) => 
+                            prev.filter((r) => String(r.rid) !== String(rid))
+                          );
+
+                          setNameSearchResults((prev) =>
+                            prev.filter((r) => String(r.rid) !== String(rid))
+                          );
+                        }}
+                      />
+                      
+                    </TableCell >
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -387,7 +452,8 @@ import { performResidentSearch } from "../api/residentApi";
         </Box>
         </Box>
 
-
+        </>
+      )}
 
 
 
@@ -395,14 +461,11 @@ import { performResidentSearch } from "../api/residentApi";
 
 
         {/** Search by lot */}
-
+        {searchMode === "lot" && (
+        <>
 
         {/**Lot search inputs */}
-        <Box sx={{ ml: "20px" }}>
-          <Typography sx={{ fontSize: "1.75rem", color: "#0D2543", fontWeight: 700 }}>
-            By Lot:
-          </Typography>
-        </Box>
+        
         <Box sx={{ display: "flex", gap: 2 }}>
            <Box
             sx={{display: "flex",alignItems: "center",ml: "20px",height: "100%"}}
@@ -518,103 +581,107 @@ import { performResidentSearch } from "../api/residentApi";
           </div>
         )}
         {/* Table */}
-        <Table sx={{mt:'20px'}}>
-          <TableHead
-            sx={{backgroundColor:'#0D2543', border: "2px solid #0D2543"}}>
-            <TableRow >
-              
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Section</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Descriptor</TableCell>
-              <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-
-
-
-          <TableBody
-            sx={{
-              backgroundColor: '#fbfbfb',
-              "& td": {
-                color: '#0D2543',
-                fontSize: "15px",
-                fontWeight: 600,
-                py: 0
-              },
-            }}
-          >
-
-            {lotSearchLoading ? (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                    Loading...
-                </TableCell>
+         <Box sx={{m: 0, px: "20px"}}>
+          <Table sx={{mt:'20px'}}>
+            <TableHead
+              sx={{backgroundColor:'#0D2543', border: "1px solid #0D2543"}}>
+              <TableRow >
+                
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>First Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Middle Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Last Name</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Burial Date</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Section</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Lot</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Descriptor</TableCell>
+                <TableCell sx={{color: '#fbfbfb',fontSize: '20px', fontWeight: 'bold', py: 0}}>Actions</TableCell>
               </TableRow>
-            ) : lotSearchResults.length === 0 && !lotSearchError ? (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                  No results
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedLotResults.map((row) => (
-                <TableRow key={row.rid}>
-                  <TableCell>{row.firstName}</TableCell>
-                  <TableCell>{row.middleName}</TableCell>
-                  <TableCell>{row.lastName}</TableCell>
-                  <TableCell>{row.burialDate}</TableCell>
-                  <TableCell>{row.sectionName}</TableCell>
-                  <TableCell>{row.lotNumber}</TableCell>
-                  <TableCell>{row.lotDescriptor}</TableCell>
-                  <TableCell>
+            </TableHead>
 
-                    <ResidentEditButton
-                      resident={row}
-                      isFlattened={true}
-                      onSave={(updatedResident) => {
-                        setLotSearchResults((prev) =>
-                          prev.map((r) =>
-                            String(r.rid) === String(updatedResident.rid)
-                              ? updatedResident
-                              : r
-                          )
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.map((r) =>
-                            String(r.rid) === String(updatedResident.rid)
-                              ? updatedResident
-                              : r
-                          )
-                        );
-                      }}
-                    />
-                    <DeleteButton
-                       rid={row.rid}
-                       type='resident'
-                       //onDelete removes the requested resident from the rendered results
-                       onDelete={(rid) => {
-                        //remove resident from both search results, as to not cause a conflict
-                        setLotSearchResults((prev) => 
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
 
-                        setNameSearchResults((prev) =>
-                          prev.filter((r) => String(r.rid) !== String(rid))
-                        );
-                      }}
-                    />
-                    
+            <TableBody
+              sx={{
+                backgroundColor: '#fbfbfb',
+                "& td": {
+                  color: '#0D2543',
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  py: 0,
+                 
+                 
+                },
+              }}
+            >
+
+              {lotSearchLoading ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                      Loading...
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : lotSearchResults.length === 0 && !lotSearchError ? (
+                <TableRow sx={{border: "1px solid #e0e0e0", borderTop: "0px"}}>
+                  <TableCell colSpan={8} align="center">
+                    No results
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedLotResults.map((row) => (
+                  <TableRow key={row.rid}>
+                    <TableCell sx={{ borderLeft: "1px solid #e0e0e0",}}>{row.firstName}</TableCell>
+                    <TableCell>{row.middleName}</TableCell>
+                    <TableCell>{row.lastName}</TableCell>
+                    <TableCell>{row.burialDate}</TableCell>
+                    <TableCell>{row.sectionName}</TableCell>
+                    <TableCell>{row.lotNumber}</TableCell>
+                    <TableCell>{row.lotDescriptor}</TableCell>
+                    <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
+
+                      <ResidentEditButton
+                        resident={row}
+                        isFlattened={true}
+                        onSave={(updatedResident) => {
+                          setLotSearchResults((prev) =>
+                            prev.map((r) =>
+                              String(r.rid) === String(updatedResident.rid)
+                                ? updatedResident
+                                : r
+                            )
+                          );
+
+                          setNameSearchResults((prev) =>
+                            prev.map((r) =>
+                              String(r.rid) === String(updatedResident.rid)
+                                ? updatedResident
+                                : r
+                            )
+                          );
+                        }}
+                      />
+                      <DeleteButton
+                        rid={row.rid}
+                        type='resident'
+                        //onDelete removes the requested resident from the rendered results
+                        onDelete={(rid) => {
+                          //remove resident from both search results, as to not cause a conflict
+                          setLotSearchResults((prev) => 
+                            prev.filter((r) => String(r.rid) !== String(rid))
+                          );
+
+                          setNameSearchResults((prev) =>
+                            prev.filter((r) => String(r.rid) !== String(rid))
+                          );
+                        }}
+                      />
+                      
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -655,6 +722,10 @@ import { performResidentSearch } from "../api/residentApi";
           />
           
         </Box>
+         </>
+        )}
+
+
       </Box>
 
       

@@ -162,7 +162,7 @@ useEffect(() => {
           color: "white",
           p: 1,
           minWidth: 450,
-          border: "1px solid rgba(175, 140, 48, 0.7)",
+          border: "1px solid #E8AE31",
           boxShadow: "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
         },
       }}
@@ -170,9 +170,10 @@ useEffect(() => {
       <DialogTitle sx={{
         textAlign: "center",
         fontFamily: "Inria Serif",
+        fontWeight: "600",
         fontSize: "1.8rem",
         letterSpacing: "1.5px",
-        color: "#af8c30",
+        color: "white",
       }}>
         Edit Lot
       </DialogTitle>
@@ -248,8 +249,8 @@ useEffect(() => {
           onClick={onClose}
           sx={{
             color: "white",
-            fontFamily: "Inria Serif",
-            border: "1px solid #af8c30",
+             
+            border: "1px solid #E8AE31",
             "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
           }}
         >
@@ -260,11 +261,11 @@ useEffect(() => {
           onClick={handleSave}
           disabled={loading}
           sx={{
-            backgroundColor: "#af8c30",
+            backgroundColor: "#E8AE31",
             color: "white",
-            fontFamily: "Inria Serif",
+            
             letterSpacing: "1px",
-            "&:hover": { backgroundColor: "#8b6f27", transform: "scale(1.05)" },
+            "&:hover": { backgroundColor: "#E8AE31", transform: "scale(1.05)" },
           }}
         >
           {loading ? "Saving..." : "Save"}

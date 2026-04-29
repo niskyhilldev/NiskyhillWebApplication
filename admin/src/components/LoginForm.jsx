@@ -123,7 +123,7 @@ export default function LoginForm({ onLogin }) {
                         sx={{
                             mt: 1,
                             p: "0.8rem",
-                            backgroundColor: "#af8c30",
+                            backgroundColor: "#E8AE31",
                             fontFamily: "Inria Serif",
                             letterSpacing: "1.2px",
                             color: "white",
@@ -132,7 +132,7 @@ export default function LoginForm({ onLogin }) {
                             "&:hover": { 
                                 transform: "scale(1.1)",
                                 transition: "transform 0.2s ease",
-                                backgroundColor: "#af8c30"
+                                backgroundColor: "#E8AE31"
                              },
                         }}
                     >

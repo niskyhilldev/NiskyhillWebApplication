@@ -199,7 +199,7 @@ function ResidentAddButton() {
             color: "white",
             p: 1,
             minWidth: 620,
-            border: "1px solid rgba(175, 140, 48, 0.7)",
+            border: "1px solid #E8AE31",
             boxShadow:
               "0 0 0 1px rgba(175, 140, 48, 0.25), 0 10px 30px rgba(0,0,0,0.4)",
           },
@@ -209,9 +209,10 @@ function ResidentAddButton() {
           sx={{
             textAlign: "center",
             fontFamily: "Inria Serif",
+            fontWeight: "600",
             fontSize: "1.8rem",
             letterSpacing: "1.5px",
-            color: "#af8c30",
+            color: "white",
           }}
         >
           Add New Resident
@@ -447,7 +448,7 @@ function ResidentAddButton() {
                   name="marker"
                   checked={form.marker}
                   onChange={handleChange}
-                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                  sx={{ color: "#E8AE31", "&.Mui-checked": { color: "#E8AE31" } }}
                 />
               }
               label="Marker"
@@ -459,7 +460,7 @@ function ResidentAddButton() {
                   name="foundation"
                   checked={form.foundation}
                   onChange={handleChange}
-                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                  sx={{ color: "#E8AE31", "&.Mui-checked": { color: "#E8AE31" } }}
                 />
               }
               label="Foundation"
@@ -471,7 +472,7 @@ function ResidentAddButton() {
                   name="publicViewable"
                   checked={form.publicViewable}
                   onChange={handleChange}
-                  sx={{ color: "#af8c30", "&.Mui-checked": { color: "#af8c30" } }}
+                  sx={{ color: "#E8AE31", "&.Mui-checked": { color: "#E8AE31" } }}
                 />
               }
               label="Public Viewable"
@@ -492,8 +493,8 @@ function ResidentAddButton() {
             onClick={handleClose}
             sx={{
               color: "white",
-              fontFamily: "Inria Serif",
-              border: "1px solid #af8c30",
+              //fontFamily: "Inria Serif",
+              border: "1px solid #E8AE31",
               "&:hover": { backgroundColor: "rgba(175,140,48,0.1)" },
             }}
           >
@@ -503,12 +504,12 @@ function ResidentAddButton() {
             variant="contained"
             onClick={handleSave}
             sx={{
-              backgroundColor: "#af8c30",
+              backgroundColor: "#E8AE31",
               color: "white",
-              fontFamily: "Inria Serif",
+              //fontFamily: "Inria Serif",
               letterSpacing: "1px",
               "&:hover": {
-                backgroundColor: "#8b6f27",
+                backgroundColor: "#E8AE31",
                 transform: "scale(1.05)",
               },
             }}
