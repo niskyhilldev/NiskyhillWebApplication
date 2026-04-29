@@ -7,8 +7,6 @@ import moravians.niskyhill.server.services.FormService;
 
 /**
  * Service layer for wiring form generation into Javalin HTTP server
- * 
- * @author Brianna Burchett, Lehigh University '27
  */
 public class FormController {
     private static final FormService formService = new FormService();

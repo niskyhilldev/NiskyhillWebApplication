@@ -9,8 +9,6 @@ import java.util.Map;
  * form_coordinate_config.json (e.g. "intermentCard").
  * @param fieldValues A map of fieldId (value for every field the user filled in).
  * Keys must match the fieldId strings in the coordinate config. Any field not included here will be left blank on the PDF.
- *
- * @author Brianna Burchett, Lehigh University '27
  */
 public record FormRequestDTO(
     String formId,

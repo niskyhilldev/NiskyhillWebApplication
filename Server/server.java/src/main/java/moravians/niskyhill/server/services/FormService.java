@@ -17,8 +17,6 @@ import java.util.Map;
 
 /**
  * Service layer for PDF overlay generation logic
- * 
- * @author Brianna Burchett, Lehigh University '27
  */
 public class FormService {
     private static final float CM_TO_PT = 72f / 2.54f;
