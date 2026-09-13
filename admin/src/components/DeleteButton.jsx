@@ -64,7 +64,6 @@ function DeleteButton({ id, onDelete, type}) { //rid is the resident the button 
           width: 60,
           height: 20,
           borderRadius: 1,
-          mr: "10px",
           my: "4px",
           "&:hover": { bgcolor: "#bfbfbf" },
         }}

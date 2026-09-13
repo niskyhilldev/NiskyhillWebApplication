@@ -23,6 +23,21 @@ async function fetchLots(){
     return response.json(); // array of lot json
 }
 
+// get one lot by its id
+async function fetchLotById(lid) {
+    const response = await fetch(`${API_BASE_URL}/lots/find/${lid}`);
+    if (!response.ok) {
+        if (response.status === 404) {
+            throw new Error(`Lot with ID ${lid} not found`);
+        } else if (response.status === 400) {
+            throw new Error('Invalid Lot ID');
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+    }
+    return response.json(); // single lot json
+}
+
 // post request to add lot
 async function addLot(payload){
     const response = await fetch(`${API_BASE_URL}/lots/add`, {
@@ -43,8 +58,6 @@ async function addLot(payload){
 
     return text;
 }
-
-
 
 
 //Currently Taken straight from old implementation
@@ -165,4 +178,4 @@ export const updateLot = async(updateDTO) => {
 }
 
 
-export { fetchLots, addLot, getLotInfo };
+export { fetchLots, addLot, getLotInfo, fetchLotById };

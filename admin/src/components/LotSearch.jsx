@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -10,8 +11,10 @@ import {
   TableRow,
   TableCell,
   Container,
-  Pagination
+  Pagination,
+  IconButton,
 } from '@mui/material';
+import PostAddIcon from "@mui/icons-material/PostAdd";
 
 import LotAddButton from "./LotAddButton";
 import SectionDropdown from "./SectionDropDown";
@@ -19,8 +22,6 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
 import DeleteButton from "./DeleteButton";
 import LotEditButton from "./LotEditButton";
 function LotSearch() {
-
-
 
   //states for section dropdown
   const [sections, setSections] = useState([]);
@@ -35,6 +36,7 @@ function LotSearch() {
   const [searchResults, setSearchResults] = useState([]);
   const [searchError, setSearchError] = useState(null); 
   const [searchLoading, setSearchLoading] = useState(false);
+  const navigate = useNavigate();
   
   //states for Search by Lot pages
   const [lotPage, setLotPage] = useState(0);
@@ -265,7 +267,13 @@ function LotSearch() {
                     <TableCell>{row.number}</TableCell>
                     <TableCell>{row.descriptor}</TableCell>
                     <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
-                      
+                      <Box
+                          sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                          }}
+                      >
                       <LotEditButton
                         lot={row}
                         onSave={(updatedLot) => {
@@ -279,6 +287,25 @@ function LotSearch() {
 
                         }}
                       />
+
+                      <IconButton
+                        onClick={() => navigate(`/admin/lots/${row.lid}/certificate`)}
+                        sx={{
+                            bgcolor: "#D9D9D9",
+                            color: "#0D2543",
+                            width: 60,
+                            height: 20,
+                            borderRadius: "4px",
+                            my: "4px",
+                            transition: "all 0.2s ease",
+                            "&:hover": {
+                                bgcolor: "#bfbfbf",
+                            },
+                        }}
+                    >
+                        <PostAddIcon />
+                    </IconButton>
+
                       <DeleteButton
                         id={row.lid}
                         type='lot'
@@ -290,6 +317,7 @@ function LotSearch() {
                           );
                         }}
                       />
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))

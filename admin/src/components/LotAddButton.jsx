@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  MenuItem,
-  Typography,
-} from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { Box,
+        TextField,
+        Button,
+        IconButton,
+        Dialog,
+        DialogTitle,
+        DialogContent,
+        DialogActions,
+        MenuItem,
+        Typography,
+        Checkbox,
+        FormControlLabel, } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
 
@@ -28,7 +29,10 @@ function LotAddButton() {
     owner: "",
   });
 
+  const [generateCertificate, setGenerateCertificate] = useState(false);
   const [sections, setSections] = useState([]);
+  const navigate = useNavigate();
+
   // fetch sections for dropdown
   useEffect(() => {
     // fetch data in async function
@@ -56,15 +60,17 @@ function LotAddButton() {
   }, []);
 
   // reset form function
-  const resetForm = () =>{
+  const resetForm = () => {
     setFormData({
       sid: "",
       number: "",
       descriptor: "",
       owner: "",
     });
+
+    setGenerateCertificate(false);
     setError("");
-  }
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -84,9 +90,7 @@ function LotAddButton() {
 
   // send to backend
   const handleSave = async () => {
-    // collect values and save to DB here
-    try{
-      // clear old errors
+    try {
       setError("");
 
       const payload = {
@@ -94,10 +98,16 @@ function LotAddButton() {
         sid: Number(formData.sid),
       };
 
-      await addLot(payload);
-      console.log("Lot added successfully");
+      const newLot = await addLot(payload);
+
+      console.log("Lot added successfully:", newLot);
+
       handleClose();
-    } catch(err){
+
+      if (generateCertificate) {
+        navigate(`/admin/lots/${newLot.lid}/certificate`);
+      }
+    } catch (err) {
       setError(err.message);
       console.error("Error adding lot:", err);
     }
@@ -184,7 +194,7 @@ function LotAddButton() {
             }}
           >
             <MenuItem value="" disabled>
-              Section*
+              Section
             </MenuItem>
 
             {sections.map((section) => (
@@ -201,7 +211,7 @@ function LotAddButton() {
             Lot #*
           </Typography>
           <TextField
-            placeholder="Lot Number*"
+            placeholder="Lot Number"
             name="number"
             value={formData.number}
             onChange={handleChange}
@@ -223,7 +233,7 @@ function LotAddButton() {
             Lot Partition*
           </Typography>
           <TextField
-            placeholder="Lot Partition*"
+            placeholder="Lot Partition"
             name="descriptor"
             value={formData.descriptor}
             onChange={handleChange}
@@ -260,6 +270,26 @@ function LotAddButton() {
             }}
           />
           </Box>
+          
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={generateCertificate}
+                onChange={(e) => setGenerateCertificate(e.target.checked)}
+                sx={{
+                  color: "#D9D9D9",
+                  "&.Mui-checked": {
+                    color: "#E8AE31",
+                  },
+                }}
+              />
+            }
+            label="Generate Certificate of Ownership"
+            sx={{
+              color: "white",
+              mt: 1,
+            }}
+          />
 
           {/* ERROR */}
           {error && (
