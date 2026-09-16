@@ -39,6 +39,8 @@ function ResidentAddButton() {
     marker: false,
     foundation: false,
     publicViewable: false,
+    generateIntermentCard: false,
+    createInternmentRecord: false,
   };
 
   const [form, setForm] = useState(initialFormState);
@@ -476,6 +478,43 @@ function ResidentAddButton() {
                 />
               }
               label="Public Viewable"
+              sx={{ color: "white" }}
+            />
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 3 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="generateIntermentCard"
+                  checked={form.generateIntermentCard}
+                  onChange={handleChange}
+                  sx={{
+                    color: "#E8AE31",
+                    "&.Mui-checked": {
+                      color: "#E8AE31",
+                    },
+                  }}
+                />
+              }
+              label="Create Interment Card"
+              sx={{
+                color: "white"
+              }}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="createIntermentRecord"
+                  checked={form.createIntermentRecord}
+                  onChange={handleChange}
+                  sx={{
+                    color: "#E8AE31",
+                    "&.Mui-checked": { color: "#E8AE31" },
+                  }}
+                />
+              }
+              label="Create Interment Record"
               sx={{ color: "white" }}
             />
           </Box>

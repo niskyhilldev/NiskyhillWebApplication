@@ -15,7 +15,7 @@ import {
   IconButton,
 } from '@mui/material';
 import PostAddIcon from "@mui/icons-material/PostAdd";
-
+import Tooltip from "@mui/material/Tooltip";
 import LotAddButton from "./LotAddButton";
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
@@ -266,57 +266,60 @@ function LotSearch() {
                   <TableCell sx={{ borderLeft: "1px solid #e0e0e0",}}>{row.sectionName ?? row.section?.name}</TableCell>
                     <TableCell>{row.number}</TableCell>
                     <TableCell>{row.descriptor}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
+                    <TableCell sx={{ borderRight: "1px solid #e0e0e0" }}>
                       <Box
-                          sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                          }}
-                      >
-                      <LotEditButton
-                        lot={row}
-                        onSave={(updatedLot) => {
-                          setSearchResults((prev) =>
-                            prev.map((l) =>
-                              String(l.lid) === String(updatedLot.lid)
-                                ? updatedLot
-                                : l
-                            )
-                          );
-
-                        }}
-                      />
-
-                      <IconButton
-                        onClick={() => navigate(`/admin/lots/${row.lid}/certificate`)}
                         sx={{
-                            bgcolor: "#D9D9D9",
-                            color: "#0D2543",
-                            width: 60,
-                            height: 20,
-                            borderRadius: "4px",
-                            my: "4px",
-                            transition: "all 0.2s ease",
-                            "&:hover": {
-                                bgcolor: "#bfbfbf",
-                            },
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
                         }}
-                    >
-                        <PostAddIcon />
-                    </IconButton>
+                      >
+                        <LotEditButton
+                          lot={row}
+                          onSave={(updatedLot) => {
+                            setSearchResults((prev) =>
+                              prev.map((l) =>
+                                String(l.lid) === String(updatedLot.lid)
+                                  ? updatedLot
+                                  : l
+                              )
+                            );
+                          }}
+                        />
 
-                      <DeleteButton
-                        id={row.lid}
-                        type='lot'
-                        //onDelete removes the requested resident from the rendered results
-                        onDelete={(lid) => {
-                          //remove resident from both search results, as to not cause a conflict
-                          setSearchResults((prev) => 
-                            prev.filter((r) => String(r.lid) !== String(lid))
-                          );
-                        }}
-                      />
+                        <Tooltip title="Certificate of Ownership">
+                          <IconButton
+                            onClick={() =>
+                              navigate(`/admin/lots/${row.lid}/certificate`)
+                            }
+                            sx={{
+                              bgcolor: "#D9D9D9",
+                              color: "#0D2543",
+                              width: 60,
+                              height: 20,
+                              borderRadius: "4px",
+                              my: "4px",
+                              transition: "all 0.2s ease",
+                              "&:hover": {
+                                bgcolor: "#bfbfbf",
+                              },
+                            }}
+                          >
+                            <PostAddIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <DeleteButton
+                          id={row.lid}
+                          type="lot"
+                          onDelete={(lid) => {
+                            setSearchResults((prev) =>
+                              prev.filter(
+                                (r) => String(r.lid) !== String(lid)
+                              )
+                            );
+                          }}
+                        />
                       </Box>
                     </TableCell>
                   </TableRow>

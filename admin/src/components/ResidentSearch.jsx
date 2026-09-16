@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -13,9 +14,13 @@ import {
   Pagination,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
+  IconButton,
 } from '@mui/material';
-
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import DescriptionIcon from "@mui/icons-material/Description";
+import BadgeIcon from "@mui/icons-material/Badge";
+import Tooltip from "@mui/material/Tooltip";
 import ResidentAddButton from "./ResidentAddButton";
 import DeleteButton from "./DeleteButton";
 import ResidentEditButton from "./ResidentEditButton";
@@ -33,7 +38,7 @@ import { performResidentSearch } from "../api/residentApi";
     const [dropError, setDropError] = useState("");
     const [dropLoading, setDropLoading] = useState(true);
 
-     //State for search by lot Text box
+    //State for search by lot Text box
     const [lotTextValue, setLotTextValue] = useState("");
     const [nameTextValue, setNameTextValue] = useState("");
 
@@ -70,7 +75,8 @@ import { performResidentSearch } from "../api/residentApi";
       namePage * rowsPerNamePage + rowsPerNamePage
     );
 
-   
+   //navigating to form creation pages
+   const navigate = useNavigate();
 
     async function activateNameResidentSearch(){
       setNamePage(0);
@@ -366,7 +372,13 @@ import { performResidentSearch } from "../api/residentApi";
                     <TableCell>{row.lastName}</TableCell>
                     <TableCell>{row.burialDate}</TableCell>
                     <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
-
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
                       <ResidentEditButton
                         resident={row}
                         isFlattened={false}
@@ -388,6 +400,49 @@ import { performResidentSearch } from "../api/residentApi";
                           );
                         }}
                       />
+
+                     {/* internment Card */}
+                     <Tooltip title="Interment Card">
+                      <IconButton
+                        onClick={() =>
+                          navigate(`/admin/residents/${row.rid}/internment-card`)
+                        }
+                        sx={{
+                          bgcolor: "#D9D9D9",
+                          color: "#0D2543",
+                          width: 60,
+                          height: 20,
+                          borderRadius: "4px",
+                          "&:hover": {
+                            bgcolor: "#bfbfbf",
+                          },
+                        }}
+                      >
+                        <BadgeIcon />
+                      </IconButton>
+                     </Tooltip>
+                     
+                      {/* internment Record */}
+                     <Tooltip title="Interment Record">
+                      <IconButton
+                        onClick={() =>
+                          navigate(`/admin/residents/${row.rid}/internment-record`)
+                        }
+                        sx={{
+                          bgcolor: "#D9D9D9",
+                          color: "#0D2543",
+                          width: 60,
+                          height: 20,
+                          borderRadius: "4px",
+                          "&:hover": {
+                            bgcolor: "#bfbfbf",
+                          },
+                        }}
+                      >
+                        <PostAddIcon />
+                      </IconButton>
+                     </Tooltip>
+
                       <DeleteButton
                         rid={row.rid}
                         type='resident'
@@ -403,7 +458,7 @@ import { performResidentSearch } from "../api/residentApi";
                           );
                         }}
                       />
-                      
+                    </Box>
                     </TableCell >
                   </TableRow>
                 ))
@@ -637,10 +692,16 @@ import { performResidentSearch } from "../api/residentApi";
                     <TableCell>{row.lotNumber}</TableCell>
                     <TableCell>{row.lotDescriptor}</TableCell>
                     <TableCell sx={{ borderRight: "1px solid #e0e0e0",}}>
-
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
                       <ResidentEditButton
                         resident={row}
-                        isFlattened={true}
+                        isFlattened={false}
                         onSave={(updatedResident) => {
                           setLotSearchResults((prev) =>
                             prev.map((r) =>
@@ -659,6 +720,47 @@ import { performResidentSearch } from "../api/residentApi";
                           );
                         }}
                       />
+
+                    {/* internment Card */}
+                     <Tooltip title="Interment Card">
+                      <IconButton
+                        onClick={() =>
+                          navigate(`/admin/residents/${row.rid}/internment-card`)
+                        }
+                        sx={{
+                          bgcolor: "#D9D9D9",
+                          color: "#0D2543",
+                          width: 60,
+                          height: 20,
+                          borderRadius: "4px",
+                          "&:hover": {
+                            bgcolor: "#bfbfbf",
+                          },
+                        }}
+                      >
+                        <BadgeIcon />
+                      </IconButton>
+                     </Tooltip>
+                      {/* internment Record */}
+                     <Tooltip title="Interment Record">
+                      <IconButton
+                        onClick={() =>
+                          navigate(`/admin/residents/${row.rid}/internment-record`)
+                        }
+                        sx={{
+                          bgcolor: "#D9D9D9",
+                          color: "#0D2543",
+                          width: 60,
+                          height: 20,
+                          borderRadius: "4px",
+                          "&:hover": {
+                            bgcolor: "#bfbfbf",
+                          },
+                        }}
+                      >
+                        <PostAddIcon />
+                      </IconButton>
+                     </Tooltip>
                       <DeleteButton
                         rid={row.rid}
                         type='resident'
@@ -674,6 +776,7 @@ import { performResidentSearch } from "../api/residentApi";
                           );
                         }}
                       />
+                    </Box>
                       
                     </TableCell>
                   </TableRow>

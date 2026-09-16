@@ -48,6 +48,25 @@ export const performResidentSearch = async(name) => {
             
 }
 
+export const fetchResidentById = async (rid) => {
+    const response = await fetch(`${API_BASE_URL}/residents/find/${rid}`);
+
+    if (!response.ok) {
+        if (response.status === 404) {
+            throw new Error(`Resident with ID ${rid} not found`);
+        } else if (response.status === 400) {
+            throw new Error("Invalid resident ID");
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+    }
+
+    const data = await response.json();
+
+    // Backend may return a single resident or an array
+    return Array.isArray(data) ? data[0] : data;
+};
+
 export const deleteResident = async(id) => {
     //delete an entry from the db
     fetch(`${API_BASE_URL}/residents/delete/${id}`, {

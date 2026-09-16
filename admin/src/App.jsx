@@ -4,6 +4,7 @@ import LotSearch from './components/LotSearch.jsx'
 import LoginForm from './components/LoginForm.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import CertificateOfOwnership from './components/CertificateOfOwnership.jsx';
+import InternmentCard from './components/InternmentCard.jsx';
 import {Box, Tabs, Tab} from '@mui/material'
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { useState } from 'react';
@@ -77,6 +78,14 @@ function App() {
             ? <CertificateOfOwnership />
             : <Navigate to="/login" />
           } 
+        />
+        <Route
+          path="/admin/residents/:rid/internment-card"
+          element={
+            isAuthenticated
+              ? <InternmentCard />
+              : <Navigate to="/login" />
+          }
         />
         <Route path="reset-password" element={<ResetPassword />}/>
       </Routes>
