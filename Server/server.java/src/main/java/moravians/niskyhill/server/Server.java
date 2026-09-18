@@ -20,6 +20,7 @@ import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
 import io.javalin.http.Cookie;
 import io.javalin.http.SameSite;
+import moravians.niskyhill.server.services.FormService;
 
 
 /**
@@ -266,6 +267,9 @@ public class Server {
         app.get("/sections/find/{sid}", ctx -> {
             ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
         });
+
+        // Generate a PDF overlay for a given form and field values
+        FormController.register(app);
 
 
         
