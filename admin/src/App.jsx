@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import CertificateOfOwnership from './components/CertificateOfOwnership.jsx';
 import InternmentCard from './components/InternmentCard.jsx';
+import InternmentRecord from './components/InternmentRecord.jsx';
 import {Box, Tabs, Tab} from '@mui/material'
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { useState } from 'react';
@@ -84,6 +85,14 @@ function App() {
           element={
             isAuthenticated
               ? <InternmentCard />
+              : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/admin/residents/:rid/internment-record"
+          element={
+            isAuthenticated
+              ? <InternmentRecord />
               : <Navigate to="/login" />
           }
         />

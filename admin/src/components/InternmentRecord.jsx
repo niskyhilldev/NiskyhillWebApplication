@@ -7,59 +7,64 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { fetchLotById } from "../api/lotApi";
+import { fetchResidentById } from "../api/residentApi";
 
-function CertificateOfOwnership() {
-  const { lid } = useParams();
+function InternmentRecord() {
+  const { rid } = useParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
-    lotNo: "",
-    section: "",
-    day: "",
-    month: "",
-    year: "",
-    ownerName: "",
-    ownerAddress: "",
-    considerationWords: "",
-    considerationDollars: "",
-    depositWords: "",
-    depositDollars: "",
+    name: "",
+    placeOfBirth: "",
+    lateResidence: "",
+    dateOfBirth: "",
+    dateOfDeath: "",
+    sex: "",
+    SocialSate: "",
+    causeOfDeath: "",
+    nearestRelative: "",
+    relativeAddress: "",
+    timePlaceFuneral: "",
+    vaultDimensions: "",
+    funeralDirector: "",
   });
 
   useEffect(() => {
-    const loadLot = async () => {
+    const loadResident = async () => {
       try {
         setLoading(true);
 
-        const data = await fetchLotById(lid);
+        const data = await fetchResidentById(rid);
 
-        setFormData({
-          lotNo: data.number || "",
-          section: data.section?.name || "",
-          day: "",
-          month: "",
-          year: "",
-          ownerName: data.owner || "",
-          ownerAddress: "",
-          considerationWords: "",
-          considerationDollars: "",
-          depositWords: "",
-          depositDollars: "",
-        });
+        const residentData = data;
+
+        setFormData((previous) => ({
+          ...previous,
+
+          name: [
+            residentData.firstName,
+            residentData.middleName,
+            residentData.lastName,
+          ]
+            .filter(Boolean)
+            .join(" "),
+
+          dateOfBirth: residentData.birthDate || "",
+          dateOfDeath: residentData.deathDate || "",
+        }));
       } catch (err) {
-        console.error("Failed to load lot:", err);
-        setError(err.message || "Failed to load lot");
+        console.error("Failed to load resident:", err);
+        setError(err.message || "Failed to load resident");
       } finally {
         setLoading(false);
       }
     };
 
-    loadLot();
-  }, [lid]);
+    loadResident();
+  }, [rid]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -74,7 +79,7 @@ function CertificateOfOwnership() {
     return (
       <Box sx={{ p: 4 }}>
         <Typography>
-          Loading lot...
+          Loading resident...
         </Typography>
       </Box>
     );
@@ -107,7 +112,7 @@ function CertificateOfOwnership() {
           fontWeight: "bold",
         }}
       >
-        Certificate of Ownership
+        Internment Record
       </Typography>
 
       <Paper
@@ -124,7 +129,7 @@ function CertificateOfOwnership() {
             color: "#0D2543",
           }}
         >
-          Certificate of Ownership Information
+          Internment Record Information
         </Typography>
 
         <Box
@@ -135,96 +140,103 @@ function CertificateOfOwnership() {
           }}
         >
           <TextField
-            label="Lot Number"
-            name="lotNo"
-            value={formData.lotNo}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Section"
-            name="section"
-            value={formData.section}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Day"
-            name="day"
-            value={formData.day}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Month"
-            name="month"
-            value={formData.month}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Year"
-            name="year"
-            value={formData.year}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Owner Name(s)"
-            name="ownerName"
-            value={formData.ownerName}
-            onChange={handleChange}
-            required
-          />
-
-          <TextField
-            label="Owner Address (City, County, State)"
-            name="ownerAddress"
-            value={formData.ownerAddress}
+            label="Full Name of Deceased"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
             sx={{ gridColumn: "1 / -1" }}
           />
 
           <TextField
-            label="Consideration Amount Written"
-            name="considerationWords"
-            value={formData.considerationWords}
+            label="Place of Birth"
+            name="placeOfBirth"
+            value={formData.placeOfBirth}
             onChange={handleChange}
-            required
-            placeholder="ex: One Thousand Four Hundred and 00/100 Dollars"
           />
 
           <TextField
-            label="Consideration Amount ($)"
-            name="considerationDollars"
-            value={formData.considerationDollars}
+            label="Late Residence (Full Address)"
+            name="lateResidence"
+            value={formData.lateResidence}
             onChange={handleChange}
-            required
-            placeholder="ex: $1,400.00"
+            sx={{ gridColumn: "1 / -1" }}
           />
 
           <TextField
-            label="Perpetual Care Deposit Written"
-            name="depositWords"
-            value={formData.depositWords}
+            label="Date of Birth"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
             onChange={handleChange}
-            required
-            placeholder="ex: Seven Hundred and 00/100 Dollars"
           />
 
           <TextField
-            label="Perpetual Care Deposit ($)"
-            name="depositDollars"
-            value={formData.depositDollars}
+            label="Date of Death"
+            name="dateOfDeath"
+            value={formData.dateOfDeath}
             onChange={handleChange}
             required
-            placeholder="ex: $700.00"
+          />
+
+          <TextField
+            label="Sex"
+            name="sex"
+            value={formData.sex}
+            onChange={handleChange}
+          />
+
+          <TextField
+            label="Social State"
+            name="SocialSate"
+            value={formData.SocialSate}
+            onChange={handleChange}
+            placeholder="e.g. Married, Divorced"
+          />
+
+          <TextField
+            label="Cause of Death"
+            name="causeOfDeath"
+            value={formData.causeOfDeath}
+            onChange={handleChange}
+            sx={{ gridColumn: "1 / -1" }}
+          />
+
+          <TextField
+            label="Nearest Relative or Friend"
+            name="nearestRelative"
+            value={formData.nearestRelative}
+            onChange={handleChange}
+          />
+
+          <TextField
+            label="Address of Nearest Relative"
+            name="relativeAddress"
+            value={formData.relativeAddress}
+            onChange={handleChange}
+          />
+
+          <TextField
+            label="Time and Place of Funeral"
+            name="timePlaceFuneral"
+            value={formData.timePlaceFuneral}
+            onChange={handleChange}
+            sx={{ gridColumn: "1 / -1" }}
+          />
+
+          <TextField
+            label="Inside Dimensions of Vault (L x W x H)"
+            name="vaultDimensions"
+            value={formData.vaultDimensions}
+            onChange={handleChange}
+            sx={{ gridColumn: "1 / -1" }}
+          />
+
+          <TextField
+            label="Funeral Director or Person in Charge"
+            name="funeralDirector"
+            value={formData.funeralDirector}
+            onChange={handleChange}
+            sx={{ gridColumn: "1 / -1" }}
           />
         </Box>
 
@@ -254,7 +266,7 @@ function CertificateOfOwnership() {
               },
             }}
           >
-            Generate Certificate
+            Generate Internment Record
           </Button>
         </Box>
       </Paper>
@@ -262,4 +274,4 @@ function CertificateOfOwnership() {
   );
 }
 
-export default CertificateOfOwnership;
+export default InternmentRecord;
