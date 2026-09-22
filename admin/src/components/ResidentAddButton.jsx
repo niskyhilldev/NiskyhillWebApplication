@@ -16,12 +16,14 @@ import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { fetchSections, fetchLots } from "../api/lotApi";  
 import {addResident} from "../api/residentApi";
+import NotificationSnackbar from "./NotificationSnackBar";
 
 {/** Button should handle all actions of adding new residents */}
 
 function ResidentAddButton() {
   const [open, setOpen] = useState(false);
   const[error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [sections, setSections] = useState([]);
   const [lots, setLots] = useState([]);
 
@@ -153,6 +155,7 @@ function ResidentAddButton() {
       }
 
       await addResident(payload);
+      setSuccess("Resident added successfully!");
       console.log("Resident added successfully");
       handleClose();
     } catch (err) {
@@ -170,6 +173,22 @@ function ResidentAddButton() {
 
   return (
     <Box>
+
+      <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+        />
+      <NotificationSnackbar
+        open={!!success}
+        message={success}
+        severity="success"
+        onClose={() => setSuccess("")}
+      />
+
+
       {/* Add Button */}
       <IconButton
         onClick={handleOpen}
