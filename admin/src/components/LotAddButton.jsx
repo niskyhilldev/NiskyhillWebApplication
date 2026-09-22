@@ -13,12 +13,14 @@ import {
 } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
+import NotificationSnackbar from "./NotificationSnackBar";
 
 {/** Button should handle all actions of adding new lots */}
 
 function LotAddButton() {
   const [open, setOpen] = useState(false);
   const[error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // form state to match dto
   const [formData, setFormData] = useState({
@@ -84,27 +86,46 @@ function LotAddButton() {
 
   // send to backend
   const handleSave = async () => {
-    // collect values and save to DB here
-    try{
-      // clear old errors
-      setError("");
+  try {
+    // Clear old messages
+    setError("");
+    setSuccess("");
 
-      const payload = {
-        ...formData,
-        sid: Number(formData.sid),
-      };
+    const payload = {
+      ...formData,
+      sid: Number(formData.sid),
+    };
 
-      await addLot(payload);
-      console.log("Lot added successfully");
-      handleClose();
-    } catch(err){
-      setError(err.message);
-      console.error("Error adding lot:", err);
-    }
-  };
+    await addLot(payload);
+
+    setSuccess("Lot added successfully!");
+    console.log("Lot added successfully");
+    handleClose();
+
+  } catch (err) {
+    setError(err.message || "Failed to add lot.");
+    console.error("Error adding lot:", err);
+  }
+};
 
   return (
+
+    
     <Box>
+
+      <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+        />
+      <NotificationSnackbar
+        open={!!success}
+        message={success}
+        severity="success"
+        onClose={() => setSuccess("")}
+      />
       {/* Floating Add Button */}
       <IconButton
         onClick={handleOpen}
@@ -261,19 +282,7 @@ function LotAddButton() {
           />
           </Box>
 
-          {/* ERROR */}
-          {error && (
-            <Box
-              sx={{
-                color: "#ff6b6b",
-                fontSize: "0.9rem",
-                textAlign: "center",
-                mt: 1,
-              }}
-            >
-              {error}
-            </Box>
-          )}
+         
         </DialogContent>
 
         <DialogActions

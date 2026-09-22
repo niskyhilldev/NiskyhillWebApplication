@@ -18,6 +18,7 @@ import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
 import DeleteButton from "./DeleteButton";
 import LotEditButton from "./LotEditButton";
+import NotificationSnackbar from "./NotificationSnackBar";
 function LotSearch() {
 
 
@@ -215,11 +216,27 @@ function LotSearch() {
         </Box>
         
         {/**If search fails display error */}
-        {searchError && (
+        {/* {searchError && (
           <div style={{ color: "red", marginBottom: "16px" }}>
             Error: {searchError}
           </div>
-        )}
+        )} */}
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!searchError}
+          message={searchError}
+          severity="error"
+          onClose={() => setSearchError(null)}
+        />
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!dropError}
+          message={dropError}
+          severity="error"
+          onClose={() => setDropError(null)}
+        />
          {/* Table */}
         <Box sx={{m: 0, px: "20px"}}>
           <Table sx={{mt:'20px'}}>

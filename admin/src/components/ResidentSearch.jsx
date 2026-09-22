@@ -22,6 +22,7 @@ import ResidentEditButton from "./ResidentEditButton";
 import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
 import { performResidentSearch } from "../api/residentApi";
+import NotificationSnackbar from "./NotificationSnackBar";
 
 
 
@@ -312,11 +313,13 @@ import { performResidentSearch } from "../api/residentApi";
             <ResidentAddButton/>
             </Box>
             {/**If search fails display error */}
-        {nameSearchError && (
-          <div style={{ color: "red", marginBottom: "16px" }}>
-            Error: {nameSearchError}
-          </div>
-        )}
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!nameSearchError}
+          message={nameSearchError}
+          severity="error"
+          onClose={() => setNameSearchError(null)}
+        />
         {/* Table */}
         <Box sx={{m: 0, px: "20px"}}>
           <Table sx={{mt:'20px'}}>
@@ -575,11 +578,14 @@ import { performResidentSearch } from "../api/residentApi";
         
 
         {/**If search fails display error */}
-        {lotSearchError && (
-          <div style={{ color: "red", marginBottom: "16px" }}>
-            Error: {lotSearchError}
-          </div>
-        )}
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!lotSearchError}
+          message={lotSearchError}
+          severity="error"
+          onClose={() => setLotSearchError(null)}
+        />
         {/* Table */}
          <Box sx={{m: 0, px: "20px"}}>
           <Table sx={{mt:'20px'}}>
