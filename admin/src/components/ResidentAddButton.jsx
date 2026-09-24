@@ -141,6 +141,10 @@ function ResidentAddButton() {
         return;
       }
 
+      // save before adding resident
+      const shouldCreateCard = form.generateIntermentCard;
+      const shouldCreateRecord = form.createIntermentRecord;
+
       const payload = {
         firstName: form.firstName,
         middleName: form.middleName || null, 
@@ -162,9 +166,15 @@ function ResidentAddButton() {
 
       handleClose();
 
-      // redirect to int card form
-      if (form.generateIntermentCard) {
-        navigate(`/admin/residents/${newResident.rid}/internment-card`);
+      // redirect to int card form first
+      if (shouldCreateCard) {
+        navigate(`/admin/residents/${newResident.rid}/internment-card`, {
+          state: {
+            crreateInternmentRecord: shouldCreateRecord, // if both selected keep track of checkbox
+          },
+        });
+      } else if (shouldCreateRecord) {
+        navigate(`/admin/residents/${newResident.rid}/internment-record`);
       }
 
     } catch (err) {

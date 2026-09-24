@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
+import { generateForm } from "../api/formApi";
 
 function InternmentRecord() {
   const { rid } = useParams();
@@ -73,6 +74,31 @@ function InternmentRecord() {
       ...previous,
       [name]: value,
     }));
+  };
+
+  const handleGenerate = async () => {
+    try {
+      setError("");
+
+      console.log("Generating Internment Record:", formData);
+
+      const pdfBlob = await generateForm(
+        "internment_record",
+        formData
+      );
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      window.open(pdfUrl, "_blank");
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
+
+    } catch (err) {
+      console.error("Failed to generate internment record:", err);
+      setError(err.message || "Failed to generate internment record");
+    }
   };
 
   if (loading) {
@@ -259,6 +285,7 @@ function InternmentRecord() {
 
           <Button
             variant="contained"
+            onClick={handleGenerate}
             sx={{
               bgcolor: "#0D2543",
               "&:hover": {

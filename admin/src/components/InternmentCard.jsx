@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -13,6 +13,8 @@ import { generateForm } from "../api/formApi";
 function InternmentCard() {
   const { rid } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const createInternmentRecord = location.state?.createInternmentRecord || false;
 
   const [resident, setResident] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -92,6 +94,12 @@ function InternmentCard() {
       URL.revokeObjectURL(pdfUrl);
     }, 10000);
 
+    // If the user also selected Internment Record,
+    // go to that form after generating the card.
+    if (createInternmentRecord) {
+      navigate(`/admin/residents/${rid}/internment-record`);
+    }
+    
   } catch (err) {
     console.error("Failed to generate interment card:", err);
     setError(err.message || "Failed to generate interment card");
