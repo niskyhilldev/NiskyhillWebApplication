@@ -20,7 +20,7 @@ async function addResident(payload){
         throw new Error(text || "Failed to add resident");
     }
 
-    return text;
+    return JSON.parse(text);
 }   
 
 export const performResidentSearch = async(name) => {

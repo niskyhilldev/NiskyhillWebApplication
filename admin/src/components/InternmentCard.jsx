@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
+import { generateForm } from "../api/formApi";
 
 function InternmentCard() {
   const { rid } = useParams();
@@ -73,6 +74,29 @@ function InternmentCard() {
       [name]: value,
     }));
   };
+
+  const handleGenerate = async () => {
+  try {
+    setError("");
+
+    const pdfBlob = await generateForm(
+      "interment_card",
+      formData
+    );
+
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    window.open(pdfUrl, "_blank");
+
+    setTimeout(() => {
+      URL.revokeObjectURL(pdfUrl);
+    }, 10000);
+
+  } catch (err) {
+    console.error("Failed to generate interment card:", err);
+    setError(err.message || "Failed to generate interment card");
+  }
+};
 
   if (loading) {
     return (
@@ -229,11 +253,10 @@ function InternmentCard() {
 
           <Button
             variant="contained"
+            onClick={handleGenerate}
             sx={{
               bgcolor: "#0D2543",
-              "&:hover": {
-                bgcolor: "#081a2f",
-              },
+              "&:hover": { bgcolor: "#081a2f" },
             }}
           >
             Generate Internment Card

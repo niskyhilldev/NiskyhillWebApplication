@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -26,6 +27,7 @@ function ResidentAddButton() {
   const [success, setSuccess] = useState("");
   const [sections, setSections] = useState([]);
   const [lots, setLots] = useState([]);
+  const navigate = useNavigate();
 
   const initialFormState = {
     sid: "",
@@ -154,10 +156,17 @@ function ResidentAddButton() {
         //partition: form.descriptor,
       }
 
-      await addResident(payload);
+      const newResident = await addResident(payload);
       setSuccess("Resident added successfully!");
-      console.log("Resident added successfully");
+      console.log("Resident added successfully:", newResident);
+
       handleClose();
+
+      // redirect to int card form
+      if (form.generateIntermentCard) {
+        navigate(`/admin/residents/${newResident.rid}/internment-card`);
+      }
+
     } catch (err) {
       setError(err.message);
       console.error("Error adding resident:", err);
