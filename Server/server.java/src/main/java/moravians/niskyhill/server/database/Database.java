@@ -691,14 +691,15 @@ public class Database {
      * @param foundation
      * @param publicViewable
      * @param lid
-     * @return true if successfull, false otherwise
+     * @return rid if successfull, null otherwise
      * @throws HttpStatusException
      */
-    public boolean addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
+    public Long addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
                             String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
         String q = """
             INSERT INTO resident (firstname, middlename, lastname, birth_date, burial_date, death_date, capsule, marker, foundation, viewable, lot)
             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            RETURNING rid
         """;
 
         try {
@@ -759,11 +760,12 @@ public class Database {
             }
 
             ps.setLong(11, lid); // set lot
-            
-            if (ps.executeUpdate() < 1){
-               return false;
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()){
+               return rs.getLong("rid");
             }
-            return true;
+            return null;
 
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());

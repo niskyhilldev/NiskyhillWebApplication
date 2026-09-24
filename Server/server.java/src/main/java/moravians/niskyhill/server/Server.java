@@ -209,9 +209,12 @@ public class Server {
         app.post("/residents/add", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
-            if (ResidentService.addResident(newResidentDTO, database)){
-                ctx.status(200).result("New Resident Created Successfully");
-            }
+
+            Long rid = ResidentService.addResident(
+            newResidentDTO,
+            database
+            );
+            ctx.status(200).json(Map.of("rid", rid));
         });
 
         // Delete a resident (Requires Authorization)

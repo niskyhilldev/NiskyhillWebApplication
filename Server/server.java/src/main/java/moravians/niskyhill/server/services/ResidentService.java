@@ -4,7 +4,6 @@ import java.util.List;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.dtos.NewResidentDTO;
 import moravians.niskyhill.server.dtos.ResidentDTO;
-import moravians.niskyhill.server.dtos.ResidentSearchDTO;
 import moravians.niskyhill.server.dtos.UpdateResidentDTO;
 import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
@@ -139,7 +138,7 @@ public class ResidentService {
      * @return true on success (exception otherwise)
      * @throws HttpStatusException missing params, invalid lot 
      */
-    public static boolean addResident(NewResidentDTO newResidentDTO, Database database) throws HttpStatusException{
+    public static Long addResident(NewResidentDTO newResidentDTO, Database database) throws HttpStatusException{
         if (newResidentDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Request Must Contain all resident information");
         }
@@ -152,7 +151,7 @@ public class ResidentService {
             throw new HttpStatusException(HttpStatus.NOT_FOUND.value, "Lot not found with id " + newResidentDTO.lid()); 
         }
 
-        boolean result =  database.addNewResident(
+        Long rid =  database.addNewResident(
             newResidentDTO.firstName(),
             newResidentDTO.middleName(),
             newResidentDTO.lastName(),
@@ -166,11 +165,11 @@ public class ResidentService {
             newResidentDTO.lid()
         );
 
-        if (result == false){
+        if (rid == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Bad Criteria for New Resident");
         }
 
-        return true;
+        return rid;
     }
 
     /**
