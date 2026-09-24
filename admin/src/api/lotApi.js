@@ -49,14 +49,14 @@ async function addLot(payload){
         body: JSON.stringify(payload),
     });
 
-    // retrieve backend response 
-    const text = await response.text();
-
+    // error text
     if (!response.ok) {
-        throw new Error(text || "Failed to add lot");
+        const text = await response.text();
+        throw new Error(data.message || "Failed to add lot");
     }
 
-    return text;
+    // backend response of lid
+    return await response.json();
 }
 
 

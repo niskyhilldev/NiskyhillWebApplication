@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { fetchLotById } from "../api/lotApi";
+import { generateForm } from "../api/formApi";
 
 function CertificateOfOwnership() {
   const { lid } = useParams();
@@ -15,6 +16,8 @@ function CertificateOfOwnership() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState("");
 
   const [formData, setFormData] = useState({
     lotNo: "",
@@ -30,6 +33,35 @@ function CertificateOfOwnership() {
     depositDollars: "",
   });
 
+  // handle generating the forms
+  const handleGenerate = async () => {
+    try {
+        setGenerating(true);
+        setGenerateError("");
+
+        const pdfBlob = await generateForm(
+            "certificate_of_ownership",
+            formData
+        );
+
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        window.open(pdfUrl, "_blank");
+
+        // Clean up the temporary URL later
+        setTimeout(() => {
+            URL.revokeObjectURL(pdfUrl);
+        }, 10000);
+
+    } catch (err) {
+        console.error("Failed to generate certificate:", err);
+        setGenerateError(
+            err.message || "Failed to generate certificate"
+        );
+    } finally {
+        setGenerating(false);
+    }
+};
   useEffect(() => {
     const loadLot = async () => {
       try {
@@ -228,6 +260,17 @@ function CertificateOfOwnership() {
           />
         </Box>
 
+        {generateError && (
+            <Typography
+                sx={{
+                    color: "error.main",
+                    mb: 2,
+                    textAlign: "right",
+                }}
+            >
+                {generateError}
+            </Typography>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -247,14 +290,16 @@ function CertificateOfOwnership() {
 
           <Button
             variant="contained"
+            onClick={handleGenerate}
+            disabled={generating}
             sx={{
-              bgcolor: "#0D2543",
-              "&:hover": {
-                bgcolor: "#081a2f",
-              },
+                bgcolor: "#0D2543",
+                "&:hover": {
+                    bgcolor: "#081a2f",
+                },
             }}
           >
-            Generate Certificate
+            {generating ? "Generating..." : "Generate Certificate"}
           </Button>
         </Box>
       </Paper>
