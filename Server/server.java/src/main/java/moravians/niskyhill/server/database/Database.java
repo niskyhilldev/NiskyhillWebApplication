@@ -3,6 +3,8 @@ package moravians.niskyhill.server.database;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -14,8 +16,6 @@ import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
 import moravians.niskyhill.server.models.User;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /** 
  * This class wraps a connection to A database 
@@ -806,13 +806,14 @@ public class Database {
      * @param descriptor the partition of the lot
      * @param owner the owner of the lot 
      * @param sid the id of the section the lot is located in 
-     * @return true on success, false otherwise
+     * @return the generated lid using returning lid
      * @throws HttpStatusException
      */
-    public boolean createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
+    public Long createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 INSERT INTO lot (number, descriptor, owner, section)
                 VALUES (?, ?, ?, ?)
+                RETURNING lid
                 """;
         
         try {
@@ -830,11 +831,12 @@ public class Database {
                 ps.setString(3, owner);
             }
             ps.setLong(4, sid);
+            ResultSet rs = ps.executeQuery();
 
-            if (ps.executeUpdate() < 1){
-                return false;
+            if (rs.next()){
+                return rs.getLong("lid");
             }
-            return true;
+            return null;
 
         } catch (SQLException e) {
             String message = e.getMessage().toLowerCase(); 

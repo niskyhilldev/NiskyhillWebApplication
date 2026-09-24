@@ -2,7 +2,9 @@ package moravians.niskyhill.server;
  
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import moravians.niskyhill.server.auth.AuthHandler;
 import moravians.niskyhill.server.dtos.FormRequestDTO;
+import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.FormService;
 
 /**
@@ -25,7 +27,8 @@ public class FormController {
      * 
      * @param ctx Javalin context
      */
-    private static void handleGenerateForm(Context ctx) {
+    private static void handleGenerateForm(Context ctx) throws HttpStatusException {
+        AuthHandler.requireRouteAuth(ctx);
         FormRequestDTO request;
         try {
             request = ctx.bodyAsClass(FormRequestDTO.class);

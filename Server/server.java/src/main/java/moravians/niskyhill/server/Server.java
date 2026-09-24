@@ -241,9 +241,8 @@ public class Server {
         app.post("/lots/add", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
-            if (LotService.addLot(newLotDTO, database)){
-                ctx.status(200).result("New Lot Created Successfully");
-            }
+            Long lid = LotService.addLot(newLotDTO, database);
+            ctx.status(200).json(Map.of("lid", lid));
         });
 
         // Update a lot (Requires Authorization)

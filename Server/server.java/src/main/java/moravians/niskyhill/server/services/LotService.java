@@ -99,10 +99,10 @@ public class LotService {
      * 
      * @param newLotDTO the information about the new lot 
      * @param database a database with an established connection
-     * @return true if successfull (exception otherwise)
+     * @return lid of newly created lot if successfull (exception otherwise)
      * @throws HttpStatusException information is missing from the DTO
      */
-    public static boolean addLot(NewLotDTO newLotDTO, Database database) throws HttpStatusException {
+    public static Long addLot(NewLotDTO newLotDTO, Database database) throws HttpStatusException {
         if (newLotDTO == null){
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
         }
@@ -111,10 +111,20 @@ public class LotService {
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Lot Information cannot be null");
         }
 
-        if (!(database.createNewLot(newLotDTO.number(), newLotDTO.descriptor(), newLotDTO.owner(), newLotDTO.sid()))){
-            throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "Invalid Lot");
+        Long lid = database.createNewLot(
+            newLotDTO.number(),
+            newLotDTO.descriptor(),
+            newLotDTO.owner(),
+            newLotDTO.sid()
+        );
+
+        if (lid == null) {
+            throw new HttpStatusException(
+                HttpStatus.BAD_REQUEST.value,
+                "Invalid Lot"
+            );
         }
-        return true;
+        return lid;
 
     }
 
