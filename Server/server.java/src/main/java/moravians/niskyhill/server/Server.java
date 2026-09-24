@@ -273,6 +273,9 @@ public class Server {
             ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
         });
 
+        // Generate a PDF overlay for a given form and field values
+        FormController.register(app);
+
 
         
         /* Exception Handlers */

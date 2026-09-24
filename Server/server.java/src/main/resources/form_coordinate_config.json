@@ -1,0 +1,58 @@
+{
+    "forms": [
+        {
+            "formId": "certificate_of_ownership",
+            "displayName": "Certificate of Ownership",
+            "templateFile": "certificate_of_ownership_template.pdf",
+            "fields": [
+                { "fieldId": "lotNo", "pdfFieldName": "lot_no" },
+                { "fieldId": "section", "pdfFieldName": "section" },
+                { "fieldId": "day", "pdfFieldName": "day" },
+                { "fieldId": "month", "pdfFieldName": "month" },
+                { "fieldId": "year", "pdfFieldName": "year" },
+                { "fieldId": "ownerName", "pdfFieldName": "transferred_to" },
+                { "fieldId": "ownerAddress", "pdfFieldName": "of_location" },
+                { "fieldId": "considerationWords", "pdfFieldName": "consideration_text" },
+                { "fieldId": "considerationDollars", "pdfFieldName": "consideration_amount" },
+                { "fieldId": "depositWords", "pdfFieldName": "deposit_text" },
+                { "fieldId": "depositDollars", "pdfFieldName": "deposit_amount" }
+            ]
+        },
+        {
+            "formId": "internment_record",
+            "displayName": "Internment Record",
+            "templateFile": "internment_record_template.pdf",
+            "fields": [
+                { "fieldId": "name", "pdfFieldName": "name" },
+                { "fieldId": "placeOfBirth", "pdfFieldName": "place_of_birth" },
+                { "fieldId": "lateResidence", "pdfFieldName": "late_residence" },
+                { "fieldId": "dateOfBirth", "pdfFieldName": "date_of_birth" },
+                { "fieldId": "dateOfDeath", "pdfFieldName": "date_of_death" },
+                { "fieldId": "sex", "pdfFieldName": "sex" },
+                { "fieldId": "SocialSate", "pdfFieldName": "social_state" },
+                { "fieldId": "causeOfDeath", "pdfFieldName": "cause_of_death" },
+                { "fieldId": "nearestRelative", "pdfFieldName": "nearest_relative_friend" },
+                { "fieldId": "relativeAddress", "pdfFieldName": "address" },
+                { "fieldId": "timePlaceFuneral", "pdfFieldName": "time_place_funeral" },
+                { "fieldId": "vaultDimensions", "pdfFieldName": "inside_dimensions_vault" },
+                { "fieldId": "funeralDirector", "pdfFieldName": "funeral_director" }
+            ]
+        },
+        {
+            "formId": "interment_card",
+            "displayName": "Internment Card",
+            "templateFile": "internment_card_template.pdf",
+            "fields": [
+                { "fieldId": "lastName", "pdfFieldName": "last_name" },
+                { "fieldId": "firstName", "pdfFieldName": "first_title" },
+                { "fieldId": "disposition", "pdfFieldName": "cremated_status" },
+                { "fieldId": "Date", "pdfFieldName": "lot_code" },
+                { "fieldId": "date", "pdfFieldName": "interment_date" },
+                { "fieldId": "lotNumber", "pdfFieldName": "lot_number" },
+                { "fieldId": "lotLocation", "pdfFieldName": "garden_name" },
+                { "fieldId": "lotOwner", "pdfFieldName": "estate_note" },
+                { "fieldId": "lotCardNotes", "pdfFieldName": "notes" }
+            ]
+        }
+    ]
+}
