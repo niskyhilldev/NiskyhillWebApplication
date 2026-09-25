@@ -203,6 +203,7 @@ function CertificateOfOwnership() {
             name="year"
             value={formData.year}
             onChange={handleChange}
+            placeholder="ex: 26 (for year 2026)"
             required
           />
 
