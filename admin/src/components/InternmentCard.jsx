@@ -9,6 +9,15 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 
+//used to style textFields with less clutter
+const textFieldStyle = {
+  backgroundColor: "white",
+  borderRadius: "6px",
+  "& input": {
+    color: "black",
+  },
+};
+
 function InternmentCard() {
   const { rid } = useParams();
   const navigate = useNavigate();
@@ -109,7 +118,7 @@ function InternmentCard() {
           fontWeight: "bold",
         }}
       >
-        Internment Card
+        {/* Internment Card */}
       </Typography>
 
       <Paper
@@ -117,13 +126,22 @@ function InternmentCard() {
           p: 4,
           maxWidth: 900,
           margin: "0 auto",
+          borderRadius: "12px",
+          backgroundColor: "#0d2543",
+          color: "white",
+          border: "1px solid #E8AE31",
         }}
       >
         <Typography
           variant="h6"
           sx={{
-            mb: 3,
-            color: "#0D2543",
+            textAlign: "center",
+            fontFamily: "Inria Serif",
+            fontWeight: "600",
+            fontSize: "1.8rem",
+            letterSpacing: "1.5px",
+            color: "white",
+            mb: 3
           }}
         >
           Internment Card Information
@@ -142,6 +160,8 @@ function InternmentCard() {
             value={formData.lastName}
             onChange={handleChange}
             required
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -150,6 +170,8 @@ function InternmentCard() {
             value={formData.firstName}
             onChange={handleChange}
             required
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -157,6 +179,8 @@ function InternmentCard() {
             name="disposition"
             value={formData.disposition}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -165,6 +189,8 @@ function InternmentCard() {
             value={formData.Date}
             onChange={handleChange}
             placeholder="e.g. 86 - 9 - 7"
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -173,6 +199,8 @@ function InternmentCard() {
             value={formData.date}
             onChange={handleChange}
             required
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -181,6 +209,8 @@ function InternmentCard() {
             value={formData.lotNumber}
             onChange={handleChange}
             required
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -188,6 +218,8 @@ function InternmentCard() {
             name="lotLocation"
             value={formData.lotLocation}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -195,6 +227,8 @@ function InternmentCard() {
             name="lotOwner"
             value={formData.lotOwner}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -204,7 +238,8 @@ function InternmentCard() {
             onChange={handleChange}
             multiline
             minRows={4}
-            sx={{
+            variant="filled"
+            sx={{...textFieldStyle ,
               gridColumn: "1 / -1",
             }}
           />
@@ -221,18 +256,27 @@ function InternmentCard() {
           <Button
             onClick={() => navigate(-1)}
             sx={{
-              color: "#0D2543",
+              color: "white",
+              //fontFamily: "Inria Serif",
+              border: "1px solid #E8AE31",
+              "&:hover": {
+                backgroundColor: "rgba(175,140,48,0.1)",
+              },
             }}
           >
             Cancel
           </Button>
 
           <Button
-            variant="contained"
+          variant="contained"
             sx={{
-              bgcolor: "#0D2543",
+              backgroundColor: "#E8AE31",
+              color: "white",
+              //fontFamily: "Inria Serif",
+              letterSpacing: "1px",
               "&:hover": {
-                bgcolor: "#081a2f",
+                backgroundColor: "#E8AE31",
+                transform: "scale(1.05)",
               },
             }}
           >
