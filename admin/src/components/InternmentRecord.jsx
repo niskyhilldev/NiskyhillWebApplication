@@ -9,6 +9,13 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 import { generateForm } from "../api/formApi";
+const textFieldStyle = {
+  backgroundColor: "white",
+  borderRadius: "6px",
+  "& input": {
+    color: "black",
+  },
+};
 
 function InternmentRecord() {
   const { rid } = useParams();
@@ -138,7 +145,7 @@ function InternmentRecord() {
           fontWeight: "bold",
         }}
       >
-        Internment Record
+      {/* Internment Record */}
       </Typography>
 
       <Paper
@@ -146,13 +153,22 @@ function InternmentRecord() {
           p: 4,
           maxWidth: 1000,
           margin: "0 auto",
+          borderRadius: "12px",
+          backgroundColor: "#0d2543",
+          color: "white",
+          border: "1px solid #E8AE31",
         }}
       >
         <Typography
           variant="h6"
           sx={{
-            mb: 3,
-            color: "#0D2543",
+            textAlign: "center",
+            fontFamily: "Inria Serif",
+            fontWeight: "600",
+            fontSize: "1.8rem",
+            letterSpacing: "1.5px",
+            color: "white",
+            mb: 3
           }}
         >
           Internment Record Information
@@ -171,7 +187,10 @@ function InternmentRecord() {
             value={formData.name}
             onChange={handleChange}
             required
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -179,6 +198,10 @@ function InternmentRecord() {
             name="placeOfBirth"
             value={formData.placeOfBirth}
             onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -186,7 +209,10 @@ function InternmentRecord() {
             name="lateResidence"
             value={formData.lateResidence}
             onChange={handleChange}
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -194,6 +220,8 @@ function InternmentRecord() {
             name="dateOfBirth"
             value={formData.dateOfBirth}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -202,6 +230,8 @@ function InternmentRecord() {
             value={formData.dateOfDeath}
             onChange={handleChange}
             required
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -209,6 +239,8 @@ function InternmentRecord() {
             name="sex"
             value={formData.sex}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -217,6 +249,8 @@ function InternmentRecord() {
             value={formData.SocialSate}
             onChange={handleChange}
             placeholder="e.g. Married, Divorced"
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -224,7 +258,10 @@ function InternmentRecord() {
             name="causeOfDeath"
             value={formData.causeOfDeath}
             onChange={handleChange}
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -232,6 +269,8 @@ function InternmentRecord() {
             name="nearestRelative"
             value={formData.nearestRelative}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -239,6 +278,8 @@ function InternmentRecord() {
             name="relativeAddress"
             value={formData.relativeAddress}
             onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
           />
 
           <TextField
@@ -246,7 +287,10 @@ function InternmentRecord() {
             name="timePlaceFuneral"
             value={formData.timePlaceFuneral}
             onChange={handleChange}
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -254,7 +298,10 @@ function InternmentRecord() {
             name="vaultDimensions"
             value={formData.vaultDimensions}
             onChange={handleChange}
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
 
           <TextField
@@ -262,7 +309,10 @@ function InternmentRecord() {
             name="funeralDirector"
             value={formData.funeralDirector}
             onChange={handleChange}
-            sx={{ gridColumn: "1 / -1" }}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
           />
         </Box>
 
@@ -277,7 +327,12 @@ function InternmentRecord() {
           <Button
             onClick={() => navigate(-1)}
             sx={{
-              color: "#0D2543",
+              color: "white",
+              //fontFamily: "Inria Serif",
+              border: "1px solid #E8AE31",
+              "&:hover": {
+                backgroundColor: "rgba(175,140,48,0.1)",
+              },
             }}
           >
             Cancel
@@ -287,9 +342,13 @@ function InternmentRecord() {
             variant="contained"
             onClick={handleGenerate}
             sx={{
-              bgcolor: "#0D2543",
+              backgroundColor: "#E8AE31",
+              color: "white",
+              //fontFamily: "Inria Serif",
+              letterSpacing: "1px",
               "&:hover": {
-                bgcolor: "#081a2f",
+                backgroundColor: "#E8AE31",
+                transform: "scale(1.05)",
               },
             }}
           >
