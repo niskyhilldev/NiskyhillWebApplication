@@ -36,7 +36,7 @@ function InternmentCard() {
     Date: "",
     date: "",
     lotNumber: "",
-    lotLocation: "",
+    section: "",
     lotOwner: "",
     lotCardNotes: "",
   });
@@ -45,24 +45,29 @@ function InternmentCard() {
     const loadResident = async () => {
       try {
         setLoading(true);
-
         const residentData = await fetchResidentById(rid);
+        setResident(residentData);
+        
+        // load middle initial from resident and join
+        const firstName = residentData.firstName || "";
+        const middleInitial = residentData.middleName
+          ? residentData.middleName.charAt(0).toUpperCase()
+          : "";
+        const firstNameWithMiddleInitial = [
+          firstName,
+          middleInitial,
+        ].filter(Boolean).join(", ");
+
         setResident(residentData);
 
         setFormData({
           lastName: residentData.lastName || "",
-          firstName: [
-            residentData.firstName,
-            residentData.middleName,
-          ]
-            .filter(Boolean)
-            .join(" "),
-
+          firstName: firstNameWithMiddleInitial || "",
           disposition: "",
           Date: "",
           date: residentData.burialDate || "",
           lotNumber: residentData.lot?.number || "",
-          lotLocation: residentData.lot?.descriptor || "",
+          section: residentData.lot?.section?.name || "",
           lotOwner: residentData.lot?.owner || "",
           lotCardNotes: "",
         });
@@ -87,12 +92,54 @@ function InternmentCard() {
   };
 
   const handleGenerate = async () => {
-  try {
+    try {
     setError("");
+
+    if (!formData.lastName.trim()) {
+      setError("Last Name is required.");
+      return;
+    }
+
+    if (!formData.firstName.trim()) {
+      setError("First Name is required.");
+      return;
+    }
+
+    if (!formData.Date.trim()) {
+      setError("Date is required.");
+      return;
+    }
+
+    if (!formData.date) {
+      setError("Date of Internment is required.");
+      return;
+    }
+
+    if (!formData.lotNumber.trim()) {
+      setError("Lot Number is required.");
+      return;
+    }
+
+    if (!formData.section.trim()) {
+      setError("Section is required.");
+      return;
+    }
+
+    if (!formData.lotOwner.trim()) {
+      setError("Lot Owner is required.");
+      return;
+    }
+
+    const pdfFormData = {
+      ...formData,
+      firstName: `${formData.firstName} ${formData.middleInitial}`.trim(),
+    };
+
+    console.log("Generating Internment Card:", pdfFormData);
 
     const pdfBlob = await generateForm(
       "interment_card",
-      formData
+      pdfFormData
     );
 
     const pdfUrl = URL.createObjectURL(pdfBlob);
@@ -102,13 +149,6 @@ function InternmentCard() {
     setTimeout(() => {
       URL.revokeObjectURL(pdfUrl);
     }, 10000);
-
-    // If the user also selected Internment Record,
-    // go to that form after generating the card.
-    if (createInternmentRecord) {
-      navigate(`/admin/residents/${rid}/internment-record`);
-    }
-    
   } catch (err) {
     console.error("Failed to generate interment card:", err);
     setError(err.message || "Failed to generate interment card");
@@ -119,23 +159,6 @@ function InternmentCard() {
     return (
       <Box sx={{ p: 4 }}>
         <Typography>Loading resident...</Typography>
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography color="error">
-          {error}
-        </Typography>
-
-        <Button
-          onClick={() => navigate(-1)}
-          sx={{ mt: 2 }}
-        >
-          Back
-        </Button>
       </Box>
     );
   }
@@ -178,6 +201,18 @@ function InternmentCard() {
         >
           Internment Card Information
         </Typography>
+        
+        {error && (
+          <Typography
+            color="error"
+            sx={{
+              mb: 2,
+              fontWeight: "bold",
+            }}
+          >
+            {error}
+          </Typography>
+        )}
 
         <Box
           sx={{
@@ -228,8 +263,12 @@ function InternmentCard() {
           <TextField
             label="Date of Internment"
             name="date"
+            type="date"
             value={formData.date}
             onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
             required
             variant="filled"
             sx ={textFieldStyle}
@@ -246,9 +285,9 @@ function InternmentCard() {
           />
 
           <TextField
-            label="Lot Location"
-            name="lotLocation"
-            value={formData.lotLocation}
+            label="Section"
+            name="section"
+            value={formData.section}
             onChange={handleChange}
             variant="filled"
             sx ={textFieldStyle}
