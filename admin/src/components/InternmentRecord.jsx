@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 import { generateForm } from "../api/formApi";
+
 const textFieldStyle = {
   backgroundColor: "white",
   borderRadius: "6px",
@@ -87,7 +88,16 @@ function InternmentRecord() {
     try {
       setError("");
 
-      console.log("Generating Internment Record:", formData);
+      // require following minimum information
+      if (!formData.name.trim()) {
+        setError("Full Name of Deceased is required.");
+        return;
+      }
+
+      if (!formData.dateOfDeath) {
+        setError("Date of Death is required.");
+        return;
+      }
 
       const pdfBlob = await generateForm(
         "internment_record",
@@ -95,7 +105,6 @@ function InternmentRecord() {
       );
 
       const pdfUrl = URL.createObjectURL(pdfBlob);
-
       window.open(pdfUrl, "_blank");
 
       setTimeout(() => {
@@ -104,7 +113,9 @@ function InternmentRecord() {
 
     } catch (err) {
       console.error("Failed to generate internment record:", err);
-      setError(err.message || "Failed to generate internment record");
+      setError(
+        err.message || "Failed to generate internment record"
+      );
     }
   };
 
@@ -114,23 +125,6 @@ function InternmentRecord() {
         <Typography>
           Loading resident...
         </Typography>
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography color="error">
-          {error}
-        </Typography>
-
-        <Button
-          onClick={() => navigate(-1)}
-          sx={{ mt: 2 }}
-        >
-          Back
-        </Button>
       </Box>
     );
   }
@@ -173,7 +167,18 @@ function InternmentRecord() {
         >
           Internment Record Information
         </Typography>
-
+        
+        {error && (
+          <Typography
+            color="error"
+            sx={{
+              mb: 2,
+              fontWeight: "bold",
+            }}
+          >
+            {error}
+          </Typography>
+        )}
         <Box
           sx={{
             display: "grid",
@@ -202,6 +207,7 @@ function InternmentRecord() {
             sx={{...textFieldStyle ,
               gridColumn: "1 / -1",
             }}
+            placeholder="City, State"
           />
 
           <TextField
@@ -218,20 +224,28 @@ function InternmentRecord() {
           <TextField
             label="Date of Birth"
             name="dateOfBirth"
+            type="date"
             value={formData.dateOfBirth}
             onChange={handleChange}
             variant="filled"
             sx ={textFieldStyle}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
           <TextField
             label="Date of Death"
             name="dateOfDeath"
+            type="date"
             value={formData.dateOfDeath}
             onChange={handleChange}
             required
             variant="filled"
             sx ={textFieldStyle}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
           <TextField
