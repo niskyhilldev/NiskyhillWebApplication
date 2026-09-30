@@ -45,32 +45,84 @@ function CertificateOfOwnership() {
   // handle generating the forms
   const handleGenerate = async () => {
     try {
-        setGenerating(true);
-        setGenerateError("");
+      setError("");
 
-        const pdfBlob = await generateForm(
-            "certificate_of_ownership",
-            formData
-        );
+      // require all fields before generation
+      if (!formData.lotNo.trim()) {
+        setError("Lot Number is required.");
+        return;
+      }
 
-        const pdfUrl = URL.createObjectURL(pdfBlob);
+      if (!formData.section.trim()) {
+        setError("Section is required.");
+        return;
+      }
 
-        window.open(pdfUrl, "_blank");
+      if (!formData.day.trim()) {
+        setError("Day is required.");
+        return;
+      }
 
-        // Clean up the temporary URL later
-        setTimeout(() => {
-            URL.revokeObjectURL(pdfUrl);
-        }, 10000);
+      if (!formData.month.trim()) {
+        setError("Month is required.");
+        return;
+      }
+
+      if (!formData.year.trim()) {
+        setError("Year is required.");
+        return;
+      }
+
+      if (!formData.ownerName.trim()) {
+        setError("Owner Name is required.");
+        return;
+      }
+
+      if (!formData.ownerAddress.trim()) {
+        setError("Owner Address is required.");
+        return;
+      }
+
+      if (!formData.considerationWords.trim()) {
+        setError("Consideration in Words is required.");
+        return;
+      }
+
+      if (!formData.considerationDollars.trim()) {
+        setError("Consideration in Dollars is required.");
+        return;
+      }
+
+      if (!formData.depositWords.trim()) {
+        setError("Deposit in Words is required.");
+        return;
+      }
+
+      if (!formData.depositDollars.trim()) {
+        setError("Deposit in Dollars is required.");
+        return;
+      }
+
+      const pdfBlob = await generateForm(
+        "certificate_of_ownership",
+        formData
+      );
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
 
     } catch (err) {
-        console.error("Failed to generate certificate:", err);
-        setGenerateError(
-            err.message || "Failed to generate certificate"
-        );
-    } finally {
-        setGenerating(false);
+      console.error("Failed to generate certificate:", err);
+      setError(
+        err.message || "Failed to generate certificate of ownership"
+      );
     }
-};
+  };
+
   useEffect(() => {
     const loadLot = async () => {
       try {
@@ -121,23 +173,6 @@ function CertificateOfOwnership() {
     );
   }
 
-  if (error) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Typography color="error">
-          {error}
-        </Typography>
-
-        <Button
-          onClick={() => navigate(-1)}
-          sx={{ mt: 2 }}
-        >
-          Back
-        </Button>
-      </Box>
-    );
-  }
-
   return (
     <Box sx={{ p: 4 }}>
       {/* <Typography
@@ -180,6 +215,18 @@ function CertificateOfOwnership() {
         >
           Certificate of Ownership Information
         </Typography>
+        
+        {error && (
+          <Typography
+            color="error"
+            sx={{
+              mb: 2,
+              fontWeight: "bold",
+            }}
+          >
+            {error}
+          </Typography>
+        )}
 
         <Box
           sx={{
