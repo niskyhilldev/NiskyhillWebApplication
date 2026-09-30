@@ -43,7 +43,7 @@ function ResidentAddButton() {
     marker: false,
     foundation: false,
     publicViewable: false,
-    generateIntermentCard: false,
+    generateInternmentCard: false,
     createInternmentRecord: false,
   };
 
@@ -142,8 +142,8 @@ function ResidentAddButton() {
       }
 
       // save before adding resident
-      const shouldCreateCard = form.generateIntermentCard;
-      const shouldCreateRecord = form.createIntermentRecord;
+      const shouldCreateCard = form.generateInternmentCard;
+      const shouldCreateRecord = form.createInternmentRecord;
 
       const payload = {
         firstName: form.firstName,
@@ -166,13 +166,11 @@ function ResidentAddButton() {
 
       handleClose();
 
-      // redirect to int card form first
-      if (shouldCreateCard) {
-        navigate(`/admin/residents/${newResident.rid}/internment-card`, {
-          state: {
-            crreateInternmentRecord: shouldCreateRecord, // if both selected keep track of checkbox
-          },
-        });
+      // navigate to combined page if both selected, else remain seperate
+      if (shouldCreateCard && shouldCreateRecord) {
+        navigate(`/admin/residents/${newResident.rid}/internment-forms`);
+      } else if (shouldCreateCard) {
+        navigate(`/admin/residents/${newResident.rid}/internment-card`);
       } else if (shouldCreateRecord) {
         navigate(`/admin/residents/${newResident.rid}/internment-record`);
       }
@@ -524,8 +522,8 @@ function ResidentAddButton() {
             <FormControlLabel
               control={
                 <Checkbox
-                  name="generateIntermentCard"
-                  checked={form.generateIntermentCard}
+                  name="generateInternmentCard"
+                  checked={form.generateInternmentCard}
                   onChange={handleChange}
                   sx={{
                     color: "#E8AE31",
@@ -543,8 +541,8 @@ function ResidentAddButton() {
             <FormControlLabel
               control={
                 <Checkbox
-                  name="createIntermentRecord"
-                  checked={form.createIntermentRecord}
+                  name="createInternmentRecord"
+                  checked={form.createInternmentRecord}
                   onChange={handleChange}
                   sx={{
                     color: "#E8AE31",
