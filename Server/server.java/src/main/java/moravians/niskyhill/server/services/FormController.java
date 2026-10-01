@@ -60,6 +60,30 @@ public class FormController {
             return;
         }
 
+        // Save a copy. A failure is logged but never blocks the user's PDF.
+        try {
+            Long lid = parseId(request.fieldValues().get("lid"));
+            Long rid = parseId(request.fieldValues().get("rid"));
+
+            switch (request.formId()) {
+                case "certificate_of_ownership" -> {
+                    if (lid == null) throw new IllegalStateException("no lid in request");
+                    database.saveFormFile("certificate_of_ownership", "lot_id", lid, pdfBytes);
+                }
+                case "interment_card" -> {
+                    if (rid == null) throw new IllegalStateException("no rid in request");
+                    database.saveFormFile("internment_card", "resident_id", rid, pdfBytes);
+                }
+                case "internment_record" -> {
+                    if (rid == null) throw new IllegalStateException("no rid in request");
+                    database.saveFormFile("internment_record", "resident_id", rid, pdfBytes);
+                }
+                default -> { }
+            }
+        } catch (Exception e) {
+            System.err.printf("Failed to save form '%s': %s%n", request.formId(), e.getMessage());
+        }
+
         ctx.contentType("application/pdf");
         ctx.header(
             "Content-Disposition",
