@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 import { generateForm } from "../api/formApi";
+import NotificationSnackbar from "./NotificationSnackBar";
 
 const textFieldStyle = {
   backgroundColor: "white",
@@ -244,7 +245,7 @@ function InternmentForms() {
         return;
       }
 
-      if (!formData.dateOfDeath) {
+      if (!recordData.dateOfDeath) {
         setError("Date of Death is required.");
         return;
       }
@@ -289,7 +290,17 @@ function InternmentForms() {
   }
 
   return (
+
+    
     <Box sx={{ p: 4 }}>
+
+       <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+       />
 
       <Typography
         variant="h4"
@@ -331,17 +342,7 @@ function InternmentForms() {
           Internment Card Information
         </Typography>
 
-        {error && (
-          <Typography
-            color="error"
-            sx={{
-              mb: 2,
-              fontWeight: "bold",
-            }}
-          >
-            {error}
-          </Typography>
-        )}
+       
 
         <Box
           sx={{
@@ -517,17 +518,7 @@ function InternmentForms() {
           Internment Record Information
         </Typography>
 
-        {error && (
-          <Typography
-            color="error"
-            sx={{
-              mb: 2,
-              fontWeight: "bold",
-            }}
-          >
-            {error}
-          </Typography>
-        )}
+      
 
         <Box
           sx={{

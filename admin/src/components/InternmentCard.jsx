@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 import { generateForm } from "../api/formApi";
-
+import NotificationSnackbar from "./NotificationSnackBar";
 //used to style textFields with less clutter
 const textFieldStyle = {
   backgroundColor: "white",
@@ -165,6 +165,15 @@ function InternmentCard() {
 
   return (
     <Box sx={{ p: 4 }}>
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+       />
+       
       <Typography
         variant="h4"
         sx={{
@@ -202,17 +211,7 @@ function InternmentCard() {
           Internment Card Information
         </Typography>
         
-        {error && (
-          <Typography
-            color="error"
-            sx={{
-              mb: 2,
-              fontWeight: "bold",
-            }}
-          >
-            {error}
-          </Typography>
-        )}
+      
 
         <Box
           sx={{

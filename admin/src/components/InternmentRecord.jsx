@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { fetchResidentById } from "../api/residentApi";
 import { generateForm } from "../api/formApi";
-
+import NotificationSnackbar from "./NotificationSnackBar";
 const textFieldStyle = {
   backgroundColor: "white",
   borderRadius: "6px",
@@ -131,6 +131,15 @@ function InternmentRecord() {
 
   return (
     <Box sx={{ p: 4 }}>
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+       />
+       
       <Typography
         variant="h4"
         sx={{
@@ -168,17 +177,7 @@ function InternmentRecord() {
           Internment Record Information
         </Typography>
         
-        {error && (
-          <Typography
-            color="error"
-            sx={{
-              mb: 2,
-              fontWeight: "bold",
-            }}
-          >
-            {error}
-          </Typography>
-        )}
+      
         <Box
           sx={{
             display: "grid",

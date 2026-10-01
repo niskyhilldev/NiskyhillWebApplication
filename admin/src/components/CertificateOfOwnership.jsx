@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { fetchLotById } from "../api/lotApi";
 import { generateForm } from "../api/formApi";
+import NotificationSnackbar from "./NotificationSnackBar";
 
 //used to style textFields with less clutter
 const textFieldStyle = {
@@ -26,7 +27,6 @@ function CertificateOfOwnership() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [generateError, setGenerateError] = useState("");
 
   const [formData, setFormData] = useState({
     lotNo: "",
@@ -186,6 +186,14 @@ function CertificateOfOwnership() {
         Certificate of Ownership
       </Typography> */}
 
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+       />
+
       <Paper
         sx={{
           p: 4,
@@ -216,17 +224,6 @@ function CertificateOfOwnership() {
           Certificate of Ownership Information
         </Typography>
         
-        {error && (
-          <Typography
-            color="error"
-            sx={{
-              mb: 2,
-              fontWeight: "bold",
-            }}
-          >
-            {error}
-          </Typography>
-        )}
 
         <Box
           sx={{
@@ -351,17 +348,6 @@ function CertificateOfOwnership() {
           />
         </Box>
 
-        {generateError && (
-            <Typography
-                sx={{
-                    color: "error.main",
-                    mb: 2,
-                    textAlign: "right",
-                }}
-            >
-                {generateError}
-            </Typography>
-        )}
         <Box
           sx={{
             display: "flex",
