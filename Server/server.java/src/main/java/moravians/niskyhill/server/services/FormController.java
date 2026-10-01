@@ -6,6 +6,7 @@ import moravians.niskyhill.server.auth.AuthHandler;
 import moravians.niskyhill.server.dtos.FormRequestDTO;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.services.FormService;
+import moravians.niskyhill.server.database.Database;
 
 /**
  * Service layer for wiring form generation into Javalin HTTP server
@@ -18,8 +19,8 @@ public class FormController {
      * 
      * @param app Javalin app instance
      */
-    public static void register(Javalin app) {
-        app.post("/forms/generate", FormController::handleGenerateForm);
+    public static void register(Javalin app, Database database) {
+        app.post("/forms/generate", ctx -> handleGenerateForm(ctx, database));
     }
 
     /**
@@ -27,7 +28,7 @@ public class FormController {
      * 
      * @param ctx Javalin context
      */
-    private static void handleGenerateForm(Context ctx) throws HttpStatusException {
+    private static void handleGenerateForm(Context ctx, Database database) throws HttpStatusException {
         AuthHandler.requireRouteAuth(ctx);
         FormRequestDTO request;
         try {
@@ -66,4 +67,10 @@ public class FormController {
         );
         ctx.result(pdfBytes);
     }
+
+    private static Long parseId(String s) {
+        try { return s == null ? null : Long.parseLong(s); }
+        catch (NumberFormatException e) { return null; }
+    }
+
 }
