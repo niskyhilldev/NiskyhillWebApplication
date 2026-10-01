@@ -1041,4 +1041,27 @@ public class Database {
         }
 
     }
+
+    /**
+     * Saves a generated form PDF to the database
+     * Note: the table and column names are hardcoded by the caller (FormController), never user input
+     * 
+     * @param table the name of the table to save the form in (certificate_of_ownership, internment_card, or internment_record)
+     * @param idColumn the name of the column that links the form to its owner (lot_id for lots, resident_id for residents)
+     * @param id the id of the lot or resident the form belongs to
+     * @param file the bytes of the generated PDF
+     * @throws HttpStatusException if the form could not be saved
+     */
+    public void saveFormFile(String table, String idColumn, Long id, byte[] file) throws HttpStatusException {
+        String q = "INSERT INTO " + table + " (" + idColumn + ", file_data) VALUES (?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, id);
+            ps.setBytes(2, file);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Save Form", e);
+        }
+    }
 }
