@@ -139,7 +139,7 @@ function InternmentCard() {
 
     const pdfBlob = await generateForm(
       "interment_card",
-      pdfFormData
+      { ...pdfFormData, rid: String(rid) }
     );
 
     const pdfUrl = URL.createObjectURL(pdfBlob);

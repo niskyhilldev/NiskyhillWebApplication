@@ -105,7 +105,7 @@ function CertificateOfOwnership() {
 
       const pdfBlob = await generateForm(
         "certificate_of_ownership",
-        formData
+        { ...formData, lid: String(lid) }
       );
 
       const pdfUrl = URL.createObjectURL(pdfBlob);
