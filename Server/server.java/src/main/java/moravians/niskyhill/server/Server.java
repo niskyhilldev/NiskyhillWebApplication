@@ -276,7 +276,7 @@ public class Server {
         });
 
         // Generate a PDF overlay for a given form and field values
-        FormController.register(app);
+        FormController.register(app, database);
 
 
         
