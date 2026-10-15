@@ -132,7 +132,7 @@ function InternmentCard() {
 
     const pdfFormData = {
       ...formData,
-      firstName: `${formData.firstName} ${formData.middleInitial}`.trim(),
+      //firstName: `${formData.firstName} ${formData.middleInitial}`.trim(),
     };
 
     console.log("Generating Internment Card:", pdfFormData);
