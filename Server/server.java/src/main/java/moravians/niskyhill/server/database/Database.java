@@ -1064,4 +1064,20 @@ public class Database {
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Save Form", e);
         }
     }
+
+    public byte[] getLatestFormFile(String table, String idColumn, String pkColumn, Long id) throws HttpStatusException {
+        String q = "SELECT file_data FROM " + table +
+                " WHERE " + idColumn + " = ? AND file_data IS NOT NULL" +
+                " ORDER BY " + pkColumn + " DESC LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getBytes("file_data") : null;
+            }
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Form", e);
+        }
+    }
 }
