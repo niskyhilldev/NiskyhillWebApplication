@@ -9,7 +9,9 @@ import InternmentRecord from './components/InternmentRecord.jsx';
 import InternmentForms from "./components/InternmentForms";
 import {Box, Tabs, Tab} from '@mui/material'
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getCurrentUser } from './api/userAPI';
+import { UserContext } from "./components/UserContext.jsx"
 
 //inline admin dashboard 
 function AdminDashboard(){
@@ -66,13 +68,63 @@ function AdminDashboard(){
 function App() { 
   // state flag to track authentication status
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        console.log("Current user:", data);
+        if (active) {
+          setUser(data);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        if (active) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (active) {
+          setUserLoading(false);
+        }
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
+    <UserContext.Provider value={user}>
     <BrowserRouter>
       <Routes>
         {/* Login first then direct to admin dashboard (default path directsto login too) */}
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
+        {/**fetch user information upon login */}
+        <Route path="/login"
+          element={
+            <LoginForm
+              onLogin={async () => {
+                try {
+                  const data = await getCurrentUser();
+                  setUser(data);
+                  setIsAuthenticated(true);
+                } catch (error) {
+                  console.error("Failed to get user:", error);
+                  setUser(null);
+                  setIsAuthenticated(false);
+                }
+              }}
+            />
+          }
+        />
         <Route path="/admin" element={isAuthenticated ? <AdminDashboard /> : <Navigate to="/login" />} />
         <Route path="/admin/lots/:lid/certificate"
           element={
@@ -108,6 +160,7 @@ function App() {
         <Route path="reset-password" element={<ResetPassword />}/>
       </Routes>
     </BrowserRouter>
+    </UserContext.Provider>
   )
 }
 

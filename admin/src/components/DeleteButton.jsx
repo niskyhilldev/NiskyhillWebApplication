@@ -9,11 +9,16 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteResident } from "../api/residentApi";
 import { deleteLot } from "../api/lotApi";
+import { useUser } from "./UserContext.jsx";
+
+
 
 
 function DeleteButton({ id, onDelete, type}) { //rid is the resident the button is for, onDelete is a passed function which will remove the row from view in the parent
     const [loading, setLoading] = useState(false);
+    const user = useUser();
 
+   
     const handleDelete = async () => {
         if(type === 'resident'){
             const confirmDelete = window.confirm(
@@ -52,6 +57,10 @@ function DeleteButton({ id, onDelete, type}) { //rid is the resident the button 
             }
         }
 
+    }
+    
+    if (user?.role !== "Developer") {
+    return null;
     }
         
     return(
