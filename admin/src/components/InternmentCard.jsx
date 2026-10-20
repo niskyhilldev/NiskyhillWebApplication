@@ -105,10 +105,7 @@ function InternmentCard() {
       return;
     }
 
-    if (!formData.Date.trim()) {
-      setError("Date is required.");
-      return;
-    }
+
 
     if (!formData.date) {
       setError("Date of Internment is required.");
@@ -173,7 +170,7 @@ function InternmentCard() {
           severity="error"
           onClose={() => setError(null)}
        />
-       
+
       <Typography
         variant="h4"
         sx={{
@@ -243,6 +240,7 @@ function InternmentCard() {
           <TextField
             label="Disposition"
             name="disposition"
+            placeholder="ex: cremation"
             value={formData.disposition}
             onChange={handleChange}
             variant="filled"
@@ -250,7 +248,7 @@ function InternmentCard() {
           />
 
           <TextField
-            label="Date"
+            label="Age (Years - Months - Days)"
             name="Date"
             value={formData.Date}
             onChange={handleChange}
