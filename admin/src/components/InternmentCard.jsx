@@ -129,14 +129,14 @@ function InternmentCard() {
 
     const pdfFormData = {
       ...formData,
-      firstName: `${formData.firstName} ${formData.middleInitial}`.trim(),
+      //firstName: `${formData.firstName} ${formData.middleInitial}`.trim(),
     };
 
     console.log("Generating Internment Card:", pdfFormData);
 
     const pdfBlob = await generateForm(
       "interment_card",
-      pdfFormData
+      { ...pdfFormData, rid: String(rid) }
     );
 
     const pdfUrl = URL.createObjectURL(pdfBlob);
