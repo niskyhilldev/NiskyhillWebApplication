@@ -28,10 +28,14 @@ import SectionDropdown from "./SectionDropDown";
 import { fetchSections, performLotSearch } from "../api/lotApi";
 import { performResidentSearch } from "../api/residentApi";
 import NotificationSnackbar from "./NotificationSnackBar";
+import { useUser } from "./UserContext";
 
 
-
-    function ResidentSearch() {
+  function ResidentSearch() {
+    // load user context
+    const user = useUser();
+    const isSuperintendent = user?.role === "Superintendent";
+    const canManageResidents = user != null && !isSuperintendent;
 
     //states for section dropdown
     const [sections, setSections] = useState([]);
@@ -316,7 +320,7 @@ import NotificationSnackbar from "./NotificationSnackBar";
             >
                 Search
             </Button>
-            <ResidentAddButton/>
+            {canManageResidents && <ResidentAddButton/>}
             </Box>
             {/**If search fails display error */}
         <NotificationSnackbar
@@ -382,85 +386,89 @@ import NotificationSnackbar from "./NotificationSnackBar";
                         gap: 1,
                       }}
                     >
-                      <ResidentEditButton
-                        resident={row}
-                        isFlattened={false}
-                        onSave={(updatedResident) => {
-                          setLotSearchResults((prev) =>
-                            prev.map((r) =>
-                              String(r.rid) === String(updatedResident.rid)
-                                ? updatedResident
-                                : r
-                            )
-                          );
+                      {canManageResidents && (
+                        <>
+                          <ResidentEditButton
+                            resident={row}
+                            isFlattened={false}
+                            onSave={(updatedResident) => {
+                              setLotSearchResults((prev) =>
+                                prev.map((r) =>
+                                  String(r.rid) === String(updatedResident.rid)
+                                    ? updatedResident
+                                    : r
+                                )
+                              );
 
-                          setNameSearchResults((prev) =>
-                            prev.map((r) =>
-                              String(r.rid) === String(updatedResident.rid)
-                                ? updatedResident
-                                : r
-                            )
-                          );
-                        }}
-                      />
+                              setNameSearchResults((prev) =>
+                                prev.map((r) =>
+                                  String(r.rid) === String(updatedResident.rid)
+                                    ? updatedResident
+                                    : r
+                                )
+                              );
+                            }}
+                          />
 
-                     {/* internment Card */}
-                     <Tooltip title="Interment Card">
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/admin/residents/${row.rid}/internment-card`)
-                        }
-                        sx={{
-                          bgcolor: "#D9D9D9",
-                          color: "#0D2543",
-                          width: 60,
-                          height: 20,
-                          borderRadius: "4px",
-                          "&:hover": {
-                            bgcolor: "#bfbfbf",
-                          },
-                        }}
-                      >
-                        <BadgeIcon />
-                      </IconButton>
-                     </Tooltip>
+                          {/* internment Card */}
+                          <Tooltip title="Interment Card">
+                            <IconButton
+                              onClick={() =>
+                                navigate(`/admin/residents/${row.rid}/internment-card`)
+                              }
+                              sx={{
+                                bgcolor: "#D9D9D9",
+                                color: "#0D2543",
+                                width: 60,
+                                height: 20,
+                                borderRadius: "4px",
+                                "&:hover": {
+                                  bgcolor: "#bfbfbf",
+                                },
+                              }}
+                            >
+                              <BadgeIcon />
+                            </IconButton>
+                          </Tooltip>
                      
-                      {/* internment Record */}
-                     <Tooltip title="Interment Record">
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/admin/residents/${row.rid}/internment-record`)
-                        }
-                        sx={{
-                          bgcolor: "#D9D9D9",
-                          color: "#0D2543",
-                          width: 60,
-                          height: 20,
-                          borderRadius: "4px",
-                          "&:hover": {
-                            bgcolor: "#bfbfbf",
-                          },
-                        }}
-                      >
-                        <PostAddIcon />
-                      </IconButton>
-                     </Tooltip>
+                          {/* internment Record */}
+                          <Tooltip title="Interment Record">
+                            <IconButton
+                              onClick={() =>
+                                navigate(`/admin/residents/${row.rid}/internment-record`)
+                              }
+                              sx={{
+                                bgcolor: "#D9D9D9",
+                                color: "#0D2543",
+                                width: 60,
+                                height: 20,
+                                borderRadius: "4px",
+                                "&:hover": {
+                                  bgcolor: "#bfbfbf",
+                                },
+                              }}
+                            >
+                              <PostAddIcon />
+                            </IconButton>
+                          </Tooltip>
 
-                      <DeleteButton
-                        rid={row.rid}
-                        type='resident'
-                        //onDelete removes the requested resident from the rendered results
-                        onDelete={(rid) => {
-                          //remove resident from both search results, as to not cause a conflict
-                          setLotSearchResults((prev) => 
-                            prev.filter((r) => String(r.rid) !== String(rid))
-                          );
+                          <DeleteButton
+                            rid={row.rid}
+                            type='resident'
+                            //onDelete removes the requested resident from the rendered results
+                            onDelete={(rid) => {
+                              //remove resident from both search results, as to not cause a conflict
+                              setLotSearchResults((prev) => 
+                                prev.filter((r) => String(r.rid) !== String(rid))
+                              );
 
-                          setNameSearchResults((prev) =>
-                            prev.filter((r) => String(r.rid) !== String(rid))
-                          );
-                        }}
-                      />
+                              setNameSearchResults((prev) =>
+                                prev.filter((r) => String(r.rid) !== String(rid))
+                              );
+                            }}
+                          />
+                        </>
+                      )}
                     </Box>
                     </TableCell >
                   </TableRow>
@@ -628,7 +636,7 @@ import NotificationSnackbar from "./NotificationSnackBar";
           >
             Search
           </Button>
-          <ResidentAddButton/>
+          {canManageResidents && <ResidentAddButton />}
         </Box>
         
 
@@ -705,92 +713,97 @@ import NotificationSnackbar from "./NotificationSnackBar";
                         gap: 1,
                       }}
                     >
-                      <ResidentEditButton
-                        resident={row}
-                        isFlattened={false}
-                        onSave={(updatedResident) => {
-                          setLotSearchResults((prev) =>
-                            prev.map((r) =>
-                              String(r.rid) === String(updatedResident.rid)
-                                ? updatedResident
-                                : r
-                            )
-                          );
+                    {canManageResidents && (
+                      <>
+                        <ResidentEditButton
+                          resident={row}
+                          isFlattened={false}
+                          onSave={(updatedResident) => {
+                            setLotSearchResults((prev) =>
+                              prev.map((r) =>
+                                String(r.rid) === String(updatedResident.rid)
+                                  ? updatedResident
+                                  : r
+                              )
+                            );
 
-                          setNameSearchResults((prev) =>
-                            prev.map((r) =>
-                              String(r.rid) === String(updatedResident.rid)
-                                ? updatedResident
-                                : r
-                            )
-                          );
-                        }}
-                      />
+                            setNameSearchResults((prev) =>
+                              prev.map((r) =>
+                                String(r.rid) === String(updatedResident.rid)
+                                  ? updatedResident
+                                  : r
+                              )
+                            );
+                          }}
+                        />
 
-                    {/* internment Card */}
-                     <Tooltip title="Interment Card">
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/admin/residents/${row.rid}/internment-card`)
-                        }
-                        sx={{
-                          bgcolor: "#D9D9D9",
-                          color: "#0D2543",
-                          width: 60,
-                          height: 20,
-                          borderRadius: "4px",
-                          "&:hover": {
-                            bgcolor: "#bfbfbf",
-                          },
-                        }}
-                      >
-                        <BadgeIcon />
-                      </IconButton>
-                     </Tooltip>
-                      {/* internment Record */}
-                     <Tooltip title="Interment Record">
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/admin/residents/${row.rid}/internment-record`)
-                        }
-                        sx={{
-                          bgcolor: "#D9D9D9",
-                          color: "#0D2543",
-                          width: 60,
-                          height: 20,
-                          borderRadius: "4px",
-                          "&:hover": {
-                            bgcolor: "#bfbfbf",
-                          },
-                        }}
-                      >
-                        <PostAddIcon />
-                      </IconButton>
-                     </Tooltip>
-                      <DeleteButton
-                        rid={row.rid}
-                        type='resident'
-                        //onDelete removes the requested resident from the rendered results
-                        onDelete={(rid) => {
-                          //remove resident from both search results, as to not cause a conflict
-                          setLotSearchResults((prev) => 
-                            prev.filter((r) => String(r.rid) !== String(rid))
-                          );
+                        {/* internment Card */}
+                        <Tooltip title="Interment Card">
+                          <IconButton
+                            onClick={() =>
+                              navigate(`/admin/residents/${row.rid}/internment-card`)
+                            }
+                            sx={{
+                              bgcolor: "#D9D9D9",
+                              color: "#0D2543",
+                              width: 60,
+                              height: 20,
+                              borderRadius: "4px",
+                              "&:hover": {
+                                bgcolor: "#bfbfbf",
+                              },
+                            }}
+                          >
+                            <BadgeIcon />
+                          </IconButton>
+                        </Tooltip>
 
-                          setNameSearchResults((prev) =>
-                            prev.filter((r) => String(r.rid) !== String(rid))
-                          );
-                        }}
-                      />
-                    </Box>
-                      
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </Box>
+                        {/* internment Record */}
+                        <Tooltip title="Interment Record">
+                          <IconButton
+                            onClick={() =>
+                              navigate(`/admin/residents/${row.rid}/internment-record`)
+                            }
+                            sx={{
+                              bgcolor: "#D9D9D9",
+                              color: "#0D2543",
+                              width: 60,
+                              height: 20,
+                              borderRadius: "4px",
+                              "&:hover": {
+                                bgcolor: "#bfbfbf",
+                              },
+                            }}
+                          >
+                            <PostAddIcon />
+                          </IconButton>
+                        </Tooltip>
+                          <DeleteButton
+                            rid={row.rid}
+                            type='resident'
+                            //onDelete removes the requested resident from the rendered results
+                            onDelete={(rid) => {
+                              //remove resident from both search results, as to not cause a conflict
+                              setLotSearchResults((prev) => 
+                                prev.filter((r) => String(r.rid) !== String(rid))
+                              );
+
+                              setNameSearchResults((prev) =>
+                                prev.filter((r) => String(r.rid) !== String(rid))
+                              );
+                            }}
+                          />
+                        </>
+                      )} 
+                    </Box> 
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </Box>
+
         <Box
           sx={{
             display: 'flex',
