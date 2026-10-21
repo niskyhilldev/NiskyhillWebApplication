@@ -29,6 +29,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
 import { performResidentSearch } from "../api/residentApi";
 import NotificationSnackbar from "./NotificationSnackBar";
 import { useUser } from "./UserContext";
+import { openSavedForm } from "../api/formApi";
 
 
   function ResidentSearch() {
@@ -82,6 +83,16 @@ import { useUser } from "./UserContext";
 
    //navigating to form creation pages
    const navigate = useNavigate();
+
+    // open the saved PDF; if none exists yet, go to the fill-in page instead
+    async function handleOpenForm(formType, rid, fallbackPath) {
+      try {
+        const found = await openSavedForm(formType, rid);
+        if (!found) navigate(fallbackPath);
+      } catch (err) {
+        window.alert(err.message || "Failed to open form");
+      }
+    }
 
     async function activateNameResidentSearch(){
       setNamePage(0);
@@ -414,7 +425,11 @@ import { useUser } from "./UserContext";
                           <Tooltip title="Interment Card">
                             <IconButton
                               onClick={() =>
-                                navigate(`/admin/residents/${row.rid}/internment-card`)
+                                handleOpenForm(
+                                  "interment_card",
+                                  row.rid,
+                                  `/admin/residents/${row.rid}/internment-card`
+                                )
                               }
                               sx={{
                                 bgcolor: "#D9D9D9",
@@ -435,7 +450,11 @@ import { useUser } from "./UserContext";
                           <Tooltip title="Interment Record">
                             <IconButton
                               onClick={() =>
-                                navigate(`/admin/residents/${row.rid}/internment-record`)
+                                handleOpenForm(
+                                  "internment_record",
+                                  row.rid,
+                                  `/admin/residents/${row.rid}/internment-record`
+                                )
                               }
                               sx={{
                                 bgcolor: "#D9D9D9",
@@ -741,7 +760,11 @@ import { useUser } from "./UserContext";
                         <Tooltip title="Interment Card">
                           <IconButton
                             onClick={() =>
-                              navigate(`/admin/residents/${row.rid}/internment-card`)
+                              handleOpenForm(
+                                "interment_card",
+                                row.rid,
+                                `/admin/residents/${row.rid}/internment-card`
+                              )
                             }
                             sx={{
                               bgcolor: "#D9D9D9",
@@ -762,7 +785,11 @@ import { useUser } from "./UserContext";
                         <Tooltip title="Interment Record">
                           <IconButton
                             onClick={() =>
-                              navigate(`/admin/residents/${row.rid}/internment-record`)
+                              handleOpenForm(
+                                "internment_record",
+                                row.rid,
+                                `/admin/residents/${row.rid}/internment-record`
+                              )
                             }
                             sx={{
                               bgcolor: "#D9D9D9",

@@ -22,6 +22,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
 import DeleteButton from "./DeleteButton";
 import LotEditButton from "./LotEditButton";
 import NotificationSnackbar from "./NotificationSnackBar";
+import { openSavedForm } from "../api/formApi";
 function LotSearch() {
 
   //states for section dropdown
@@ -94,6 +95,15 @@ function LotSearch() {
       setSearchResults([]);
     } finally {
       setSearchLoading(false);    
+    }
+  }
+
+  async function handleOpenCertificate(lid) {
+    try {
+      const found = await openSavedForm("certificate_of_ownership", lid);
+      if (!found) navigate(`/admin/lots/${lid}/certificate`);
+    } catch (err) {
+      window.alert(err.message || "Failed to open form");
     }
   }
 
@@ -306,9 +316,7 @@ function LotSearch() {
 
                         <Tooltip title="Certificate of Ownership">
                           <IconButton
-                            onClick={() =>
-                              navigate(`/admin/lots/${row.lid}/certificate`)
-                            }
+                            onClick={() => handleOpenCertificate(row.lid)}
                             sx={{
                               bgcolor: "#D9D9D9",
                               color: "#0D2543",
