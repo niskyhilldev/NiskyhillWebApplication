@@ -23,6 +23,7 @@ import DeleteButton from "./DeleteButton";
 import LotEditButton from "./LotEditButton";
 import NotificationSnackbar from "./NotificationSnackBar";
 import { useUser } from "./UserContext.jsx";
+import { openSavedForm } from "../api/formApi";
 function LotSearch() {
 
   //states for section dropdown
@@ -98,6 +99,15 @@ function LotSearch() {
       setSearchResults([]);
     } finally {
       setSearchLoading(false);    
+    }
+  }
+
+  async function handleOpenCertificate(lid) {
+    try {
+      const found = await openSavedForm("certificate_of_ownership", lid);
+      if (!found) navigate(`/admin/lots/${lid}/certificate`);
+    } catch (err) {
+      window.alert(err.message || "Failed to open form");
     }
   }
 
