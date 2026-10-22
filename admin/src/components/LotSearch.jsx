@@ -321,7 +321,7 @@ function LotSearch() {
                         {(user?.role === "Developer" || user?.role === "Controller") ? (
                           <Tooltip title="Certificate of Ownership">
                             <IconButton
-                              onClick={() => navigate(`/admin/lots/${row.lid}/certificate`)}
+                              onClick={() => handleOpenCertificate(row.lid)}
                               sx={{
                                 bgcolor: "#D9D9D9",
                                 color: "#0D2543",
