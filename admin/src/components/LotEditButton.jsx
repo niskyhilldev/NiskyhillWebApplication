@@ -18,6 +18,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { fetchSections} from "../api/lotApi";  
 import { updateLot } from "../api/lotApi";
+import { useUser } from "./UserContext.jsx";
 
 function LotEditButton({lot, onSave}) {
 
@@ -26,7 +27,14 @@ function LotEditButton({lot, onSave}) {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-   
+  
+  const user = useUser();
+
+
+  //if user doesnt have proper rights, remove rendering of button
+  if (!(user?.role == "Developer" || user?.role == "Controller")) {
+    return null;
+  }
   return (
     // button itself
     <>
@@ -151,6 +159,8 @@ useEffect(() => {
     "& .MuiSelect-select": { color: "black" },
   };
 
+
+  
   return (
     <Dialog
       open={open}

@@ -59,7 +59,7 @@ function DeleteButton({ id, onDelete, type}) { //rid is the resident the button 
 
     }
     
-    if (user?.role !== "Developer") {
+    if (!(user?.role == "Developer" || user?.role == "Controller")) {
     return null;
     }
         

@@ -15,6 +15,7 @@ import { Box,
 import AddIcon from "@mui/icons-material/Add";
 import {fetchSections, addLot} from "../api/lotApi";
 import NotificationSnackbar from "./NotificationSnackBar";
+import { useUser } from "./UserContext.jsx";
 
 {/** Button should handle all actions of adding new lots */}
 
@@ -34,6 +35,8 @@ function LotAddButton() {
   const [generateCertificate, setGenerateCertificate] = useState(false);
   const [sections, setSections] = useState([]);
   const navigate = useNavigate();
+  
+  const user = useUser();
 
   // fetch sections for dropdown
   useEffect(() => {
@@ -117,6 +120,10 @@ function LotAddButton() {
     }
   };
 
+  //if user doesnt have proper rights, remove rendering of button
+  if (!(user?.role == "Developer" || user?.role == "Controller")) {
+    return null;
+  }
   return (
 
     

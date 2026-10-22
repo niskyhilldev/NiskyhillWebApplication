@@ -22,6 +22,7 @@ import { fetchSections, performLotSearch } from "../api/lotApi";
 import DeleteButton from "./DeleteButton";
 import LotEditButton from "./LotEditButton";
 import NotificationSnackbar from "./NotificationSnackBar";
+import { useUser } from "./UserContext.jsx";
 function LotSearch() {
 
   //states for section dropdown
@@ -48,6 +49,9 @@ function LotSearch() {
     lotPage * rowsPerLotPage,
     lotPage * rowsPerLotPage + rowsPerLotPage
   );
+
+  //user info
+  const user = useUser();
 
   //populate dropdown on page load
   useEffect(() => {
@@ -304,27 +308,34 @@ function LotSearch() {
                           }}
                         />
 
-                        <Tooltip title="Certificate of Ownership">
-                          <IconButton
-                            onClick={() =>
-                              navigate(`/admin/lots/${row.lid}/certificate`)
-                            }
-                            sx={{
-                              bgcolor: "#D9D9D9",
-                              color: "#0D2543",
-                              width: 60,
-                              height: 20,
-                              borderRadius: "4px",
-                              my: "4px",
-                              transition: "all 0.2s ease",
-                              "&:hover": {
-                                bgcolor: "#bfbfbf",
-                              },
-                            }}
-                          >
-                            <PostAddIcon />
-                          </IconButton>
-                        </Tooltip>
+                        {(user?.role === "Developer" || user?.role === "Controller") ? (
+                          <Tooltip title="Certificate of Ownership">
+                            <IconButton
+                              onClick={() => navigate(`/admin/lots/${row.lid}/certificate`)}
+                              sx={{
+                                bgcolor: "#D9D9D9",
+                                color: "#0D2543",
+                                width: 60,
+                                height: 20,
+                                borderRadius: "4px",
+                                my: "4px",
+                                "&:hover": {
+                                  bgcolor: "#bfbfbf",
+                                },
+                              }}
+                            >
+                              <PostAddIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Access Restricted">
+                            <span>
+                              <IconButton disabled>
+                                <PostAddIcon />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        )}
 
                         <DeleteButton
                           id={row.lid}
