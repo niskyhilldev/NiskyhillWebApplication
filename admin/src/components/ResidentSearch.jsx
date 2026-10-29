@@ -69,6 +69,9 @@ import { openSavedForm } from "../api/formApi";
     //state for which search is rendered
     const [searchMode, setSearchMode] = useState("name");
 
+    //state for errors when opening a saved form
+    const [formError, setFormError] = useState(null);
+
     //determines which rows should be displayed
     const paginatedLotResults = lotSearchResults.slice(
       lotPage * rowsPerLotPage,
@@ -90,7 +93,7 @@ import { openSavedForm } from "../api/formApi";
         const found = await openSavedForm(formType, rid);
         if (!found) navigate(fallbackPath);
       } catch (err) {
-        window.alert(err.message || "Failed to open form");
+        setFormError(err.message || "Failed to open form");
       }
     }
 
@@ -340,6 +343,13 @@ import { openSavedForm } from "../api/formApi";
           message={nameSearchError}
           severity="error"
           onClose={() => setNameSearchError(null)}
+        />
+
+        <NotificationSnackbar
+          open={!!formError}
+          message={formError}
+          severity="error"
+          onClose={() => setFormError(null)}
         />
         {/* Table */}
         <Box sx={{m: 0, px: "20px"}}>
