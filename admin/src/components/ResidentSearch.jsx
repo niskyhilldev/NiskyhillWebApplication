@@ -397,7 +397,7 @@ import { openSavedForm } from "../api/formApi";
                         gap: 1,
                       }}
                     >
-                      {canManageResidents && (
+                      {canManageResidents ? (
                         <>
                           <ResidentEditButton
                             resident={row}
@@ -487,7 +487,16 @@ import { openSavedForm } from "../api/formApi";
                             }}
                           />
                         </>
-                      )}
+                      ): (
+                          <Tooltip title="Access Restricted">
+                            <span>
+                              <IconButton disabled>
+                                <PostAddIcon />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        )
+                      }
                     </Box>
                     </TableCell >
                   </TableRow>
@@ -732,7 +741,7 @@ import { openSavedForm } from "../api/formApi";
                         gap: 1,
                       }}
                     >
-                    {canManageResidents && (
+                    {(canManageResidents) ? (
                       <>
                         <ResidentEditButton
                           resident={row}
@@ -821,7 +830,18 @@ import { openSavedForm } from "../api/formApi";
                             }}
                           />
                         </>
-                      )} 
+
+                      ) : (
+                          <Tooltip title="Access Restricted">
+                            <span>
+                              <IconButton disabled>
+                                <PostAddIcon />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        )
+                      }
+                       
                     </Box> 
                   </TableCell>
                 </TableRow>
