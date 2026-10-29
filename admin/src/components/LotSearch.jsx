@@ -45,6 +45,9 @@ function LotSearch() {
   const [lotPage, setLotPage] = useState(0);
   const [rowsPerLotPage, setRowsPerLotPage] = useState(10);
 
+  //state for errors when opening a saved form
+  const [formError, setFormError] = useState(null);
+
   //determines which rows should be displayed
   const paginatedLotResults = searchResults.slice(
     lotPage * rowsPerLotPage,
@@ -103,13 +106,13 @@ function LotSearch() {
   }
 
   async function handleOpenCertificate(lid) {
-    try {
-      const found = await openSavedForm("certificate_of_ownership", lid);
-      if (!found) navigate(`/admin/lots/${lid}/certificate`);
-    } catch (err) {
-      window.alert(err.message || "Failed to open form");
-    }
+  try {
+    const found = await openSavedForm("certificate_of_ownership", lid);
+    if (!found) navigate(`/admin/lots/${lid}/certificate`);
+  } catch (err) {
+    setFormError(err.message || "Failed to open form");
   }
+}
 
   return (
       //headers
@@ -253,6 +256,13 @@ function LotSearch() {
           severity="error"
           onClose={() => setDropError(null)}
         />
+
+        <NotificationSnackbar
+          open={!!formError}
+          message={formError}
+          severity="error"
+          onClose={() => setFormError(null)}
+        />
          {/* Table */}
         <Box sx={{m: 0, px: "20px"}}>
           <Table sx={{mt:'20px'}}>
@@ -321,7 +331,7 @@ function LotSearch() {
                         {(user?.role === "Developer" || user?.role === "Controller") ? (
                           <Tooltip title="Certificate of Ownership">
                             <IconButton
-                              onClick={() => navigate(`/admin/lots/${row.lid}/certificate`)}
+                              onClick={() => handleOpenCertificate(row.lid)}
                               sx={{
                                 bgcolor: "#D9D9D9",
                                 color: "#0D2543",
