@@ -20,6 +20,11 @@ import moravians.niskyhill.server.services.LotService;
 import moravians.niskyhill.server.services.ResidentService;
 import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
+import moravians.niskyhill.server.dtos.ToDoDTO;
+import moravians.niskyhill.server.services.ToDoService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -275,6 +280,43 @@ public class Server {
             ctx.json(SectionService.getSection(ctx.pathParam("sid"), database)); 
         });
 
+
+        // Get all tasks (Requires Authorization)
+        app.get("/todo/all", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+            ctx.json(ToDoService.getAllTasks(database));
+        });
+
+        // Add a new task (Requires Authorization)
+        app.post("/todo/add", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            Long currentUserId = AuthHandler.getAuthenticatedUserId(ctx);
+            ToDoDTO toDoDTO = ctx.bodyAsClass(ToDoDTO.class);
+
+            Long tid = ToDoService.addTask(toDoDTO, currentUserId, database);
+            ctx.status(200).json(Map.of("tid", tid));
+        });
+
+        // Mark a task as complete (Requires Authorization)
+        app.put("/todo/complete/{tid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            if (ToDoService.completeTask(ctx.pathParam("tid"), database)) {
+                ctx.status(200).result("Task Completed Successfully");
+            }
+        });
+
+        // Delete a task (Requires Authorization)
+        app.delete("/todo/delete/{tid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            if (ToDoService.deleteTask(ctx.pathParam("tid"), database)) {
+                ctx.status(200).result("Task Deleted Successfully");
+            }
+        });
+
+
         // Generate a PDF overlay for a given form and field values
         FormController.register(app, database);
 
@@ -290,6 +332,31 @@ public class Server {
         // Get port from environment (Heroku) or default to 8080 (for local deployment)
         String port = System.getenv("PORT");
         int serverPort = (port != null) ? Integer.parseInt(port) : 8080;
+
+        
+        /* Schedule To-Do Reminder Checks */
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        System.out.println("Starting To-Do Reminder Scheduler...");
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                System.out.println("Scheduler running - checking for task reminders...");
+
+                ToDoService.sendDueReminders(database);
+
+                System.out.println("Scheduler check finished.");
+
+            } catch (Exception e) {
+                System.err.println("Scheduler Error: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
+
+        /* Stop scheduler when server shuts down */
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            scheduler.shutdown();
+        }));
 
         /* Start the Server */
         app.start(serverPort);

@@ -16,6 +16,7 @@ import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
 import moravians.niskyhill.server.models.User;
+import moravians.niskyhill.server.models.ToDo;
 
 /** 
  * This class wraps a connection to A database 
@@ -1062,6 +1063,251 @@ public class Database {
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Save Form", e);
+        }
+    }
+
+
+    /**
+     * Get all tasks from the database
+     *
+     * @return a list of ToDo tasks, empty if none found
+     * @throws HttpStatusException database error
+     */
+    public List<ToDo> getAllTasks() throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                ORDER BY created_at DESC
+                """;
+
+        List<ToDo> tasks = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ToDo task = new ToDo(
+                    rs.getLong("tid"),
+                    rs.getLong("assigner_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("created_at"),
+                    rs.getString("completed_at")
+                );
+
+                tasks.add(task);
+            }
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Tasks", e);
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Get a task from the database by its ID
+     *
+     * @param tid the id of the task
+     * @return a ToDo object, null if not found
+     * @throws HttpStatusException database error
+     */
+    public ToDo getTask(Long tid) throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                WHERE tid = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new ToDo(
+                        rs.getLong("tid"),
+                        rs.getLong("assigner_id"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("status"),
+                        rs.getString("created_at"),
+                        rs.getString("completed_at")
+                    );
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Task", e);
+        }
+    }
+
+    /**
+     * Add a new task to the database
+     *
+     * @param assignerId the id of the user creating the task
+     * @param title the name of the task
+     * @param description the details of the task
+     * @return the id of the new task, null if unsuccessful
+     * @throws HttpStatusException database error
+     */
+    public Long addNewTask(Long assignerId, String title, String description) throws HttpStatusException {
+        String q = """
+                INSERT INTO to_do (assigner_id, title, description, status, created_at)
+                VALUES (?, ?, ?, 'Open', CURRENT_TIMESTAMP)
+                RETURNING tid
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, assignerId);
+            ps.setString(2, title);
+            ps.setString(3, description);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("tid");
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create Task", e);
+        }
+    }
+
+    /**
+     * Mark a task as complete in the database
+     *
+     * @param tid the id of the task
+     * @return true on success, false otherwise
+     * @throws HttpStatusException database error
+     */
+    public boolean completeTask(Long tid) throws HttpStatusException {
+        String q = """
+                UPDATE to_do
+                SET status = 'Complete',
+                    completed_at = CURRENT_TIMESTAMP
+                WHERE tid = ? AND status = 'Open'
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Complete Task", e);
+        }
+    }
+
+    /**
+     * Delete a task from the database
+     *
+     * @param tid the id of the task
+     * @return true on success, false otherwise
+     * @throws HttpStatusException database error
+     */
+    public boolean deleteTask(Long tid) throws HttpStatusException {
+        String q = """
+                DELETE FROM to_do
+                WHERE tid = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Task", e);
+        }
+    }
+
+    /**
+     * Get all open tasks that are due for a reminder
+     *
+     * @return a list of tasks needing reminders
+     * @throws HttpStatusException database error
+     */
+    public List<ToDo> getTasksDueForReminder() throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                WHERE status = 'Open'
+                AND (
+                    (last_reminded_at IS NULL
+                        AND created_at <= CURRENT_TIMESTAMP - INTERVAL '72 hours')
+                    OR
+                    (last_reminded_at <= CURRENT_TIMESTAMP - INTERVAL '72 hours')
+                )
+                ORDER BY created_at ASC
+                """;
+
+        List<ToDo> tasks = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q);
+            ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ToDo task = new ToDo(
+                    rs.getLong("tid"),
+                    rs.getLong("assigner_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("created_at"),
+                    rs.getString("completed_at")
+                );
+
+                tasks.add(task);
+            }
+
+        } catch (SQLException e) {
+            System.err.printf("Error Retrieving Tasks for Reminder: %s\n", e.getMessage());
+
+            throw new HttpStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR.value,
+                "Failed to Retrieve Tasks for Reminder",
+                e
+            );
+        }
+
+        return tasks;
+    }
+    
+    /**
+     * Update the last reminder timestamp for a task
+     *
+     * @param tid the task ID
+     * @throws HttpStatusException database error
+     */
+    public void updateLastRemindedAt(Long tid) throws HttpStatusException {
+        String q = """
+                UPDATE to_do
+                SET last_reminded_at = CURRENT_TIMESTAMP
+                WHERE tid = ? AND status = 'Open'
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.printf("Error Updating Reminder Timestamp: %s\n", e.getMessage());
+
+            throw new HttpStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR.value,
+                "Failed to Update Reminder Timestamp",
+                e
+            );
         }
     }
 }
