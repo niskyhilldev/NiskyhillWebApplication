@@ -179,7 +179,7 @@ function App() {
             element={<InternmentForms />}
           />
         </Route>
-        
+
         <Route path="reset-password" element={<ResetPassword />}/>
       </Routes>
     </BrowserRouter>
