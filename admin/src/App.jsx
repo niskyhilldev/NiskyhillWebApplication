@@ -7,6 +7,7 @@ import CertificateOfOwnership from './components/CertificateOfOwnership.jsx';
 import InternmentCard from './components/InternmentCard.jsx';
 import InternmentRecord from './components/InternmentRecord.jsx';
 import InternmentForms from "./components/InternmentForms";
+import ToDoList from './components/to-do/ToDoList.jsx';
 import {Box, Tabs, Tab} from '@mui/material'
 import {BrowserRouter, Routes, Route, Navigate, Outlet, useLocation} from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -45,6 +46,7 @@ function AdminDashboard(){
         >
           <Tab label="Lots" />
           <Tab label="Residents" />
+          <Tab label="To-Do List" />
         </Tabs>
       </Box>
 
@@ -58,6 +60,11 @@ function AdminDashboard(){
         {tab === 1 && (
           <Box sx={{ position: "relative", zIndex: 0 }}>
             <ResidentSearch />
+          </Box>
+        )}
+        {tab === 2 && (
+          <Box sx={{ position: "relative", zIndex: 0 }}>
+            <ToDoList />
           </Box>
         )}
       </Box>
