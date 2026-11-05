@@ -7,21 +7,24 @@ import {
 } from '@mui/material';
 
 export default function ToDoList() {
-    const [task, setTask] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
     const [tasks, setTasks] = useState([]);
 
     const addTask = () => {
-        if (task.trim() === "") return;
+        if (title.trim() === "") return;
 
         const newTask = {
             id: Date.now(),
-            task: task,
+            title: title,
+            description: description,
             status: "Open",
             created_at: new Date().toISOString()
         };
 
         setTasks([...tasks, newTask]);
-        setTask("");
+        setTitle("");
+        setDescription("");
     };
 
     const completeTask = (id) => {
@@ -43,8 +46,6 @@ export default function ToDoList() {
             month: "short",
             day: "numeric",
             year: "numeric",
-            hour: "numeric",
-            minute: "numeric"
         });
     };
 
@@ -65,32 +66,40 @@ export default function ToDoList() {
             {/* Add Task */}
             <Box
                 sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 2,
+                    maxWidth: "800px",
+                    margin: "auto",
                     mb: 3
                 }}
             >
-                <TextField
-                    placeholder="Enter a task"
-                    value={task}
-                    onChange={(e) => setTask(e.target.value)}
-                    size="small"
-                    sx={{ width: "400px" }}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            addTask();
-                        }
-                    }}
-                />
+                <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                    <TextField
+                        placeholder="Task Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        size="small"
+                        fullWidth
+                    />
 
-                <Button
-                    onClick={addTask}
-                    variant="contained"
-                    sx={{ backgroundColor: "#0d2543" }}
-                >
-                    Add Task
-                </Button>
+                    <Button
+                        onClick={addTask}
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#0d2543",
+                            whiteSpace: "nowrap"
+                        }}
+                    >
+                        Add Task
+                    </Button>
+                </Box>
+
+                <TextField
+                    placeholder="Task Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    multiline
+                    rows={2}
+                    fullWidth
+                />
             </Box>
 
             {/* Task List */}
@@ -114,9 +123,13 @@ export default function ToDoList() {
                         >
                             {/* Task Description and Timestamp */}
                             <Box sx={{ flexGrow: 1 }}>
-                                <Typography>
-                                    {item.task}
-                                </Typography>
+                                <Typography sx={{ fontWeight: "bold" }}>
+                                {item.title}
+                            </Typography>
+
+                            <Typography sx={{ mt: 0.5 }}>
+                                {item.description}
+                            </Typography>
 
                                 <Typography
                                     sx={{
