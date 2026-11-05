@@ -21,6 +21,7 @@ public class FormController {
      */
     public static void register(Javalin app, Database database) {
         app.post("/forms/generate", ctx -> handleGenerateForm(ctx, database));
+        app.get("/forms/saved/{formType}/{id}", ctx -> handleGetSavedForm(ctx, database));
     }
 
     /**
@@ -90,6 +91,39 @@ public class FormController {
             "attachment; filename=\"" + request.formId() + ".pdf\""
         );
         ctx.result(pdfBytes);
+    }
+
+    private static void handleGetSavedForm(Context ctx, Database database) throws HttpStatusException {
+        AuthHandler.requireRouteAuth(ctx);
+
+        Long id = parseId(ctx.pathParam("id"));
+        if (id == null) {
+            ctx.status(400).result("id must be numeric");
+            return;
+        }
+
+        byte[] pdf;
+        switch (ctx.pathParam("formType")) {
+            case "certificate_of_ownership" ->
+                pdf = database.getLatestFormFile("certificate_of_ownership", "lot_id", "cert_id", id);
+            case "interment_card" ->
+                pdf = database.getLatestFormFile("internment_card", "resident_id", "internment_card_id", id);
+            case "internment_record" ->
+                pdf = database.getLatestFormFile("internment_record", "resident_id", "internment_record_id", id);
+            default -> {
+                ctx.status(400).result("Unknown form type");
+                return;
+            }
+        }
+
+        if (pdf == null) {
+            ctx.status(404).result("No saved form found");
+            return;
+        }
+
+        ctx.contentType("application/pdf");
+        ctx.header("Content-Disposition", "inline");
+        ctx.result(pdf);
     }
 
     private static Long parseId(String s) {

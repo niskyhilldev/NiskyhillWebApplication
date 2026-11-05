@@ -49,7 +49,7 @@
                 { "fieldId": "Date", "pdfFieldName": "lot_code" },
                 { "fieldId": "date", "pdfFieldName": "interment_date" },
                 { "fieldId": "lotNumber", "pdfFieldName": "lot_number" },
-                { "fieldId": "lotLocation", "pdfFieldName": "garden_name" },
+                { "fieldId": "section", "pdfFieldName": "garden_name" },
                 { "fieldId": "lotOwner", "pdfFieldName": "estate_note" },
                 { "fieldId": "lotCardNotes", "pdfFieldName": "notes" }
             ]
