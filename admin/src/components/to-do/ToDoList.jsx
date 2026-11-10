@@ -3,13 +3,20 @@ import {
     Box,
     Typography,
     TextField,
-    Button
+    Button,
+    Tooltip
 } from '@mui/material';
+import { useUser } from "../UserContext";
 
 export default function ToDoList() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [tasks, setTasks] = useState([]);
+
+    // load user context
+    const user = useUser();
+    const isSuperintendent = user?.role === "Superintendent";
+    const canEditTask = user != null && !isSuperintendent;
 
     const addTask = () => {
         if (title.trim() === "") return;
@@ -63,44 +70,46 @@ export default function ToDoList() {
                 To-Do List
             </Typography>
 
-            {/* Add Task */}
-            <Box
-                sx={{
-                    maxWidth: "800px",
-                    margin: "auto",
-                    mb: 3
-                }}
-            >
-                <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+            {/* superintendent cannot create tasks */}
+            {canEditTask && (
+                <Box
+                    sx={{
+                        maxWidth: "800px",
+                        margin: "auto",
+                        mb: 3
+                    }}
+                >
+                    <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                        <TextField
+                            placeholder="Task Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            size="small"
+                            fullWidth
+                        />
+
+                        <Button
+                            onClick={addTask}
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#0d2543",
+                                whiteSpace: "nowrap"
+                            }}
+                        >
+                            Add Task
+                        </Button>
+                    </Box>
+
                     <TextField
-                        placeholder="Task Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        size="small"
+                        placeholder="Task Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        multiline
+                        rows={2}
                         fullWidth
                     />
-
-                    <Button
-                        onClick={addTask}
-                        variant="contained"
-                        sx={{
-                            backgroundColor: "#0d2543",
-                            whiteSpace: "nowrap"
-                        }}
-                    >
-                        Add Task
-                    </Button>
                 </Box>
-
-                <TextField
-                    placeholder="Task Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    multiline
-                    rows={2}
-                    fullWidth
-                />
-            </Box>
+            )}
 
             {/* Task List */}
             <Box sx={{ maxWidth: "800px", margin: "auto" }}>
@@ -150,22 +159,23 @@ export default function ToDoList() {
                             >
                                 {item.status}
                             </Typography>
+                            {canEditTask && (
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Button
+                                        onClick={() => completeTask(item.id)}
+                                        sx={{ mr: 1 }}
+                                    >
+                                        Complete
+                                    </Button>
 
-                            {item.status === "Open" && (
-                                <Button
-                                    onClick={() => completeTask(item.id)}
-                                    sx={{ mr: 1 }}
-                                >
-                                    Complete
-                                </Button>
+                                    <Button
+                                    onClick={() => removeTask(item.id)}
+                                    sx={{ color: "red" }}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
                             )}
-
-                            <Button
-                                onClick={() => removeTask(item.id)}
-                                sx={{ color: "red" }}
-                            >
-                                Remove
-                            </Button>
                         </Box>
                     ))
                 )}
