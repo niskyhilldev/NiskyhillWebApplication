@@ -1,6 +1,6 @@
 //all API calls for lots will reside here, then will be utilized in thier respective react functions
 
-const API_BASE_URL = 'http://localhost:8080';  //Should update to env var
+const API_BASE_URL = 'https://niskyhill.org';  //Should update to env var
 
 //gets all sections, returning as list for population in jsx files
 export const fetchSections = async() => {

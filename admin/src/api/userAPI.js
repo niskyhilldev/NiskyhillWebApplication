@@ -1,7 +1,8 @@
 //all API calls for users will reside here, then will be utilized in thier respective react functions
 
-const API_BASE_URL = 'http://localhost:8080'; //Should update to env var
+const API_BASE_URL = 'https://niskyhill.org'; //Should update to env var
 // for prod it should be const API_BASE_URL = 'https://niskyhill.org';
+//for local testing should be 'http://localhost:8080'
 
 async function login(email, password){
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
