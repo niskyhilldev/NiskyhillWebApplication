@@ -3,25 +3,35 @@ import {
     Box,
     Typography,
     TextField,
-    Button
+    Button,
+    Tooltip
 } from '@mui/material';
+import { useUser } from "../UserContext";
 
 export default function ToDoList() {
-    const [task, setTask] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
     const [tasks, setTasks] = useState([]);
 
+    // load user context
+    const user = useUser();
+    const isSuperintendent = user?.role === "Superintendent";
+    const canEditTask = user != null && !isSuperintendent;
+
     const addTask = () => {
-        if (task.trim() === "") return;
+        if (title.trim() === "") return;
 
         const newTask = {
             id: Date.now(),
-            task: task,
+            title: title,
+            description: description,
             status: "Open",
             created_at: new Date().toISOString()
         };
 
         setTasks([...tasks, newTask]);
-        setTask("");
+        setTitle("");
+        setDescription("");
     };
 
     const completeTask = (id) => {
@@ -43,8 +53,6 @@ export default function ToDoList() {
             month: "short",
             day: "numeric",
             year: "numeric",
-            hour: "numeric",
-            minute: "numeric"
         });
     };
 
@@ -62,36 +70,46 @@ export default function ToDoList() {
                 To-Do List
             </Typography>
 
-            {/* Add Task */}
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 2,
-                    mb: 3
-                }}
-            >
-                <TextField
-                    placeholder="Enter a task"
-                    value={task}
-                    onChange={(e) => setTask(e.target.value)}
-                    size="small"
-                    sx={{ width: "400px" }}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            addTask();
-                        }
+            {/* superintendent cannot create tasks */}
+            {canEditTask && (
+                <Box
+                    sx={{
+                        maxWidth: "800px",
+                        margin: "auto",
+                        mb: 3
                     }}
-                />
-
-                <Button
-                    onClick={addTask}
-                    variant="contained"
-                    sx={{ backgroundColor: "#0d2543" }}
                 >
-                    Add Task
-                </Button>
-            </Box>
+                    <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                        <TextField
+                            placeholder="Task Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            size="small"
+                            fullWidth
+                        />
+
+                        <Button
+                            onClick={addTask}
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#0d2543",
+                                whiteSpace: "nowrap"
+                            }}
+                        >
+                            Add Task
+                        </Button>
+                    </Box>
+
+                    <TextField
+                        placeholder="Task Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        multiline
+                        rows={2}
+                        fullWidth
+                    />
+                </Box>
+            )}
 
             {/* Task List */}
             <Box sx={{ maxWidth: "800px", margin: "auto" }}>
@@ -114,9 +132,13 @@ export default function ToDoList() {
                         >
                             {/* Task Description and Timestamp */}
                             <Box sx={{ flexGrow: 1 }}>
-                                <Typography>
-                                    {item.task}
-                                </Typography>
+                                <Typography sx={{ fontWeight: "bold" }}>
+                                {item.title}
+                            </Typography>
+
+                            <Typography sx={{ mt: 0.5 }}>
+                                {item.description}
+                            </Typography>
 
                                 <Typography
                                     sx={{
@@ -137,22 +159,23 @@ export default function ToDoList() {
                             >
                                 {item.status}
                             </Typography>
+                            {canEditTask && (
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Button
+                                        onClick={() => completeTask(item.id)}
+                                        sx={{ mr: 1 }}
+                                    >
+                                        Complete
+                                    </Button>
 
-                            {item.status === "Open" && (
-                                <Button
-                                    onClick={() => completeTask(item.id)}
-                                    sx={{ mr: 1 }}
-                                >
-                                    Complete
-                                </Button>
+                                    <Button
+                                    onClick={() => removeTask(item.id)}
+                                    sx={{ color: "red" }}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
                             )}
-
-                            <Button
-                                onClick={() => removeTask(item.id)}
-                                sx={{ color: "red" }}
-                            >
-                                Remove
-                            </Button>
                         </Box>
                     ))
                 )}

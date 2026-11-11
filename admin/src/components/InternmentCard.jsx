@@ -295,6 +295,7 @@ function InternmentCard() {
             name="lotOwner"
             value={formData.lotOwner}
             onChange={handleChange}
+            required
             variant="filled"
             sx ={textFieldStyle}
           />

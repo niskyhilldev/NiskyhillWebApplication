@@ -1,7 +1,13 @@
-import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-function TourPage() {
+function ExampleTourPage() {
   return (
     <Box
       sx={{
@@ -12,7 +18,6 @@ function TourPage() {
         fontFamily: "Instrument Sans, Arial, sans-serif",
       }}
     >
-
       <Box
         component="main"
         sx={{
@@ -36,7 +41,7 @@ function TourPage() {
         >
           <Box
             component="img"
-            src="./public/kocsis.png"
+            src="/kocsis.png"
             alt="James Paul Kocsis"
             sx={{
               width: 162,
@@ -100,17 +105,52 @@ function TourPage() {
           }}
         />
 
-        {/* Expandable information sections */}
+        {/* Background Information - always visible */}
+        <Box
+          sx={{
+            borderBottom: "1px solid #0d2543",
+            px: 0.5,
+            py: 0.75,
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: "Instrument Sans, Arial, sans-serif",
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#111111",
+              mb: 0.75,
+            }}
+          >
+            Background Information
+          </Typography>
+
+          <Typography
+            sx={{
+              fontSize: 11,
+              lineHeight: 1.6,
+              color: "#333333",
+            }}
+          >
+            James Paul Kocsis was an independent American painter and book
+            illustrator. Born in Buffalo, New York, Kocsis moved with his
+            parents to Bethlehem in 1942 at age six and began painting at age
+            12. He attended the Philadelphia College of Art (now the University
+            of the Arts), where he studied under painter and printmaker Jacob
+            Landau. He graduated in 1958 and enlisted in the U.S. Army shortly
+            thereafter. Kocsis worked as a book illustrator between 1961 and
+            1968, illustrating more than 20 books under the pseudonym J.C.
+            Kocsis. Feeling constrained by drawing, Kocsis returned to painting
+            full-time in 1968.
+          </Typography>
+        </Box>
+
+        {/* Achievement and Location - expandable */}
         {[
-          {
-            title: "Background Information",
-            content:
-              "James Paul Kocsis was an independent American painter and book illustrator. Born in Buffalo, New York, Kocsis moved with his parents to Bethlehem in 1942 at age six and began painting at age 12. He attended the Philadelphia College of Art (now the University of the Arts), where he studied under painter and printmaker Jacob Landau. He graduated in 1958 and enlisted in the U.S. Army shortly thereafter. Kocsis worked as a book illustrator between 1961 and 1968, illustrating more than 20 books under the pseudonym J.C. Kocsis. Feeling constrained by drawing, Kocsis returned to painting full-time in 1968.",
-          },
           {
             title: "Achievement",
             content:
-              "Kocsis is best known for his vibrant, expressive artwork style, which he termed \"psychic impressionism\" in which he said the paintings sprang from his subconscious. Throughout his 30-year career, Kocsis created more than 500 paintings. While his paintings ranged from abstract to realistic, they always focused on a recognizable face, particularly eyes, to depict human emotion. As a sign of his fierce independence, he arranged his private sales and organized his own shows, arranging 42 shows in more than two dozen countries over his career.",
+              'Kocsis is best known for his vibrant, expressive artwork style, which he termed "psychic impressionism" in which he said the paintings sprang from his subconscious. Throughout his 30-year career, Kocsis created more than 500 paintings. While his paintings ranged from abstract to realistic, they always focused on a recognizable face, particularly eyes, to depict human emotion. As a sign of his fierce independence, he arranged his private sales and organized his own shows, arranging 42 shows in more than two dozen countries over his career.',
           },
           {
             title: "Location",
@@ -210,7 +250,4 @@ function TourPage() {
   );
 }
 
-export default TourPage;
-
-
-    
+export default ExampleTourPage;

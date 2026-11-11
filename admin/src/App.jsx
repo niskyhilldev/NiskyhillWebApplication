@@ -7,8 +7,9 @@ import CertificateOfOwnership from './components/CertificateOfOwnership.jsx';
 import InternmentCard from './components/InternmentCard.jsx';
 import InternmentRecord from './components/InternmentRecord.jsx';
 import InternmentForms from "./components/InternmentForms";
+import ToDoList from './components/to-do/ToDoList.jsx';
 import {Box, Tabs, Tab} from '@mui/material'
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Navigate, Outlet, useLocation} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getCurrentUser } from './api/userAPI';
 import { UserContext } from "./components/UserContext.jsx"
@@ -45,6 +46,7 @@ function AdminDashboard(){
         >
           <Tab label="Lots" />
           <Tab label="Residents" />
+          <Tab label="To-Do List" />
         </Tabs>
       </Box>
 
@@ -60,8 +62,30 @@ function AdminDashboard(){
             <ResidentSearch />
           </Box>
         )}
+        {tab === 2 && (
+          <Box sx={{ position: "relative", zIndex: 0 }}>
+            <ToDoList />
+          </Box>
+        )}
       </Box>
     </Box>
+  );
+}
+
+function AdminLayout() {
+  const location = useLocation();
+   
+  // hide dashboard while form is open but keep mounted so search state is preserved
+  const isFormPage = location.pathname !== "/admin";
+  
+  return (
+    <>
+      <Box sx={{ display: isFormPage ? "none" : "block" }}>
+        <AdminDashboard />
+      </Box>
+
+      <Outlet />
+    </>
   );
 }
 
@@ -125,38 +149,37 @@ function App() {
             />
           }
         />
-        <Route path="/admin" element={isAuthenticated ? <AdminDashboard /> : <Navigate to="/login" />} />
-        <Route path="/admin/lots/:lid/certificate"
-          element={
-            isAuthenticated 
-            ? <CertificateOfOwnership />
-            : <Navigate to="/login" />
-          } 
-        />
         <Route
-          path="/admin/residents/:rid/internment-card"
+          path="/admin"
           element={
             isAuthenticated
-              ? <InternmentCard />
+              ? <AdminLayout />
               : <Navigate to="/login" />
           }
-        />
-        <Route
-          path="/admin/residents/:rid/internment-record"
-          element={
-            isAuthenticated
-              ? <InternmentRecord />
-              : <Navigate to="/login" />
-          }
-        />
-        <Route
-          path="/admin/residents/:rid/internment-forms"
-          element={
-            isAuthenticated
-              ? <InternmentForms />
-              : <Navigate to="/login" />
-          }
-        />
+        >
+          <Route index element={null} />
+
+          <Route
+            path="lots/:lid/certificate"
+            element={<CertificateOfOwnership />}
+          />
+
+          <Route
+            path="residents/:rid/internment-card"
+            element={<InternmentCard />}
+          />
+
+          <Route
+            path="residents/:rid/internment-record"
+            element={<InternmentRecord />}
+          />
+
+          <Route
+            path="residents/:rid/internment-forms"
+            element={<InternmentForms />}
+          />
+        </Route>
+
         <Route path="reset-password" element={<ResetPassword />}/>
       </Routes>
     </BrowserRouter>
