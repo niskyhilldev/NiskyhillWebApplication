@@ -1,0 +1,376 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { fetchResidentById } from "../api/residentApi";
+import { generateForm } from "../api/formApi";
+import NotificationSnackbar from "./NotificationSnackBar";
+const textFieldStyle = {
+  backgroundColor: "white",
+  borderRadius: "6px",
+  "& input": {
+    color: "black",
+  },
+};
+
+function InternmentRecord() {
+  const { rid } = useParams();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [formData, setFormData] = useState({
+    name: "",
+    placeOfBirth: "",
+    lateResidence: "",
+    dateOfBirth: "",
+    dateOfDeath: "",
+    sex: "",
+    SocialSate: "",
+    causeOfDeath: "",
+    nearestRelative: "",
+    relativeAddress: "",
+    timePlaceFuneral: "",
+    vaultDimensions: "",
+    funeralDirector: "",
+  });
+
+  useEffect(() => {
+    const loadResident = async () => {
+      try {
+        setLoading(true);
+
+        const data = await fetchResidentById(rid);
+
+        const residentData = data;
+
+        setFormData((previous) => ({
+          ...previous,
+
+          name: [
+            residentData.firstName,
+            residentData.middleName,
+            residentData.lastName,
+          ]
+            .filter(Boolean)
+            .join(" "),
+
+          dateOfBirth: residentData.birthDate || "",
+          dateOfDeath: residentData.deathDate || "",
+        }));
+      } catch (err) {
+        console.error("Failed to load resident:", err);
+        setError(err.message || "Failed to load resident");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResident();
+  }, [rid]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  const handleGenerate = async () => {
+    try {
+      setError("");
+
+      // require following minimum information
+      if (!formData.name.trim()) {
+        setError("Full Name of Deceased is required.");
+        return;
+      }
+
+      if (!formData.dateOfDeath) {
+        setError("Date of Death is required.");
+        return;
+      }
+
+      const pdfBlob = await generateForm(
+        "internment_record",
+        { ...formData, rid: String(rid) }
+      );
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+
+      setTimeout(() => {
+        URL.revokeObjectURL(pdfUrl);
+      }, 10000);
+
+    } catch (err) {
+      console.error("Failed to generate internment record:", err);
+      setError(
+        err.message || "Failed to generate internment record"
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography>
+          Loading resident...
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ p: 4 }}>
+
+        <NotificationSnackbar
+        //converts search error to boolean, so if theres an error pop up, then remove it
+          open={!!error}
+          message={error}
+          severity="error"
+          onClose={() => setError(null)}
+       />
+       
+      <Typography
+        variant="h4"
+        sx={{
+          color: "#0D2543",
+          mb: 3,
+          fontWeight: "bold",
+        }}
+      >
+      {/* Internment Record */}
+      </Typography>
+
+      <Paper
+        sx={{
+          p: 4,
+          maxWidth: 1000,
+          margin: "0 auto",
+          borderRadius: "12px",
+          backgroundColor: "#0d2543",
+          color: "white",
+          border: "1px solid #E8AE31",
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            fontFamily: "Inria Serif",
+            fontWeight: "600",
+            fontSize: "1.8rem",
+            letterSpacing: "1.5px",
+            color: "white",
+            mb: 3
+          }}
+        >
+          Internment Record Information
+        </Typography>
+        
+      
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 2,
+          }}
+        >
+          <TextField
+            label="Full Name of Deceased"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+
+          <TextField
+            label="Place of Birth"
+            name="placeOfBirth"
+            value={formData.placeOfBirth}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+            placeholder="City, State"
+          />
+
+          <TextField
+            label="Late Residence (Full Address)"
+            name="lateResidence"
+            value={formData.lateResidence}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+
+          <TextField
+            label="Date of Birth"
+            name="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
+          <TextField
+            label="Date of Death"
+            name="dateOfDeath"
+            type="date"
+            value={formData.dateOfDeath}
+            onChange={handleChange}
+            required
+            variant="filled"
+            sx ={textFieldStyle}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
+          <TextField
+            label="Sex"
+            name="sex"
+            value={formData.sex}
+            onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
+          />
+
+          <TextField
+            label="Social State"
+            name="SocialSate"
+            value={formData.SocialSate}
+            onChange={handleChange}
+            placeholder="e.g. Married, Divorced"
+            variant="filled"
+            sx ={textFieldStyle}
+          />
+
+          <TextField
+            label="Cause of Death"
+            name="causeOfDeath"
+            value={formData.causeOfDeath}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+
+          <TextField
+            label="Nearest Relative or Friend"
+            name="nearestRelative"
+            value={formData.nearestRelative}
+            onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
+          />
+
+          <TextField
+            label="Address of Nearest Relative"
+            name="relativeAddress"
+            value={formData.relativeAddress}
+            onChange={handleChange}
+            variant="filled"
+            sx ={textFieldStyle}
+          />
+
+          <TextField
+            label="Time and Place of Funeral"
+            name="timePlaceFuneral"
+            value={formData.timePlaceFuneral}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+
+          <TextField
+            label="Inside Dimensions of Vault (L x W x H)"
+            name="vaultDimensions"
+            value={formData.vaultDimensions}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+
+          <TextField
+            label="Funeral Director or Person in Charge"
+            name="funeralDirector"
+            value={formData.funeralDirector}
+            onChange={handleChange}
+            variant="filled"
+            sx={{...textFieldStyle ,
+              gridColumn: "1 / -1",
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 2,
+            mt: 4,
+          }}
+        >
+          <Button
+            onClick={() => navigate(-1)}
+            sx={{
+              color: "white",
+              //fontFamily: "Inria Serif",
+              border: "1px solid #E8AE31",
+              "&:hover": {
+                backgroundColor: "rgba(175,140,48,0.1)",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={handleGenerate}
+            sx={{
+              backgroundColor: "#E8AE31",
+              color: "white",
+              //fontFamily: "Inria Serif",
+              letterSpacing: "1px",
+              "&:hover": {
+                backgroundColor: "#E8AE31",
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            Generate Internment Record
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
+  );
+}
+
+export default InternmentRecord;

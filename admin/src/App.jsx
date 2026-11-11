@@ -1,0 +1,190 @@
+import ResidentSearch from './components/ResidentSearch.jsx'
+import NavBar from './components/NavBar.jsx'
+import LotSearch from './components/LotSearch.jsx'
+import LoginForm from './components/LoginForm.jsx';
+import ResetPassword from './components/ResetPassword.jsx';
+import CertificateOfOwnership from './components/CertificateOfOwnership.jsx';
+import InternmentCard from './components/InternmentCard.jsx';
+import InternmentRecord from './components/InternmentRecord.jsx';
+import InternmentForms from "./components/InternmentForms";
+import ToDoList from './components/to-do/ToDoList.jsx';
+import {Box, Tabs, Tab} from '@mui/material'
+import {BrowserRouter, Routes, Route, Navigate, Outlet, useLocation} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { getCurrentUser } from './api/userAPI';
+import { UserContext } from "./components/UserContext.jsx"
+
+//inline admin dashboard 
+function AdminDashboard(){
+  //set page background color
+  document.body.style.backgroundColor = '#efefef';
+
+  // tab state
+  const [tab, setTab] = useState(0);
+
+  return (
+    <Box>
+      <NavBar />
+
+      {/* Tab Headers */}
+      <Box sx={{ backgroundColor: "#E8AE31", borderBottom: "1px solid rgba(175, 140, 48, 0.4)", px: 3, position: "relative", zIndex: 100 }}>
+        <Tabs
+          value={tab}
+          onChange={(e, newValue) => setTab(newValue)}
+          TabIndicatorProps={{ style: { backgroundColor:  "#0a1d34"} }}
+          sx={{
+            "& .MuiTab-root": {
+              color: "rgba(255,255,255,0.5)",
+              fontSize: "1rem",
+              letterSpacing: "1px",
+              textTransform: "none",
+            },
+            "& .Mui-selected": {
+              color: "white !important",
+            },
+          }}
+        >
+          <Tab label="Lots" />
+          <Tab label="Residents" />
+          <Tab label="To-Do List" />
+        </Tabs>
+      </Box>
+
+      {/* Tab Content */}
+      <Box sx={{ mt: 2, position: "relative", zIndex: 0, overflow: "hidden" }}>
+        {tab === 0 && (
+          <Box sx={{ position: "relative", zIndex: 0 }}>
+            <LotSearch />
+          </Box>
+        )}
+        {tab === 1 && (
+          <Box sx={{ position: "relative", zIndex: 0 }}>
+            <ResidentSearch />
+          </Box>
+        )}
+        {tab === 2 && (
+          <Box sx={{ position: "relative", zIndex: 0 }}>
+            <ToDoList />
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+function AdminLayout() {
+  const location = useLocation();
+   
+  // hide dashboard while form is open but keep mounted so search state is preserved
+  const isFormPage = location.pathname !== "/admin";
+  
+  return (
+    <>
+      <Box sx={{ display: isFormPage ? "none" : "block" }}>
+        <AdminDashboard />
+      </Box>
+
+      <Outlet />
+    </>
+  );
+}
+
+function App() { 
+  // state flag to track authentication status
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        console.log("Current user:", data);
+        if (active) {
+          setUser(data);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        if (active) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (active) {
+          setUserLoading(false);
+        }
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return (
+    <UserContext.Provider value={user}>
+    <BrowserRouter>
+      <Routes>
+        {/* Login first then direct to admin dashboard (default path directsto login too) */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        {/**fetch user information upon login */}
+        <Route path="/login"
+          element={
+            <LoginForm
+              onLogin={async () => {
+                try {
+                  const data = await getCurrentUser();
+                  setUser(data);
+                  setIsAuthenticated(true);
+                } catch (error) {
+                  console.error("Failed to get user:", error);
+                  setUser(null);
+                  setIsAuthenticated(false);
+                }
+              }}
+            />
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            isAuthenticated
+              ? <AdminLayout />
+              : <Navigate to="/login" />
+          }
+        >
+          <Route index element={null} />
+
+          <Route
+            path="lots/:lid/certificate"
+            element={<CertificateOfOwnership />}
+          />
+
+          <Route
+            path="residents/:rid/internment-card"
+            element={<InternmentCard />}
+          />
+
+          <Route
+            path="residents/:rid/internment-record"
+            element={<InternmentRecord />}
+          />
+
+          <Route
+            path="residents/:rid/internment-forms"
+            element={<InternmentForms />}
+          />
+        </Route>
+
+        <Route path="reset-password" element={<ResetPassword />}/>
+      </Routes>
+    </BrowserRouter>
+    </UserContext.Provider>
+  )
+}
+
+  export default App
