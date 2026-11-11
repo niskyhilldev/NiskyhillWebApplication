@@ -1,10 +1,16 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
+import {
+    fetchTasks,
+    addTask as createTask,
+    completeTask as completeTaskAPI,
+    deleteTask
+} from '../../api/todoApi.js';
 import {
     Box,
     Typography,
     TextField,
-    Button,
-    Tooltip
+    Button
 } from '@mui/material';
 import { useUser } from "../UserContext";
 
@@ -13,39 +19,67 @@ export default function ToDoList() {
     const [description, setDescription] = useState("");
     const [tasks, setTasks] = useState([]);
 
-    // load user context
+    // Load user context and determine permissions
     const user = useUser();
     const isSuperintendent = user?.role === "Superintendent";
     const canEditTask = user != null && !isSuperintendent;
 
-    const addTask = () => {
-        if (title.trim() === "") return;
-
-        const newTask = {
-            id: Date.now(),
-            title: title,
-            description: description,
-            status: "Open",
-            created_at: new Date().toISOString()
+    // Load existing tasks from the database
+    useEffect(() => {
+        const loadTasks = async () => {
+            try {
+                const data = await fetchTasks();
+                setTasks(data);
+            } catch (error) {
+                console.error("Failed to load tasks:", error);
+            }
         };
 
-        setTasks([...tasks, newTask]);
-        setTitle("");
-        setDescription("");
+        loadTasks();
+    }, []);
+
+    // Create a new task
+    const addTask = async () => {
+        if (title.trim() === "" || description.trim() === "") return;
+
+        try {
+            await createTask(title.trim(), description.trim());
+
+            const updatedTasks = await fetchTasks();
+            setTasks(updatedTasks);
+
+            setTitle("");
+            setDescription("");
+        } catch (error) {
+            console.error("Failed to add task:", error);
+            alert("Failed to add task. Please try again.");
+        }
     };
 
-    const completeTask = (id) => {
-        setTasks(
-            tasks.map((task) =>
-                task.id === id
-                    ? { ...task, status: "Complete" }
-                    : task
-            )
-        );
+    // Mark a task as complete
+    const completeTask = async (tid) => {
+        try {
+            await completeTaskAPI(tid);
+
+            const updatedTasks = await fetchTasks();
+            setTasks(updatedTasks);
+        } catch (error) {
+            console.error("Failed to complete task:", error);
+            alert("Failed to complete task. Please try again.");
+        }
     };
 
-    const removeTask = (id) => {
-        setTasks(tasks.filter((task) => task.id !== id));
+    // Permanently remove a task
+    const removeTask = async (tid) => {
+        try {
+            await deleteTask(tid);
+
+            const updatedTasks = await fetchTasks();
+            setTasks(updatedTasks);
+        } catch (error) {
+            console.error("Failed to remove task:", error);
+            alert("Failed to remove task. Please try again.");
+        }
     };
 
     const formatDate = (date) => {
@@ -70,7 +104,7 @@ export default function ToDoList() {
                 To-Do List
             </Typography>
 
-            {/* superintendent cannot create tasks */}
+            {/* Superintendent cannot create tasks */}
             {canEditTask && (
                 <Box
                     sx={{
@@ -120,7 +154,7 @@ export default function ToDoList() {
                 ) : (
                     tasks.map((item) => (
                         <Box
-                            key={item.id}
+                            key={item.tid}
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
@@ -133,12 +167,12 @@ export default function ToDoList() {
                             {/* Task Description and Timestamp */}
                             <Box sx={{ flexGrow: 1 }}>
                                 <Typography sx={{ fontWeight: "bold" }}>
-                                {item.title}
-                            </Typography>
+                                    {item.title}
+                                </Typography>
 
-                            <Typography sx={{ mt: 0.5 }}>
-                                {item.description}
-                            </Typography>
+                                <Typography sx={{ mt: 0.5 }}>
+                                    {item.description}
+                                </Typography>
 
                                 <Typography
                                     sx={{
@@ -147,7 +181,7 @@ export default function ToDoList() {
                                         mt: 0.5
                                     }}
                                 >
-                                    Created: {formatDate(item.created_at)}
+                                    Created: {formatDate(item.createdAt)}
                                 </Typography>
                             </Box>
 
@@ -159,18 +193,22 @@ export default function ToDoList() {
                             >
                                 {item.status}
                             </Typography>
+
+                            {/* Only authorized users can modify tasks */}
                             {canEditTask && (
                                 <Box sx={{ display: "flex", gap: 1 }}>
-                                    <Button
-                                        onClick={() => completeTask(item.id)}
-                                        sx={{ mr: 1 }}
-                                    >
-                                        Complete
-                                    </Button>
+                                    {item.status === "Open" && (
+                                        <Button
+                                            onClick={() => completeTask(item.tid)}
+                                            sx={{ mr: 1 }}
+                                        >
+                                            Complete
+                                        </Button>
+                                    )}
 
                                     <Button
-                                    onClick={() => removeTask(item.id)}
-                                    sx={{ color: "red" }}
+                                        onClick={() => removeTask(item.tid)}
+                                        sx={{ color: "red" }}
                                     >
                                         Remove
                                     </Button>
