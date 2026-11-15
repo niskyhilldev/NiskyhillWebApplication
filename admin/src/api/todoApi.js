@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'https://niskyhill.org';
+import { API_BASE_URL } from './config.js';
 
 //Get all tasks
 export const fetchTasks = async () => {

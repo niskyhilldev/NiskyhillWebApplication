@@ -48,7 +48,7 @@ export default function ResetPassword() {
                 height: "100vh",
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundImage: "url('../public/niskyHomepage.JPG')", // Optional background image
+                backgroundImage: `url('${import.meta.env.BASE_URL}niskyHomepage.JPG')`, // Optional background image
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

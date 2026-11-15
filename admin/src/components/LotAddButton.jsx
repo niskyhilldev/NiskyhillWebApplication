@@ -112,7 +112,7 @@ function LotAddButton() {
       handleClose();
 
       if (generateCertificate) {
-        navigate(`/admin/lots/${newLot.lid}/certificate`);
+        navigate(`/lots/${newLot.lid}/certificate`);
       }
     } catch (err) {
       setError(err.message);

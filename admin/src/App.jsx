@@ -76,7 +76,7 @@ function AdminLayout() {
   const location = useLocation();
    
   // hide dashboard while form is open but keep mounted so search state is preserved
-  const isFormPage = location.pathname !== "/admin";
+  const isFormPage = location.pathname !== "/";
   
   return (
     <>
@@ -127,10 +127,9 @@ function App() {
 
   return (
     <UserContext.Provider value={user}>
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <Routes>
-        {/* Login first then direct to admin dashboard (default path directsto login too) */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Router basename is /admin, so these paths are /admin/login, /admin, etc. */}
         {/**fetch user information upon login */}
         <Route path="/login"
           element={
@@ -150,11 +149,13 @@ function App() {
           }
         />
         <Route
-          path="/admin"
+          path="/"
           element={
-            isAuthenticated
-              ? <AdminLayout />
-              : <Navigate to="/login" />
+            userLoading
+              ? null // wait for the session check so a refresh doesn't bounce to login
+              : isAuthenticated
+                ? <AdminLayout />
+                : <Navigate to="/login" replace />
           }
         >
           <Route index element={null} />

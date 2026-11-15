@@ -27,8 +27,8 @@ export default function LoginForm({ onLogin }) {
 
         try {
             await login(email, password);
-            onLogin(); // Call the onLogin prop to update authentication status
-            navigate("/admin"); // redirect to dashboard on successful login
+            await onLogin(); // Call the onLogin prop to update authentication status
+            navigate("/"); // redirect to dashboard on successful login
         } catch (err) {
             console.error("Login failed:", err);
             setError("Invalid email or password");
@@ -43,7 +43,7 @@ export default function LoginForm({ onLogin }) {
                 height: "100vh",
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundImage: "url('../public/niskyHomepage.JPG')", 
+                backgroundImage: `url('${import.meta.env.BASE_URL}niskyHomepage.JPG')`, 
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

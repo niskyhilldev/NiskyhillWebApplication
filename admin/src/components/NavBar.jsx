@@ -42,7 +42,7 @@ function Profile() {
     try{
       await logout();
       //localStorage.removeItem("token");
-      window.location.href = "/login";
+      window.location.href = "/admin/login";
     }catch(err){
       console.error(err);
     }

@@ -108,7 +108,7 @@ function LotSearch() {
   async function handleOpenCertificate(lid) {
   try {
     const found = await openSavedForm("certificate_of_ownership", lid);
-    if (!found) navigate(`/admin/lots/${lid}/certificate`);
+    if (!found) navigate(`/lots/${lid}/certificate`);
   } catch (err) {
     setFormError(err.message || "Failed to open form");
   }

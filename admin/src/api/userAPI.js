@@ -1,6 +1,6 @@
 //all API calls for users will reside here, then will be utilized in thier respective react functions
 
-const API_BASE_URL = 'https://niskyhill.org'; //Should update to env var
+import { API_BASE_URL } from './config.js';
 // for prod it should be const API_BASE_URL = 'https://niskyhill.org';
 //for local testing should be 'http://localhost:8080'
 

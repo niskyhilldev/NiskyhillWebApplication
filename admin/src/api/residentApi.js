@@ -1,6 +1,6 @@
 //all API calls for residents will reside here, then will be utilized in thier respective react functions
 
-const API_BASE_URL = 'https://niskyhill.org'; //Should update to env var
+import { API_BASE_URL } from './config.js';
 
 // post request to add resident
 async function addResident(payload){

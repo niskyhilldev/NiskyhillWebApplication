@@ -168,11 +168,11 @@ function ResidentAddButton() {
 
       // navigate to combined page if both selected, else remain seperate
       if (shouldCreateCard && shouldCreateRecord) {
-        navigate(`/admin/residents/${newResident.rid}/internment-forms`);
+        navigate(`/residents/${newResident.rid}/internment-forms`);
       } else if (shouldCreateCard) {
-        navigate(`/admin/residents/${newResident.rid}/internment-card`);
+        navigate(`/residents/${newResident.rid}/internment-card`);
       } else if (shouldCreateRecord) {
-        navigate(`/admin/residents/${newResident.rid}/internment-record`);
+        navigate(`/residents/${newResident.rid}/internment-record`);
       }
 
     } catch (err) {

@@ -438,7 +438,7 @@ import { openSavedForm } from "../api/formApi";
                                 handleOpenForm(
                                   "interment_card",
                                   row.rid,
-                                  `/admin/residents/${row.rid}/internment-card`
+                                  `/residents/${row.rid}/internment-card`
                                 )
                               }
                               sx={{
@@ -463,7 +463,7 @@ import { openSavedForm } from "../api/formApi";
                                 handleOpenForm(
                                   "internment_record",
                                   row.rid,
-                                  `/admin/residents/${row.rid}/internment-record`
+                                  `/residents/${row.rid}/internment-record`
                                 )
                               }
                               sx={{
@@ -782,7 +782,7 @@ import { openSavedForm } from "../api/formApi";
                               handleOpenForm(
                                 "interment_card",
                                 row.rid,
-                                `/admin/residents/${row.rid}/internment-card`
+                                `/residents/${row.rid}/internment-card`
                               )
                             }
                             sx={{
@@ -807,7 +807,7 @@ import { openSavedForm } from "../api/formApi";
                               handleOpenForm(
                                 "internment_record",
                                 row.rid,
-                                `/admin/residents/${row.rid}/internment-record`
+                                `/residents/${row.rid}/internment-record`
                               )
                             }
                             sx={{
