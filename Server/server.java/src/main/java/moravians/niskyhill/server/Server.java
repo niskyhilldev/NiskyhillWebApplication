@@ -55,6 +55,11 @@ public class Server {
                 staticFiles.directory = "/public"; 
                 staticFiles.location = Location.CLASSPATH;
             });
+
+            // /* React admin app (built by pullWebFiles.bash into public/admin).
+            //    Any unmatched GET under /admin (e.g. /admin/login, /admin/lots/5/certificate)
+            //    returns the app's index.html so client-side routing can handle it. */
+            // config.spaRoot.addFile("/admin", "/public/admin/index.html", Location.CLASSPATH);
         });
 
 
@@ -95,10 +100,9 @@ public class Server {
         });
 
 
-        /* Require authentication for all admin resources */
-        app.before("/admin/*", ctx -> {
-            AuthHandler.requirePageAuth(ctx);
-        });
+        /* NOTE: /admin/* is the React admin app (static files only, no secrets).
+           It is not page-guarded here: the app handles its own login screen, and every
+           admin API route below enforces AuthHandler.requireRouteAuth. */
 
 
 

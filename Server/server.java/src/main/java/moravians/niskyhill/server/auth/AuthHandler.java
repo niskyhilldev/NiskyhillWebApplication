@@ -82,7 +82,7 @@ public class AuthHandler {
      */
     private static void redirectToLogin(Context ctx) {
         ctx.removeCookie("token");
-        ctx.redirect("/login/login.html");
+        ctx.redirect("/admin/login");
         ctx.skipRemainingHandlers();
     }
 
