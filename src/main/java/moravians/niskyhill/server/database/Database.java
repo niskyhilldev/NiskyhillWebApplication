@@ -3,22 +3,28 @@ package moravians.niskyhill.server.database;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.models.Lot;
 import moravians.niskyhill.server.models.Resident;
 import moravians.niskyhill.server.models.Section;
 import moravians.niskyhill.server.models.User;
+import moravians.niskyhill.server.models.ToDo;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
+/** 
+ * This class wraps a connection to A database 
+ * The JDBC uri string is read through an envirmental variable on Heroku 
+ * This is the Respository / Data Layer of the Server
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
+ */
 public class Database {
     private Connection connection;
 
@@ -28,9 +34,12 @@ public class Database {
      */
     private Database() {   }
 
+    /**
+     * Method to set the connection in the Database class
+     * @return Istanciated Database Object with a connection Null if there was an issue connecting
+     */
     public static Database getDatabase() {
-        // Get the database URI from environment variable
-        String uri = System.getenv("JDBC_DATABASE_URI");
+        String uri = System.getenv("JDBC_DATABASE_URI");  // Get the database URI from environment variable
         if (uri == null || uri.isEmpty()) {
             System.err.println("\nJDBC_DATABASE_URI environment variable is not set.");
             return null;  // Still returns null if env variable missing
@@ -54,6 +63,11 @@ public class Database {
     }
 
 
+    /**
+     * Method to disconnect from the database
+     * 
+     * @return true on success, false otherwise
+     */
     public boolean disconnect() {
         if (connection != null) {
             try {
@@ -71,6 +85,12 @@ public class Database {
 
     }
 
+    /**
+     * Method to get a list of all residents from the database
+     * 
+     * @return A list of type Resident, an empty list if none found
+     * @throws HttpStatusException
+     */
     public List<Resident> getAllResidents() throws HttpStatusException {
         final String q = """
             SELECT * 
@@ -121,6 +141,13 @@ public class Database {
         return residents;
     }
 
+    /**
+     * Method to get a resident by their ID
+     * 
+     * @param rid
+     * @return A Resident object, Null if not found
+     * @throws HttpStatusException
+     */
     public Resident getResident(Long rid) throws HttpStatusException {
         
         final String q = """
@@ -173,6 +200,13 @@ public class Database {
         }
     }
 
+    /**
+     * Method to search for Residents by any combination of first, middle, and last name
+     * 
+     * @param name first and/or middle and/or last name
+     * @return A list of residents matching the critera, an empty list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Resident> searchResidents(String name) throws HttpStatusException {
         final String q = """
             SELECT *
@@ -255,7 +289,12 @@ public class Database {
     }
 
 
-
+    /**
+     * Gets all lots from the database 
+     * 
+     * @return List of Lots, emtpy list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Lot> getAllLots() throws HttpStatusException {
         final String q = """
                         SELECT *
@@ -294,7 +333,12 @@ public class Database {
         return lots;
     }
 
-
+    /**
+     * gets all sections from the database 
+     * 
+     * @return List of type section, empty list if noe found
+     * @throws HttpStatusException
+     */
     public List<Section> getAllSections() throws HttpStatusException {
         final String q = """
                     SELECT *
@@ -323,7 +367,13 @@ public class Database {
         return sections;
     }
 
-
+    /**
+     * Get a lot by its ID from the database 
+     * 
+     * @param lid the id of the lot
+     * @return A lot object, Null if not found
+     * @throws HttpStatusException
+     */
     public Lot getLot(Long lid) throws HttpStatusException {
         final String q = """
                         SELECT *
@@ -366,6 +416,13 @@ public class Database {
 
     }
 
+    /**
+     * Get a section buy its its id
+     * 
+     * @param sid the id of the section
+     * @return Section object, Null if not found
+     * @throws HttpStatusException
+     */
     public Section getSection(Long sid) throws HttpStatusException {
         final String q = """
                     SELECT *
@@ -396,7 +453,17 @@ public class Database {
         }
     }
 
-
+    /**
+     * gets lots given a combination of lotNumber and sectionName
+     * 
+     * @param lotNumber the number assoicated with a lot (ex: 42A)
+     * @param sectionName the name associted with a section (ex: #1)
+     * @return a List of a Single lot if both lotNumber and sectionName provided
+     *         a List of all lots the exist in a given section if only section provided
+     *         a List of all Lots that share the same lot number if only lot Number provided
+     *         a empty list if nothing found
+     * @throws HttpStatusException
+     */
     public List<Lot> getLotDetails(String lotNumber, String sectionName) throws HttpStatusException {
         String q = """
                     SELECT *
@@ -414,7 +481,7 @@ public class Database {
         }else if (lotNumber != null && sectionName == null){ // get all lots that share a number
             q += " lot.number = ? ORDER BY lot.number";
         } else { // get all lots with the number in the section 
-            q += " lot.number = ? AND section.name = ? ORDER BY section.name, lot.number";
+            q += " lot.number = ? AND section.name = ? ORDER BY lot.number, section.name";
         }
         
         try {
@@ -455,6 +522,13 @@ public class Database {
         }
     }
 
+    /**
+     * Gets all residents that are buried in a lot
+     * 
+     * @param lid the id of the lot
+     * @return a list of residents, an empty list if none exist or the lot does not exist
+     * @throws HttpStatusException
+     */
     public List<Resident> getLotResidents(Long lid) throws HttpStatusException {
         final String q = """
             SELECT * 
@@ -496,6 +570,24 @@ public class Database {
 
     }
 
+    /**
+     * update a resident in the database 
+     * 
+     * @param rid the id of the resident
+     * @param firstName 
+     * @param middleName
+     * @param lastName
+     * @param birthDate
+     * @param burialDate
+     * @param deathDate
+     * @param capsule what vessle they are burried in 
+     * @param marker if there is a headstone
+     * @param foundation if there is a foundation for a headstone 
+     * @param publicViewable can it viewed by the public
+     * @param lid the id of the lot the resident is burried (or to be burried) in
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateResident(Long rid,String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
                             String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
         String q = """
@@ -586,12 +678,29 @@ public class Database {
         }
     }
 
-
-    public boolean addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
+    /**
+     * add a new resident to the database
+     * 
+     * @param firstName
+     * @param middleName
+     * @param lastName
+     * @param birthDate
+     * @param burialDate
+     * @param deathDate
+     * @param capsule
+     * @param marker
+     * @param foundation
+     * @param publicViewable
+     * @param lid
+     * @return rid if successfull, null otherwise
+     * @throws HttpStatusException
+     */
+    public Long addNewResident(String firstName,String middleName,String lastName,String birthDate,String burialDate,String deathDate, 
                             String capsule, Boolean marker, Boolean foundation, Boolean publicViewable, Long lid) throws HttpStatusException {
         String q = """
             INSERT INTO resident (firstname, middlename, lastname, birth_date, burial_date, death_date, capsule, marker, foundation, viewable, lot)
             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            RETURNING rid
         """;
 
         try {
@@ -652,11 +761,12 @@ public class Database {
             }
 
             ps.setLong(11, lid); // set lot
-            
-            if (ps.executeUpdate() < 1){
-               return false;
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()){
+               return rs.getLong("rid");
             }
-            return true;
+            return null;
 
         } catch (SQLException e) {
             System.err.printf("Error Executing Query: %s\n", e.getMessage());
@@ -664,7 +774,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * delete a resident from the database
+     * 
+     * @param rid the id of the resident
+     * @return true if successfull, false otherwise 
+     * @throws HttpStatusException
+     */
     public boolean deleteResident(Long rid) throws HttpStatusException {
         String q = """
                 DELETE FROM resident 
@@ -686,11 +802,21 @@ public class Database {
         }
     }
 
-
-    public boolean createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
+    /**
+     * Create a new lot in the database 
+     * 
+     * @param number the number identifier for the lot 
+     * @param descriptor the partition of the lot
+     * @param owner the owner of the lot 
+     * @param sid the id of the section the lot is located in 
+     * @return the generated lid using returning lid
+     * @throws HttpStatusException
+     */
+    public Long createNewLot(String number,String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 INSERT INTO lot (number, descriptor, owner, section)
                 VALUES (?, ?, ?, ?)
+                RETURNING lid
                 """;
         
         try {
@@ -708,11 +834,12 @@ public class Database {
                 ps.setString(3, owner);
             }
             ps.setLong(4, sid);
+            ResultSet rs = ps.executeQuery();
 
-            if (ps.executeUpdate() < 1){
-                return false;
+            if (rs.next()){
+                return rs.getLong("lid");
             }
-            return true;
+            return null;
 
         } catch (SQLException e) {
             String message = e.getMessage().toLowerCase(); 
@@ -726,7 +853,17 @@ public class Database {
         }
     }
 
-
+    /**
+     * updates a lot in the database 
+     * 
+     * @param lid the id of the lot 
+     * @param number the number identifier for the lot 
+     * @param descriptor ther partition of the lot 
+     * @param owner the owner of the lot
+     * @param sid the id of the section the lot is locsted in
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateLot(Long lid, String number, String descriptor, String owner, Long sid ) throws HttpStatusException {
         String q = """
                 UPDATE lot
@@ -766,7 +903,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * Delete a lot from the database 
+     * 
+     * @param lid the id of the lot 
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean deleteLot(Long lid) throws HttpStatusException {
         String q = """
                 DELETE FROM lot 
@@ -788,7 +931,13 @@ public class Database {
         }
     }
 
-
+    /**
+     * get a user from the daatabse based on their unique email address 
+     *  
+     * @param email the email of the user 
+     * @return the User object on success, Null if not found
+     * @throws HttpStatusException
+     */
     public User getUser(String email) throws HttpStatusException {
         String q = """
                 SELECT *
@@ -820,6 +969,15 @@ public class Database {
         }
     }
 
+    /**
+     * updates a user password in the database
+     * 
+     * @param userId the id of the user
+     * @param password the new hashed password 
+     * @param salt the salt that was added to the password
+     * @return true on success, false otherwise
+     * @throws HttpStatusException
+     */
     public boolean updateUserPassword(Long userId, String password, String salt) throws HttpStatusException {
         String q = """
                 Update users
@@ -846,6 +1004,13 @@ public class Database {
         }
     }
 
+    /**
+     * Get a user from the database by their id 
+     * 
+     * @param userId the id of the user 
+     * @return The User object on success, Null otherwise if not found
+     * @throws HttpStatusException
+     */
     public User getUser(Long userId) throws HttpStatusException {
         String q = """
                 SELECT *
@@ -876,5 +1041,288 @@ public class Database {
             throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Find User " + userId, e);
         }
 
+    }
+
+    /**
+     * Saves a generated form PDF to the database
+     * Note: the table and column names are hardcoded by the caller (FormController), never user input
+     * 
+     * @param table the name of the table to save the form in (certificate_of_ownership, internment_card, or internment_record)
+     * @param idColumn the name of the column that links the form to its owner (lot_id for lots, resident_id for residents)
+     * @param id the id of the lot or resident the form belongs to
+     * @param file the bytes of the generated PDF
+     * @throws HttpStatusException if the form could not be saved
+     */
+    public void saveFormFile(String table, String idColumn, Long id, byte[] file) throws HttpStatusException {
+        String q = "INSERT INTO " + table + " (" + idColumn + ", file_data) VALUES (?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, id);
+            ps.setBytes(2, file);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Save Form", e);
+        }
+    }
+
+    /**
+     * Get all tasks from the database
+     *
+     * @return a list of ToDo tasks, empty if none found
+     * @throws HttpStatusException database error
+     */
+    public List<ToDo> getAllTasks() throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                ORDER BY created_at DESC
+                """;
+
+        List<ToDo> tasks = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ToDo task = new ToDo(
+                    rs.getLong("tid"),
+                    rs.getLong("assigner_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("created_at"),
+                    rs.getString("completed_at")
+                );
+
+                tasks.add(task);
+            }
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Tasks", e);
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Get a task from the database by its ID
+     *
+     * @param tid the id of the task
+     * @return a ToDo object, null if not found
+     * @throws HttpStatusException database error
+     */
+    public ToDo getTask(Long tid) throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                WHERE tid = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new ToDo(
+                        rs.getLong("tid"),
+                        rs.getLong("assigner_id"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        rs.getString("status"),
+                        rs.getString("created_at"),
+                        rs.getString("completed_at")
+                    );
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Task", e);
+        }
+    }
+
+    /**
+     * Add a new task to the database
+     *
+     * @param assignerId the id of the user creating the task
+     * @param title the name of the task
+     * @param description the details of the task
+     * @return the id of the new task, null if unsuccessful
+     * @throws HttpStatusException database error
+     */
+    public Long addNewTask(Long assignerId, String title, String description) throws HttpStatusException {
+        String q = """
+                INSERT INTO to_do (assigner_id, title, description, status, created_at)
+                VALUES (?, ?, ?, 'Open', CURRENT_TIMESTAMP)
+                RETURNING tid
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, assignerId);
+            ps.setString(2, title);
+            ps.setString(3, description);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("tid");
+                }
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Create Task", e);
+        }
+    }
+
+    /**
+     * Mark a task as complete in the database
+     *
+     * @param tid the id of the task
+     * @return true on success, false otherwise
+     * @throws HttpStatusException database error
+     */
+    public boolean completeTask(Long tid) throws HttpStatusException {
+        String q = """
+                UPDATE to_do
+                SET status = 'Complete',
+                    completed_at = CURRENT_TIMESTAMP
+                WHERE tid = ? AND status = 'Open'
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Complete Task", e);
+        }
+    }
+
+    /**
+     * Delete a task from the database
+     *
+     * @param tid the id of the task
+     * @return true on success, false otherwise
+     * @throws HttpStatusException database error
+     */
+    public boolean deleteTask(Long tid) throws HttpStatusException {
+        String q = """
+                DELETE FROM to_do
+                WHERE tid = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Delete Task", e);
+        }
+    }
+
+    /**
+     * Get all open tasks that are due for a reminder
+     *
+     * @return a list of tasks needing reminders
+     * @throws HttpStatusException database error
+     */
+    public List<ToDo> getTasksDueForReminder() throws HttpStatusException {
+        String q = """
+                SELECT *
+                FROM to_do
+                WHERE status = 'Open'
+                AND (
+                    (last_reminded_at IS NULL
+                        AND created_at <= CURRENT_TIMESTAMP - INTERVAL '72 hours')
+                    OR
+                    (last_reminded_at <= CURRENT_TIMESTAMP - INTERVAL '72 hours')
+                )
+                ORDER BY created_at ASC
+                """;
+
+        List<ToDo> tasks = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(q);
+            ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ToDo task = new ToDo(
+                    rs.getLong("tid"),
+                    rs.getLong("assigner_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("created_at"),
+                    rs.getString("completed_at")
+                );
+
+                tasks.add(task);
+            }
+
+        } catch (SQLException e) {
+            System.err.printf("Error Retrieving Tasks for Reminder: %s\n", e.getMessage());
+
+            throw new HttpStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR.value,
+                "Failed to Retrieve Tasks for Reminder",
+                e
+            );
+        }
+
+        return tasks;
+    }
+    
+    /**
+     * Update the last reminder timestamp for a task
+     *
+     * @param tid the task ID
+     * @throws HttpStatusException database error
+     */
+    public void updateLastRemindedAt(Long tid) throws HttpStatusException {
+        String q = """
+                UPDATE to_do
+                SET last_reminded_at = CURRENT_TIMESTAMP
+                WHERE tid = ? AND status = 'Open'
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, tid);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.printf("Error Updating Reminder Timestamp: %s\n", e.getMessage());
+
+            throw new HttpStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR.value,
+                "Failed to Update Reminder Timestamp",
+                e
+            );
+        }
+    }
+
+    public byte[] getLatestFormFile(String table, String idColumn, String pkColumn, Long id) throws HttpStatusException {
+        String q = "SELECT file_data FROM " + table +
+                " WHERE " + idColumn + " = ? AND file_data IS NOT NULL" +
+                " ORDER BY " + pkColumn + " DESC LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(q)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getBytes("file_data") : null;
+            }
+        } catch (SQLException e) {
+            System.err.printf("Error Executing Query: %s\n", e.getMessage());
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR.value, "Failed to Retrieve Form", e);
+        }
     }
 }

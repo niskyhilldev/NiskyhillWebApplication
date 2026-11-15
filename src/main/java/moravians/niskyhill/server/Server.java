@@ -1,10 +1,12 @@
 package moravians.niskyhill.server;
 
-import java.util.List;
-import java.util.Map;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.Cookie;
+import io.javalin.http.SameSite;
 import io.javalin.http.staticfiles.Location;
+import java.util.List;
+import java.util.Map;
 import moravians.niskyhill.server.auth.AuthHandler;
 import moravians.niskyhill.server.database.Database;
 import moravians.niskyhill.server.dtos.LoginDTO;
@@ -18,13 +20,19 @@ import moravians.niskyhill.server.services.LotService;
 import moravians.niskyhill.server.services.ResidentService;
 import moravians.niskyhill.server.services.SectionService;
 import moravians.niskyhill.server.services.UserService;
-import io.javalin.http.Cookie;
-import io.javalin.http.SameSite;
-import io.javalin.http.HttpStatus;
+import moravians.niskyhill.server.dtos.ToDoDTO;
+import moravians.niskyhill.server.services.ToDoService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
  * Server for Nisky Hill Website
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
+ * This class defines the Server, its security protocals and its routes
+ * This is considered the controller later of the Server
  */
 public class Server {
     
@@ -47,6 +55,11 @@ public class Server {
                 staticFiles.directory = "/public"; 
                 staticFiles.location = Location.CLASSPATH;
             });
+
+            /* React admin app (built by pullWebFiles.bash into public/admin).
+               Any unmatched GET under /admin (e.g. /admin/login, /admin/lots/5/certificate)
+               returns the app's index.html so client-side routing can handle it. */
+            config.spaRoot.addFile("/admin", "/public/admin/index.html", Location.CLASSPATH);
         });
 
 
@@ -54,7 +67,8 @@ public class Server {
         List<String> allowedOrigins = List.of(
             "https://www.niskyhill.org", 
             "https://www.niskyhill.com",
-            "http://localhost:8080" // for Local dev
+            "http://localhost:8080", // for Local dev
+            "http://localhost:5173" // for React dev
         );
 
         /* Enable CORS */
@@ -86,10 +100,9 @@ public class Server {
         });
 
 
-        /* Require authentication for all admin resources */
-        app.before("/admin/*", ctx -> {
-            AuthHandler.requirePageAuth(ctx);
-        });
+        /* NOTE: /admin/* is the React admin app (static files only, no secrets).
+           It is not page-guarded here: the app handles its own login screen, and every
+           admin API route below enforces AuthHandler.requireRouteAuth. */
 
 
 
@@ -104,10 +117,15 @@ public class Server {
                 String token = AuthHandler.generateToken(userId); // generate a token for that user
 
                 Cookie cookie = new Cookie("token", token); // store the cookies with the token in the users browser 
+
+                // COMMENT OUT FOR LOCAL TESTING (allows cookie to work on localhost without secure flag)
                 cookie.setDomain(".niskyhill.org");  // works across www + api subdomains
                 cookie.setPath("/");
                 cookie.setMaxAge(3600);               // 1 hour
                 cookie.setHttpOnly(true);             // JS cannot access
+
+                //REPLACE WITH false FOR LOCAL TESTING
+                //cookie.setSecure(false);               // works with localhost
                 cookie.setSecure(true);               // only over HTTPS
                 cookie.setSameSite(SameSite.LAX);    // allows cross-subdomain
 
@@ -200,9 +218,12 @@ public class Server {
         app.post("/residents/add", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewResidentDTO newResidentDTO = ctx.bodyAsClass(NewResidentDTO.class);
-            if (ResidentService.addResident(newResidentDTO, database)){
-                ctx.status(200).result("New Resident Created Successfully");
-            }
+
+            Long rid = ResidentService.addResident(
+            newResidentDTO,
+            database
+            );
+            ctx.status(200).json(Map.of("rid", rid));
         });
 
         // Delete a resident (Requires Authorization)
@@ -232,9 +253,8 @@ public class Server {
         app.post("/lots/add", ctx -> {
             AuthHandler.requireRouteAuth(ctx); // Check Authorization
             NewLotDTO newLotDTO = ctx.bodyAsClass(NewLotDTO.class);
-            if (LotService.addLot(newLotDTO, database)){
-                ctx.status(200).result("New Lot Created Successfully");
-            }
+            Long lid = LotService.addLot(newLotDTO, database);
+            ctx.status(200).json(Map.of("lid", lid));
         });
 
         // Update a lot (Requires Authorization)
@@ -265,6 +285,46 @@ public class Server {
         });
 
 
+        // Get all tasks (Requires Authorization)
+        app.get("/todo/all", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+            ctx.json(ToDoService.getAllTasks(database));
+        });
+
+        // Add a new task (Requires Authorization)
+        app.post("/todo/add", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            Long currentUserId = AuthHandler.getAuthenticatedUserId(ctx);
+            ToDoDTO toDoDTO = ctx.bodyAsClass(ToDoDTO.class);
+
+            Long tid = ToDoService.addTask(toDoDTO, currentUserId, database);
+            ctx.status(200).json(Map.of("tid", tid));
+        });
+
+        // Mark a task as complete (Requires Authorization)
+        app.put("/todo/complete/{tid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            if (ToDoService.completeTask(ctx.pathParam("tid"), database)) {
+                ctx.status(200).result("Task Completed Successfully");
+            }
+        });
+
+        // Delete a task (Requires Authorization)
+        app.delete("/todo/delete/{tid}", ctx -> {
+            AuthHandler.requireRouteAuth(ctx);
+
+            if (ToDoService.deleteTask(ctx.pathParam("tid"), database)) {
+                ctx.status(200).result("Task Deleted Successfully");
+            }
+        });
+
+
+        // Generate a PDF overlay for a given form and field values
+        FormController.register(app, database);
+
+
         
         /* Exception Handlers */
 
@@ -276,6 +336,31 @@ public class Server {
         // Get port from environment (Heroku) or default to 8080 (for local deployment)
         String port = System.getenv("PORT");
         int serverPort = (port != null) ? Integer.parseInt(port) : 8080;
+
+        
+        /* Schedule To-Do Reminder Checks */
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        System.out.println("Starting To-Do Reminder Scheduler...");
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                System.out.println("Scheduler running - checking for task reminders...");
+
+                ToDoService.sendDueReminders(database);
+
+                System.out.println("Scheduler check finished.");
+
+            } catch (Exception e) {
+                System.err.println("Scheduler Error: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
+
+        /* Stop scheduler when server shuts down */
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            scheduler.shutdown();
+        }));
 
         /* Start the Server */
         app.start(serverPort);

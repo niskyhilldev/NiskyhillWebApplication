@@ -6,13 +6,14 @@
 # and excluding the pullWebFiles.bash file.
 
 # Git Repo Information
-REPO_URL=${1:-"https://github.com/tjs226/BAM_Niskey_Hill.git"}
-SERVER_BRANCH_NAME=${2:-"Server"}
+REPO_URL=${1:-"https://github.com/niskyhilldev/NiskyhillWebApplication"}
+# Typically pulls from Server branch, but development in 2026 was kept seperate, so Backend-2026 branch was used as it was most up to date
+SERVER_BRANCH_NAME=${2:-"Backend-2026"}
 HEROKU_DEPLOY_BRANCH_NAME=${3:-"Heroku-Deployment"}
 TARGET_DIR="$(pwd)"  # Root directory of the Heroku-Deploy branch
 
 # Important files to exclude from deletion
-EXCLUDE_FILES=("pullServer.bash" "Procfile" ".gitattributes" "system.properties" "pullWebFiles.bash" "Heroku.md")
+EXCLUDE_FILES=("pullServer.bash" "Procfile" ".gitattributes" "system.properties" "pullWebFiles.bash" "Heroku.md" "Readme.md")
 
 # Temporary directory for fetching the files
 TMP_DIR=$(mktemp -d)

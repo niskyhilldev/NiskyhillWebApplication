@@ -7,8 +7,21 @@ import moravians.niskyhill.server.exceptions.HttpStatus;
 import moravians.niskyhill.server.exceptions.HttpStatusException;
 import moravians.niskyhill.server.mappers.SectionMapper;
 
+
+/**
+ * Service Layer for all things Section related
+ * 
+ * @author Tedd Stabolepszy, Lehigh Univeristy '26
+ */
 public class SectionService {
 
+    /**
+     * Get all sections in the system 
+     * 
+     * @param database a database with an established connection
+     * @return List of type SectionDTO 
+     * @throws HttpStatusException no sections exist
+     */
     public static List<SectionDTO> getAllSections(Database database) throws HttpStatusException{
         List<SectionDTO> sectionList =  SectionMapper.mapSectionDTOList(database.getAllSections());
 
@@ -18,7 +31,14 @@ public class SectionService {
         return sectionList;
     }
 
-
+    /**
+     * get a single section in the system by its ID
+     * 
+     * @param sid the id of a section 
+     * @param database a database with an established connection
+     * @return a sectionDTO
+     * @throws HttpStatusException invalid sid, section does not exist
+     */
     public static SectionDTO getSection(String sid, Database database) throws HttpStatusException {
         if (sid == null) {
             throw new HttpStatusException(HttpStatus.BAD_REQUEST.value, "sid cannot be null");

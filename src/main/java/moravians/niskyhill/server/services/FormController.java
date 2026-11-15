@@ -1,0 +1,134 @@
+package moravians.niskyhill.server;
+ 
+import io.javalin.Javalin;
+import io.javalin.http.Context;
+import moravians.niskyhill.server.auth.AuthHandler;
+import moravians.niskyhill.server.dtos.FormRequestDTO;
+import moravians.niskyhill.server.exceptions.HttpStatusException;
+import moravians.niskyhill.server.services.FormService;
+import moravians.niskyhill.server.database.Database;
+
+/**
+ * Service layer for wiring form generation into Javalin HTTP server
+ */
+public class FormController {
+    private static final FormService formService = new FormService();
+    
+    /**
+     * Registers all form routes
+     * 
+     * @param app Javalin app instance
+     */
+    public static void register(Javalin app, Database database) {
+        app.post("/forms/generate", ctx -> handleGenerateForm(ctx, database));
+        app.get("/forms/saved/{formType}/{id}", ctx -> handleGetSavedForm(ctx, database));
+    }
+
+    /**
+     * POST /forms/generate
+     * 
+     * @param ctx Javalin context
+     */
+    private static void handleGenerateForm(Context ctx, Database database) throws HttpStatusException {
+        AuthHandler.requireRouteAuth(ctx);
+        FormRequestDTO request;
+        try {
+            request = ctx.bodyAsClass(FormRequestDTO.class);
+        } catch (Exception e) {
+            ctx.status(400).result("Invalid request body: " + e.getMessage());
+            return;
+        }
+
+        if (request.formId() == null || request.formId().isBlank()) {
+            ctx.status(400).result("'formId' is required and cannot be blank.");
+            return;
+        }
+        if (request.fieldValues() == null || request.fieldValues().isEmpty()) {
+            ctx.status(400).result("'fieldValues' is required and cannot be empty.");
+            return;
+        }
+
+        byte[] pdfBytes;
+        try {
+            pdfBytes = formService.generateOverlay(request);
+        } catch (IllegalArgumentException e) {
+            // Thrown by FormService when the formId doesn't exist in the config.
+            ctx.status(400).result("Unknown formId: " + e.getMessage());
+            return;
+        } catch (Exception e) {
+            // Unexpected error during PDF generation (e.g. config file missing).
+            ctx.status(500).result("Failed to generate PDF: " + e.getMessage());
+            return;
+        }
+
+        // Save a copy. A failure is logged but never blocks the user's PDF.
+        try {
+            Long lid = parseId(request.fieldValues().get("lid"));
+            Long rid = parseId(request.fieldValues().get("rid"));
+
+            switch (request.formId()) {
+                case "certificate_of_ownership" -> {
+                    if (lid == null) throw new IllegalStateException("no lid in request");
+                    database.saveFormFile("certificate_of_ownership", "lot_id", lid, pdfBytes);
+                }
+                case "interment_card" -> {
+                    if (rid == null) throw new IllegalStateException("no rid in request");
+                    database.saveFormFile("internment_card", "resident_id", rid, pdfBytes);
+                }
+                case "internment_record" -> {
+                    if (rid == null) throw new IllegalStateException("no rid in request");
+                    database.saveFormFile("internment_record", "resident_id", rid, pdfBytes);
+                }
+                default -> { }
+            }
+        } catch (Exception e) {
+            System.err.printf("Failed to save form '%s': %s%n", request.formId(), e.getMessage());
+        }
+
+        ctx.contentType("application/pdf");
+        ctx.header(
+            "Content-Disposition",
+            "attachment; filename=\"" + request.formId() + ".pdf\""
+        );
+        ctx.result(pdfBytes);
+    }
+
+    private static void handleGetSavedForm(Context ctx, Database database) throws HttpStatusException {
+        AuthHandler.requireRouteAuth(ctx);
+
+        Long id = parseId(ctx.pathParam("id"));
+        if (id == null) {
+            ctx.status(400).result("id must be numeric");
+            return;
+        }
+
+        byte[] pdf;
+        switch (ctx.pathParam("formType")) {
+            case "certificate_of_ownership" ->
+                pdf = database.getLatestFormFile("certificate_of_ownership", "lot_id", "cert_id", id);
+            case "interment_card" ->
+                pdf = database.getLatestFormFile("internment_card", "resident_id", "internment_card_id", id);
+            case "internment_record" ->
+                pdf = database.getLatestFormFile("internment_record", "resident_id", "internment_record_id", id);
+            default -> {
+                ctx.status(400).result("Unknown form type");
+                return;
+            }
+        }
+
+        if (pdf == null) {
+            ctx.status(404).result("No saved form found");
+            return;
+        }
+
+        ctx.contentType("application/pdf");
+        ctx.header("Content-Disposition", "inline");
+        ctx.result(pdf);
+    }
+
+    private static Long parseId(String s) {
+        try { return s == null ? null : Long.parseLong(s); }
+        catch (NumberFormatException e) { return null; }
+    }
+
+}

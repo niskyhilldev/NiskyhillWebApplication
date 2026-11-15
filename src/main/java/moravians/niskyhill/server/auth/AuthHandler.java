@@ -14,6 +14,8 @@ import java.util.Date;
  * Handles authentication and authorization for the Nisky Hill server.
  * Provides methods for token generation, validation, expiration checking,
  * and redirecting unauthorized users to the login page.
+ * 
+ * @author Tedd Stabolepszy, Lehigh University '26
  */
 public class AuthHandler {
 
@@ -80,7 +82,7 @@ public class AuthHandler {
      */
     private static void redirectToLogin(Context ctx) {
         ctx.removeCookie("token");
-        ctx.redirect("/login/login.html");
+        ctx.redirect("/admin/login");
         ctx.skipRemainingHandlers();
     }
 
