@@ -140,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>${formatName(resident)}</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div><strong>Burial Date:</strong> ${formatDate(resident.burialDate)}</div>
-                        <div><strong>Section:</strong> ${resident.sectionName || ''}</div>
+                        <div><strong>Section:</strong> ${resident.lot.section.name || ''}</div>
                         <div><strong>Resident ID:</strong> ${resident.rid || ''}</div>
-                        <div><strong>Lot:</strong> ${resident.lotNumber || ''}</div>
+                        <div><strong>Lot:</strong> ${resident.lot.number || ''}</div>
                     </div>
                 </div>
             `;

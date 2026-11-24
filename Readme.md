@@ -7,7 +7,8 @@ This branch is connected to a Heroku Deployment pipeline.  This is were the prod
 
 ## How to Deploy
 * run `bash pullServer.bash` to get the latest version of the server from the Server Branch  (if needed). Run this FIRST: it wipes everything in this folder except the files listed in `EXCLUDE_FILES`, including `src/`
-* run `bash pullWebFiles.bash` to get the latest web files from the Web branch and put them in the correct file structure. This also builds the React admin app (`admin/` in the Web branch) and copies only the build output into `src/main/resources/public/admin`. Old files in `public/` (including the old HTML admin and login pages) are removed.
+* run `bash pullWebFiles.bash` to get the latest web files from the Web branch and put them in the correct file structure. This also builds the React admin app (`admin/` in the Web branch) and copies only the build output into `src/main/resources/public/admin`. Old files in `public/` (including the old HTML admin and login pages) are removed. (May take a while, 5ish minutes due to node modules, so be patient)
+
 * run `mvn clean` 
 * run `mvn package`   
 * add, commit and push (may take a while and may have warnings...has a lot of media files)
